@@ -6,6 +6,7 @@ plugins {
 
 group = "com.newworld"
 version = "0.0.1-SNAPSHOT"
+val queryDslVersion = "5.0.0"
 
 java {
 	toolchain {
@@ -24,14 +25,24 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-security")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	compileOnly("org.projectlombok:lombok")
-	annotationProcessor("org.projectlombok:lombok")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.springframework.security:spring-security-test")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // Spring Boot Starters
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
+    // QueryDSL for type-safe JPA queries
+    implementation("com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta")
+    annotationProcessor("com.querydsl:querydsl-apt:${queryDslVersion}:jakarta")
+    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+
+    // Lombok for boilerplate code reduction
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+
+    // Testing dependencies
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.withType<Test> {
