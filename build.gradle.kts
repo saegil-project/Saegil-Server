@@ -45,6 +45,9 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // MySQL 커넥터 의존성 추가
+    runtimeOnly("com.mysql:mysql-connector-j:8.0.33")
 }
 
 dependencyManagement {
