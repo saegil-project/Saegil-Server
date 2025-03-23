@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: saegil
+  profiles:
+    active: dev

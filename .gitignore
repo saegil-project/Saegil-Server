@@ -41,6 +41,3 @@ out/
 
 ### SDKMAN ###
 .sdkmanrc
-
-### Application ###
-*.yml

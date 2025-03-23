@@ -8,7 +8,6 @@ plugins {
 
 group = "com.newworld"
 version = "0.0.1-SNAPSHOT"
-val queryDslVersion = "5.0.0"
 val springAiVersion = "1.0.0-M6"
 
 java {
@@ -29,13 +28,7 @@ dependencies {
 
     // Spring Boot Starters
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
-
-    // QueryDSL for type-safe JPA queries
-    implementation("com.querydsl:querydsl-jpa:$queryDslVersion:jakarta")
-    annotationProcessor("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
-    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
     // Lombok for boilerplate code reduction
     compileOnly("org.projectlombok:lombok")
@@ -47,7 +40,13 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     // MySQL 커넥터 의존성 추가
-    runtimeOnly("com.mysql:mysql-connector-j:8.0.33")
+    runtimeOnly("com.mysql:mysql-connector-j:8.2.0")
+
+    // H2 데이터베이스 의존성 추가
+    runtimeOnly("com.h2database:h2:2.2.220")
+
+    // AssertJ 의존성 추가
+    testImplementation("org.assertj:assertj-core:4.0.0-M1")
 }
 
 dependencyManagement {
