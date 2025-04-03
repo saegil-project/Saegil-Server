@@ -17,6 +17,7 @@ public class TextToSpeechService {
 	}
 
 	public Flux<SpeechResponse> streamSpeech(String text) {
-		return openAiAudioSpeechModel.stream(new SpeechPrompt(text));
+		SpeechPrompt speechPrompt = new SpeechPrompt(text);
+		return openAiAudioSpeechModel.stream(speechPrompt);
 	}
 }

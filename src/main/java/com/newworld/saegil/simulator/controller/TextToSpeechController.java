@@ -25,7 +25,7 @@ public class TextToSpeechController {
 
 	@PostMapping(value = "/stream", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	public Flux<DataBuffer> streamAudio(@RequestBody TextToSpeechRequest request) {
-		return textToSpeechService.streamSpeech(request.getText())
+		return textToSpeechService.streamSpeech(request.text())
 								  .map(response -> {
 									  byte[] audioBytes = response.getResult().getOutput();
 									  return new DefaultDataBufferFactory().wrap(audioBytes);
