@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SaegilApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SaegilApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SaegilApplication.class, args);
+    }
 
 }
