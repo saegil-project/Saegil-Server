@@ -10,14 +10,14 @@ import reactor.core.publisher.Flux;
 @Service
 public class TextToSpeechService {
 
-	private final OpenAiAudioSpeechModel openAiAudioSpeechModel;
+    private final OpenAiAudioSpeechModel openAiAudioSpeechModel;
 
-	public TextToSpeechService(OpenAiAudioSpeechModel openAiAudioSpeechModel) {
-		this.openAiAudioSpeechModel = openAiAudioSpeechModel;
-	}
+    public TextToSpeechService(OpenAiAudioSpeechModel openAiAudioSpeechModel) {
+        this.openAiAudioSpeechModel = openAiAudioSpeechModel;
+    }
 
-	public Flux<SpeechResponse> streamSpeech(String text) {
-		SpeechPrompt speechPrompt = new SpeechPrompt(text);
-		return openAiAudioSpeechModel.stream(speechPrompt);
-	}
+    public Flux<SpeechResponse> streamSpeech(String text) {
+        SpeechPrompt speechPrompt = new SpeechPrompt(text);
+        return openAiAudioSpeechModel.stream(speechPrompt);
+    }
 }
