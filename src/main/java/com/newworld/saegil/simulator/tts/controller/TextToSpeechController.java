@@ -1,4 +1,4 @@
-package com.newworld.saegil.simulator.controller;
+package com.newworld.saegil.simulator.tts.controller;
 
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.newworld.saegil.simulator.dto.TextToSpeechRequest;
-import com.newworld.saegil.simulator.service.TextToSpeechService;
+import com.newworld.saegil.simulator.tts.dto.TextToSpeechRequest;
+import com.newworld.saegil.simulator.tts.service.TextToSpeechService;
 
 import reactor.core.publisher.Flux;
 
