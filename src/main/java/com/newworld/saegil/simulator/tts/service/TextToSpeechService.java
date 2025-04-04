@@ -1,4 +1,4 @@
-package com.newworld.saegil.simulator.service;
+package com.newworld.saegil.simulator.tts.service;
 
 import org.springframework.ai.openai.OpenAiAudioSpeechModel;
 import org.springframework.ai.openai.audio.speech.SpeechPrompt;
