@@ -16,8 +16,8 @@ import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class SpeechToTextService {
 
     private final OpenAiAudioTranscriptionModel openAiAudioTranscriptionModel;

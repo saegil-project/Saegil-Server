@@ -5,16 +5,14 @@ import org.springframework.ai.openai.audio.speech.SpeechPrompt;
 import org.springframework.ai.openai.audio.speech.SpeechResponse;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 
 @Service
+@RequiredArgsConstructor
 public class TextToSpeechService {
 
     private final OpenAiAudioSpeechModel openAiAudioSpeechModel;
-
-    public TextToSpeechService(OpenAiAudioSpeechModel openAiAudioSpeechModel) {
-        this.openAiAudioSpeechModel = openAiAudioSpeechModel;
-    }
 
     public Flux<SpeechResponse> streamSpeech(String text) {
         SpeechPrompt speechPrompt = new SpeechPrompt(text);
