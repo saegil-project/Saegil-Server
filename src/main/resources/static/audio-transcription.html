@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Audio Transcription Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        #statusMessage {
+            margin: 10px 0;
+            font-style: italic;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .transcript-container {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            min-height: 100px;
+        }
+
+        .file-input-container {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+<h1>Audio Transcription Test</h1>
+<div class="container">
+    <div class="file-input-container">
+        <h3>Upload Audio File:</h3>
+        <input accept="audio/*" id="audioFileInput" type="file"/>
+        <button id="uploadButton">Transcribe</button>
+        <p id="statusMessage">Select an audio file and click Transcribe.</p>
+    </div>
+
+    <div>
+        <h3>Transcription Result:</h3>
+        <div class="transcript-container">
+            <p><strong>Question (Transcribed):</strong> <span id="questionText"></span></p>
+            <p><strong>Answer:</strong> <span id="answerText"></span></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const uploadButton = document.getElementById('uploadButton');
+    const audioFileInput = document.getElementById('audioFileInput');
+    const statusMessage = document.getElementById('statusMessage');
+    const questionText = document.getElementById('questionText');
+    const answerText = document.getElementById('answerText');
+
+    // Upload button event
+    uploadButton.addEventListener('click', async () => {
+        const audioFile = audioFileInput.files[0];
+        console.log('File size: ' + audioFile.size);
+
+        if (!audioFile) {
+            statusMessage.textContent = "Please select an audio file first.";
+            return;
+        }
+
+        statusMessage.textContent = "Uploading and transcribing...";
+
+        try {
+            // Read the file as an ArrayBuffer
+            const arrayBuffer = await audioFile.arrayBuffer();
+
+            // Send the audio file bytes to the server
+            const response = await fetch('/api/v1/stt/transcribe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/octet-stream'
+                },
+                body: arrayBuffer
+            });
+
+            if (!response.ok) {
+                throw new Error('Server error: ' + response.status);
+            }
+
+            // Process the response
+            const result = await response.json();
+
+            // Display the transcription and answer
+            questionText.textContent = result.question || "";
+            answerText.textContent = result.answer || "";
+
+            statusMessage.textContent = "Transcription complete!";
+
+        } catch (error) {
+            console.error('Error:', error);
+            statusMessage.textContent = "An error occurred: " + error.message;
+        }
+    });
+</script>
+</body>
+</html>
