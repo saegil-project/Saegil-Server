@@ -29,6 +29,12 @@ public class UserController {
     public ResponseEntity<ReadUserResponse> readUserInfo(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken
     ) {
-        return null;
+        // TODO: 유저 정보 조회 기능 개발 후 삭제
+        return ResponseEntity.ok(new ReadUserResponse(
+                1L,
+                "김주민",
+                "neighbor_kim@naver.com",
+                "https://i.namu.wiki/i/RYsQTAH1KBL6UhqDOp12H5MEk69vd4WroI0bs-hU5ot2HXsvhkf6zjarDYtSXRy4qVJ3b6ogUhsycLcBbyiiqrlajTNKsoPkKj9w1TuRbbqv8glhW9bHLmpxcirJMHue3Qt22jAeAW3bk6eE4AeekQ.svg"
+        ));
     }
 }

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,7 +28,11 @@ public class NoticeController {
     )
     @ApiResponse(responseCode = "200", description = "공지사항 기관 목록 조회 성공")
     public ResponseEntity<List<ReadNoticeSourceItemResponse>> readAllSources() {
-        return null;
+        List<ReadNoticeSourceItemResponse> sources = new ArrayList<>();
+        sources.add(new ReadNoticeSourceItemResponse(1L, "남북하나재단"));
+        sources.add(new ReadNoticeSourceItemResponse(2L, "통일부"));
+
+        return ResponseEntity.ok(sources);
     }
 
     @GetMapping
@@ -48,6 +54,43 @@ public class NoticeController {
             @Parameter(description = "마지막으로 조회된 공지사항 ID (무한스크롤 방식) (첫 요청 = null)", example = "101")
             @RequestParam(required = false) final Long lastId
     ) {
-        return null;
+        // TODO: 공지사항 목록 조회 기능 개발 후 삭제
+        List<ReadNoticesResponse.ReadNoticeItemResponse> dummyNotices = new ArrayList<>();
+        for (int i = 1; i <= 30; i++) {
+            dummyNotices.add(createDummyNoticeItem((long) i));
+        }
+
+        String sourceName = null;
+        if (sourceId != null) {
+            if (sourceId == 1L) {
+                sourceName = "남북하나재단";
+            } else if (sourceId == 2L) {
+                sourceName = "통일부";
+            }
+        }
+        final String source = sourceName;
+
+        List<ReadNoticesResponse.ReadNoticeItemResponse> filteredNotices =
+                dummyNotices.stream()
+                            .filter(notice -> query == null || notice.title().contains(query))
+                            .filter(notice -> source == null || notice.source().equals(source))
+                            .filter(notice -> lastId == null || notice.id() > lastId)
+                            .limit(size)
+                            .toList();
+
+        boolean hasNext = dummyNotices.size() > (lastId != null ? lastId + size : size);
+
+        return ResponseEntity.ok(new ReadNoticesResponse(filteredNotices, hasNext));
+    }
+
+    // TODO: 공지사항 목록 조회 기능 개발 후 삭제
+    private ReadNoticesResponse.ReadNoticeItemResponse createDummyNoticeItem(final Long id) {
+        return new ReadNoticesResponse.ReadNoticeItemResponse(
+                id,
+                "제목" + id,
+                "공지사항 내용" + id,
+                (id % 2 == 0) ? "남북하나재단" : "통일부",
+                LocalDate.of(2025, 3, 3).plusDays(id)
+        );
     }
 }
