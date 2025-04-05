@@ -89,6 +89,9 @@ public class JwtTokenProcessor implements TokenProcessor {
 
     @Override
     public Token generateToken(final LocalDateTime issueTime, final Map<String, Object> privateClaims) {
-        return null;
+        final String accessToken = encode(issueTime, TokenType.ACCESS, privateClaims);
+        final String refreshToken = encode(issueTime, TokenType.REFRESH, privateClaims);
+
+        return new Token(accessToken, refreshToken);
     }
 }
