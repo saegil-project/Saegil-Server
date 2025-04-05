@@ -9,6 +9,7 @@ plugins {
 group = "com.newworld"
 version = "0.0.1-SNAPSHOT"
 val springAiVersion = "1.0.0-M6"
+val jwtVersion = "0.12.6"
 
 java {
     toolchain {
@@ -34,6 +35,11 @@ dependencies {
     // Lombok for boilerplate code reduction
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
+
+    // Jwt
+    implementation ("io.jsonwebtoken:jjwt-api:$jwtVersion")
+    runtimeOnly ("io.jsonwebtoken:jjwt-impl:$jwtVersion")
+    runtimeOnly ("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
 
     // Testing dependencies
     testImplementation("org.springframework.boot:spring-boot-starter-test")
