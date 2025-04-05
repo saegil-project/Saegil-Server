@@ -23,7 +23,7 @@ public class UserController {
     @Operation(
             summary = "유저 본인 정보 조회",
             description = "access token을 통해 유저 본인 정보를 조회합니다.",
-            security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_AUTH)
+            security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @ApiResponse(responseCode = "200", description = "유저 본인 정보 조회 성공")
     public ResponseEntity<ReadUserResponse> readUserInfo(

@@ -41,7 +41,7 @@ public class AuthenticationController {
     @Operation(
             summary = "로그아웃",
             description = "로그아웃합니다.",
-            security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_AUTH)
+            security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @ApiResponse(responseCode = "204", description = "로그아웃 성공")
     public ResponseEntity<Void> logout(
@@ -55,7 +55,7 @@ public class AuthenticationController {
     @Operation(
             summary = "Access Token 유효성 검사",
             description = "Access Token의 유효성을 검사합니다.",
-            security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_AUTH)
+            security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @ApiResponse(responseCode = "200", description = "Access Token 유효성 검사 성공")
     public ResponseEntity<ValidateTokenResponse> validateToken(
@@ -80,7 +80,7 @@ public class AuthenticationController {
     @Operation(
             summary = "회원 탈퇴",
             description = "회원 탈퇴를 진행합니다.",
-            security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_AUTH)
+            security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @ApiResponse(responseCode = "204", description = "회원 탈퇴 성공")
     public ResponseEntity<Void> withdrawal(
