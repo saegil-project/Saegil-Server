@@ -1,9 +1,11 @@
 package com.newworld.saegil.security.jwt;
 
+import com.newworld.saegil.authentication.domain.InvalidTokenException;
 import com.newworld.saegil.authentication.domain.Token;
 import com.newworld.saegil.authentication.domain.TokenProcessor;
 import com.newworld.saegil.authentication.domain.TokenType;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +53,38 @@ public class JwtTokenProcessor implements TokenProcessor {
 
     @Override
     public Optional<Claims> decode(final TokenType tokenType, final String token) {
-        return Optional.empty();
+        validateBearerToken(token);
+
+        return parseToClaims(tokenType, token);
+    }
+
+    private void validateBearerToken(final String token) {
+        if (token == null || token.isBlank()) {
+            throw new InvalidTokenException("토큰이 비어있습니다.");
+        }
+
+        if (!token.startsWith(TOKEN_PREFIX)) {
+            throw new InvalidTokenException("Bearer 타입이 아닙니다.");
+        }
+    }
+
+    private Optional<Claims> parseToClaims(final TokenType tokenType, final String token) {
+        final String key = jwtProperties.findTokenKey(tokenType);
+        try {
+            final Claims claims = Jwts.parser()
+                                     .verifyWith(Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8)))
+                                     .build()
+                                     .parseSignedClaims(findPureToken(token))
+                                     .getPayload();
+
+            return Optional.of(claims);
+        } catch (final JwtException ignored) {
+            return Optional.empty();
+        }
+    }
+
+    private String findPureToken(final String token) {
+        return token.substring(TOKEN_PREFIX.length());
     }
 
     @Override
