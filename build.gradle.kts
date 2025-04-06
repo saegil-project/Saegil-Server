@@ -32,6 +32,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
+    // Swagger / OpenAPI for WebFlux
+    implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.2.0")
+
     // Lombok for boilerplate code reduction
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
