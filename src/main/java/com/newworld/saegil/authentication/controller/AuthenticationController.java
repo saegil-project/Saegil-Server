@@ -1,12 +1,15 @@
 package com.newworld.saegil.authentication.controller;
 
+import com.newworld.saegil.authentication.service.AuthenticationService;
 import com.newworld.saegil.configuration.SwaggerConfiguration;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,12 +20,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/v1/oauth2")
 @RequiredArgsConstructor
 @Tag(name = "Authentication", description = "인증 API")
 public class AuthenticationController {
+
+    private final AuthenticationService authenticationService;
+
+    @GetMapping("/{oauth2Type}")
+    @Operation(
+            summary = "OAuth 2.0 로그인 페이지로 redirect",
+            description = """
+                    OAuth 2.0 로그인 페이지로 redirect합니다.\n
+                    로그인 이후 redirect 되는 url의 `code` query parameter에 Authorization code가 포함되어 있습니다.
+                    """
+    )
+    @ApiResponse(responseCode = "302", description = "OAuth 2.0 로그인 페이지로 redirect 성공")
+    public ResponseEntity<Void> redirectAuthCodeRequestUrl(
+            @Parameter(description = "OAuth 2.0 Type (대소문자 상관 없음)", example = "KAKAO")
+            @PathVariable final String oauth2Type
+    ) {
+        final String redirectUrl = authenticationService.getAuthCodeRequestUrl(oauth2Type);
+
+        return ResponseEntity
+                .status(HttpStatus.FOUND)
+                .location(URI.create(redirectUrl))
+                .build();
+    }
 
     @PostMapping("/login/{oauth2Type}")
     @Operation(
