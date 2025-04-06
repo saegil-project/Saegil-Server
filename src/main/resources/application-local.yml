@@ -16,3 +16,6 @@ spring:
       api-key: ${OPENAI_API_KEY}
 server:
   port: 8080
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
