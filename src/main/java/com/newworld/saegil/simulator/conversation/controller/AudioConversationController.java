@@ -22,8 +22,12 @@ public class AudioConversationController {
 
     private final AudioConversationService audioConversationService;
 
-    @PostMapping(value = "/audio-to-audio", consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public Flux<DataBuffer> audioConversation(@RequestBody byte[] audioFileBytes) {
+    @PostMapping(
+            value = "/audio-to-audio", 
+            consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE, 
+            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+    )
+    public Flux<DataBuffer> audioConversation(@RequestBody final byte[] audioFileBytes) {
         return audioConversationService.processAudioConversation(audioFileBytes);
     }
 
