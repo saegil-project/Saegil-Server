@@ -1,6 +1,7 @@
 package com.newworld.saegil.security.oauth2;
 
 import com.newworld.saegil.authentication.domain.OAuth2Handler;
+import com.newworld.saegil.authentication.domain.OAuth2Type;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -10,6 +11,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class KakaoOAuth2Handler implements OAuth2Handler {
 
     private final KakaoOAuth2Properties kakaoOAuth2Properties;
+
+    @Override
+    public OAuth2Type getSupportingOAuth2Type() {
+        return OAuth2Type.KAKAO;
+    }
 
     @Override
     public String provideAuthCodeRequestUrl() {
