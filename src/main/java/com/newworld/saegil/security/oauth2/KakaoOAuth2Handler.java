@@ -2,6 +2,7 @@ package com.newworld.saegil.security.oauth2;
 
 import com.newworld.saegil.authentication.domain.OAuth2Handler;
 import com.newworld.saegil.authentication.domain.OAuth2Type;
+import com.newworld.saegil.authentication.domain.OAuth2UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -69,5 +70,41 @@ public class KakaoOAuth2Handler implements OAuth2Handler {
         requestBody.add("client_secret", kakaoOAuth2Properties.clientSecret());
 
         return new HttpEntity<>(requestBody, requestHeaders);
+    }
+
+    @Override
+    public OAuth2UserInfo getUserInfo(final String accessToken) {
+        final HttpEntity<Void> requestEntity = createUserInfoRequest(accessToken);
+        final ResponseEntity<Map> response = restTemplate.exchange(
+                "https://kapi.kakao.com/v2/user/me",
+                HttpMethod.GET,
+                requestEntity,
+                Map.class
+        );
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new OAuth2ProcessingException("Kakao 사용자 정보 요청에 실패했습니다.");
+        }
+
+        return parseOAuth2UserInfo(response);
+    }
+
+    private HttpEntity<Void> createUserInfoRequest(final String accessToken) {
+        final HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        requestHeaders.setBearerAuth(accessToken);
+
+        return new HttpEntity<>(requestHeaders);
+    }
+
+    private OAuth2UserInfo parseOAuth2UserInfo(final ResponseEntity<Map> response) {
+        final Map<String, Object> body = response.getBody();
+        final String id = body.get("id").toString();
+
+        final Map<String, Object> properties = (Map<String, Object>) body.get("properties");
+        final String nickname = (String) properties.get("nickname");
+        final String profileImageUrl = (String) properties.get("profile_image");
+
+        return new OAuth2UserInfo(id, OAuth2Type.KAKAO, nickname, profileImageUrl);
     }
 }
