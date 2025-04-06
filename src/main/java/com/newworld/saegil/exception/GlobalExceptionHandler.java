@@ -1,5 +1,6 @@
 package com.newworld.saegil.exception;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.web.reactive.resource.NoResourceFoundException;
 
 import java.util.stream.Collectors;
 
+@Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private static final String LOG_MESSAGE_FORMAT = "%s : %s";
