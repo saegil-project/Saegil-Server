@@ -3,7 +3,9 @@ package com.newworld.saegil.user.controller;
 import com.newworld.saegil.configuration.SwaggerConfiguration;
 import com.newworld.saegil.user.service.UserDto;
 import com.newworld.saegil.user.service.UserService;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,6 +34,7 @@ public class UserController {
     )
     @ApiResponse(responseCode = "200", description = "유저 본인 정보 조회 성공")
     public ResponseEntity<ReadUserResponse> readUserInfo(
+            @Parameter(description = "Bearer {accessToken}", required = true)
             @RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken
     ) {
         // TODO: 유저 정보 조회 기능 개발 후 삭제
@@ -43,7 +46,7 @@ public class UserController {
         ));
     }
 
-    // TODO: 인증된 사용자 정보로 조회하는 API로 변경
+    @Hidden
     @GetMapping("/{id}")
     public ResponseEntity<ReadUserResponse> readById(@PathVariable final Long id) {
         final UserDto userDto = userService.readById(id);
