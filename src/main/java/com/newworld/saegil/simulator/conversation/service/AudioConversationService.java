@@ -57,20 +57,19 @@ public class AudioConversationService {
      * @param audioFileBytes The audio file bytes to process
      * @return Flux of DataBuffer containing the audio response
      */
-    public Flux<DataBuffer> processAudioConversation(byte[] audioFileBytes) {
-        // Step 1: Transcribe audio to text and get GPT answer
-        return speechToTextService.transcribeAndAnswer(audioFileBytes)
+    public Flux<DataBuffer> processAudioConversation(final byte[] audioFileBytes) {
+        return speechToTextService.transcribeAndGetAnswer(audioFileBytes)
                                   .doOnNext(result -> lastConversation = result)
-                                  .flatMapMany(result -> {
-                                      String answer = result.get("answer");
-                                      // Step 2: Convert GPT answer to speech and stream it
-                                      return textToSpeechService.streamSpeech(answer)
-                                                                .map(response -> {
-                                                                    byte[] audioBytes = response.getResult()
-                                                                                                .getOutput();
-                                                                    return new DefaultDataBufferFactory().wrap(
-                                                                            audioBytes);
-                                                                });
+                                  .flatMapMany(this::streamAnswerAsAudio);
+    }
+
+    private Flux<DataBuffer> streamAnswerAsAudio(final Map<String, String> result) {
+        final String answer = result.get("answer");
+
+        return textToSpeechService.streamSpeech(answer)
+                                  .map(response -> {
+                                      byte[] audioBytes = response.getResult().getOutput();
+                                      return new DefaultDataBufferFactory().wrap(audioBytes);
                                   });
     }
 }
