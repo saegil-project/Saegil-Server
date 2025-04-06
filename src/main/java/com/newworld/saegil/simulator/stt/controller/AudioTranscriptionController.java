@@ -23,7 +23,8 @@ public class AudioTranscriptionController {
 
     @PostMapping(value = "/transcribe", consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public Mono<ResponseEntity<Map<String, String>>> transcribeAudio(
-            @RequestBody byte[] audioFileBytes) {
+            @RequestBody byte[] audioFileBytes
+    ) {
         return speechToTextService.transcribeAndAnswer(audioFileBytes)
                                   .map(ResponseEntity::ok);
     }
