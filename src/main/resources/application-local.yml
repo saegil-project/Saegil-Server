@@ -19,3 +19,9 @@ server:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+token:
+  jwt:
+    access-key: ThisIsLocalAccessKeyThisIsLocalAccessKey
+    refresh-key: ThisIsLocalRefreshKeyThisIsLocalRefreshKey
+    access-expired-hours: 1 # 1시간
+    refresh-expired-hours: 336  # 14일
