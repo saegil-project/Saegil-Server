@@ -90,7 +90,8 @@ public class NoticeController {
                 "제목" + id,
                 "공지사항 내용" + id,
                 (id % 2 == 0) ? "남북하나재단" : "통일부",
-                LocalDate.of(2025, 3, 3).plusDays(id)
+                LocalDate.of(2025, 3, 3).plusDays(id),
+                "https://www.naver.com"
         );
     }
 }
