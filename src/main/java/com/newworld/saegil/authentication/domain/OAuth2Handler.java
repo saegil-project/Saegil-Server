@@ -4,4 +4,5 @@ public interface OAuth2Handler {
 
     OAuth2Type getSupportingOAuth2Type();
     String provideAuthCodeRequestUrl();
+    String getOAuth2AccessToken(final String authorizationCode);
 }

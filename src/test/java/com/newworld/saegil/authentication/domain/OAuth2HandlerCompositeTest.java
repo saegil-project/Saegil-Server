@@ -27,7 +27,7 @@ class OAuth2HandlerCompositeTest {
             @Test
             void 해당_OAuth2_핸들러를_반환한다() {
                 // given
-                final OAuth2Handler kakaoHandler = new KakaoOAuth2Handler(null);
+                final OAuth2Handler kakaoHandler = new KakaoOAuth2Handler(null, null);
                 final OAuth2HandlerComposite composite = new OAuth2HandlerComposite(Set.of(kakaoHandler));
 
                 // when
