@@ -42,30 +42,30 @@ public class SpeechToTextService {
                    .subscribeOn(Schedulers.boundedElastic());
     }
 
-    public Mono<Map<String, String>> transcribeAndAnswer(byte[] audioFileBytes) {
-        return Mono.fromCallable(() -> {
-                       InputStream audioStream = new ByteArrayInputStream(audioFileBytes);
-                       Resource audioResource = new InputStreamResource(audioStream) {
-                           @Override
-                           public String getFilename() {
-                               return "audio.wav"; // Default filename
-                           }
-                       };
-                       return audioResource;
-                   })
-                   .flatMap(this::processAudioResource)
+    public Mono<Map<String, String>> transcribeAndGetAnswer(final byte[] audioFileBytes) {
+        return Mono.fromCallable(() -> generateConversation(audioFileBytes))
                    .subscribeOn(Schedulers.boundedElastic());
     }
 
-    private Mono<Map<String, String>> processAudioResource(Resource audioResource) {
-        return Mono.fromCallable(() -> openAiAudioTranscriptionModel.call(audioResource))
-                   .flatMap(transcribedText ->
-                           Mono.fromCallable(() -> chatModel.call(transcribedText))
-                               .map(answer -> Map.of(
-                                       "question", transcribedText,
-                                       "answer", answer
-                               ))
-                   )
-                   .subscribeOn(Schedulers.boundedElastic());
+    private Map<String, String> generateConversation(final byte[] audioFileBytes) {
+        final Resource audioResource = convertToResource(audioFileBytes);
+        final String transcribedText = openAiAudioTranscriptionModel.call(audioResource);
+        final String answer = chatModel.call(transcribedText);
+
+        return Map.of(
+                "question", transcribedText,
+                "answer", answer
+        );
+    }
+
+    private Resource convertToResource(final byte[] audioFileBytes) {
+        final InputStream audioStream = new ByteArrayInputStream(audioFileBytes);
+        
+        return new InputStreamResource(audioStream) {
+            @Override
+            public String getFilename() {
+                return "audio.wav";
+            }
+        };
     }
 }
