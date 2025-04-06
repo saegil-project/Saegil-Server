@@ -25,7 +25,7 @@ public class AudioTranscriptionController {
     public Mono<ResponseEntity<Map<String, String>>> transcribeAudio(
             @RequestBody byte[] audioFileBytes
     ) {
-        return speechToTextService.transcribeAndAnswer(audioFileBytes)
+        return speechToTextService.transcribeAndGetAnswer(audioFileBytes)
                                   .map(ResponseEntity::ok);
     }
 }
