@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
@@ -46,9 +45,7 @@ public class JwtTokenProcessor implements TokenProcessor {
     }
 
     private Date convertToDate(final LocalDateTime targetTime) {
-        final ZonedDateTime zonedDateTime = targetTime.atZone(ZoneId.of("Asia/Seoul"));
-
-        return Date.from(zonedDateTime.toInstant());
+        return Date.from(targetTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     @Override
