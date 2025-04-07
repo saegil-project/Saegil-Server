@@ -1,6 +1,7 @@
 package com.newworld.saegil.authentication.controller;
 
 import com.newworld.saegil.authentication.service.AuthenticationService;
+import com.newworld.saegil.authentication.service.LoginResult;
 import com.newworld.saegil.configuration.SwaggerConfiguration;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/v1/oauth2")
@@ -58,10 +60,18 @@ public class AuthenticationController {
     )
     @ApiResponse(responseCode = "200", description = "로그인 성공")
     public ResponseEntity<LoginInformationResponse> login(
+            @Parameter(description = "OAuth 2.0 Type (대소문자 상관 없음)", example = "KAKAO")
             @PathVariable final String oauth2Type,
             @RequestBody @Valid final LoginRequest request
     ) {
-        return null;
+        final LoginResult loginResult = authenticationService.login(
+                oauth2Type,
+                request.authorizationCode(),
+                LocalDateTime.now()
+        );
+        final LoginInformationResponse response = LoginInformationResponse.from(loginResult);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/logout")
