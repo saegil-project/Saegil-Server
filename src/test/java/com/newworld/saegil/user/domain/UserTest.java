@@ -1,5 +1,6 @@
 package com.newworld.saegil.user.domain;
 
+import com.newworld.saegil.authentication.domain.OAuth2Type;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -17,8 +18,9 @@ class UserTest {
     @DisplayName("User 생성 시")
     class Describe_createUser {
 
-        private final String validEmail = "hong@example.com";
         private final String validProfileImageUrl = "https://example.com/profile.png";
+        private final String validOAuth2Id = "123456";
+        private final OAuth2Type validOAuth2Type = OAuth2Type.KAKAO;
 
         @Nested
         @DisplayName("정상적인 입력이면")
@@ -28,7 +30,7 @@ class UserTest {
 
             @Test
             void 예외가_발생하지_않는다() {
-                assertThatCode(() -> new User(validName, validEmail, validProfileImageUrl))
+                assertThatCode(() -> new User(validName, validProfileImageUrl, validOAuth2Id, validOAuth2Type))
                         .doesNotThrowAnyException();
             }
         }
@@ -44,28 +46,28 @@ class UserTest {
 
             @Test
             void null이면_예외가_발생한다() {
-                assertThatThrownBy(() -> new User(nullName, validEmail, validProfileImageUrl))
+                assertThatThrownBy(() -> new User(nullName, validProfileImageUrl, validOAuth2Id, validOAuth2Type))
                         .isInstanceOf(InvalidUserException.class)
                         .hasMessageContaining("이름은 필수입니다.");
             }
 
             @Test
             void 비어있으면_예외가_발생한다() {
-                assertThatThrownBy(() -> new User(emptyName, validEmail, validProfileImageUrl))
+                assertThatThrownBy(() -> new User(emptyName, validProfileImageUrl, validOAuth2Id, validOAuth2Type))
                         .isInstanceOf(InvalidUserException.class)
                         .hasMessageContaining("이름은 필수입니다.");
             }
 
             @Test
             void 공백이면_예외가_발생한다() {
-                assertThatThrownBy(() -> new User(blankName, validEmail, validProfileImageUrl))
+                assertThatThrownBy(() -> new User(blankName, validProfileImageUrl, validOAuth2Id, validOAuth2Type))
                         .isInstanceOf(InvalidUserException.class)
                         .hasMessageContaining("이름은 필수입니다.");
             }
 
             @Test
             void 너무_길면_예외가_발생한다() {
-                assertThatThrownBy(() -> new User(longName, validEmail, validProfileImageUrl))
+                assertThatThrownBy(() -> new User(longName, validProfileImageUrl, validOAuth2Id, validOAuth2Type))
                         .isInstanceOf(InvalidUserException.class)
                         .hasMessageContaining("이름은 최대 20자까지 가능합니다.");
             }

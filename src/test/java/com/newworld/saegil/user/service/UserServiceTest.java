@@ -1,5 +1,6 @@
 package com.newworld.saegil.user.service;
 
+import com.newworld.saegil.authentication.domain.OAuth2Type;
 import com.newworld.saegil.exception.UserNotFoundException;
 import com.newworld.saegil.user.domain.User;
 import com.newworld.saegil.user.repository.UserRepository;
@@ -42,7 +43,9 @@ class UserServiceTest {
             @Test
             void 사용자_정보를_반환한다() {
                 // given
-                final User savedUser = userRepository.save(new User("홍길동", "hong@example.com", "https://example.com/profile.png"));
+                final User savedUser = userRepository.save(
+                        new User("홍길동", "https://example.com/profile.png", "123456", OAuth2Type.KAKAO)
+                );
 
                 entityManager.flush();
                 entityManager.clear();
@@ -54,7 +57,8 @@ class UserServiceTest {
                 SoftAssertions.assertSoftly(softAssertions -> {
                     softAssertions.assertThat(actual.id()).isEqualTo(savedUser.getId());
                     softAssertions.assertThat(actual.name()).isEqualTo(savedUser.getName());
-                    softAssertions.assertThat(actual.email()).isEqualTo(savedUser.getEmail());
+                    softAssertions.assertThat(actual.oauth2Id()).isEqualTo(savedUser.getOauth2Id());
+                    softAssertions.assertThat(actual.oauth2Type()).isEqualTo(savedUser.getOauth2Type());
                     softAssertions.assertThat(actual.profileImageUrl()).isEqualTo(savedUser.getProfileImageUrl());
                 });
             }
