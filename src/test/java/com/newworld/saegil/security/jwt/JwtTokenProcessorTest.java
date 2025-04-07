@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Map;
 import java.util.Optional;
 
@@ -41,7 +42,11 @@ class JwtTokenProcessorTest {
             Map<String, Object> claims = Map.of(keyName, userId);
 
             // when
-            String actual = jwtProcessor.encode(LocalDateTime.now(), TokenType.ACCESS, claims);
+            String actual = jwtProcessor.encode(
+                    LocalDateTime.now(ZoneId.of("Asia/Seoul")),
+                    TokenType.ACCESS,
+                    claims
+            );
 
             // then
             assertThat(actual).startsWith("Bearer ");
@@ -64,7 +69,11 @@ class JwtTokenProcessorTest {
                 final Long userId = 123L;
                 final TokenType tokenType = TokenType.ACCESS;
                 final Map<String, Object> claims = Map.of(keyName, userId);
-                final String token = jwtProcessor.encode(LocalDateTime.now(), tokenType, claims);
+                final String token = jwtProcessor.encode(
+                        LocalDateTime.now(ZoneId.of("Asia/Seoul")),
+                        tokenType,
+                        claims
+                );
 
                 // when
                 final Optional<Claims> actual = jwtProcessor.decode(tokenType, token);
@@ -129,7 +138,11 @@ class JwtTokenProcessorTest {
                 final String keyName = "userId";
                 final Long userId = 123L;
                 final Map<String, Object> claims = Map.of(keyName, userId);
-                final String encodedToken = jwtProcessor.encode(LocalDateTime.now(), TokenType.ACCESS, claims);
+                final String encodedToken = jwtProcessor.encode(
+                        LocalDateTime.now(ZoneId.of("Asia/Seoul")),
+                        TokenType.ACCESS,
+                        claims
+                );
 
                 // when
                 final Optional<Claims> actual = jwtProcessor.decode(TokenType.ACCESS, encodedToken);
