@@ -1,7 +1,10 @@
 package com.newworld.saegil.user.domain;
 
+import com.newworld.saegil.authentication.domain.OAuth2Type;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,17 +32,22 @@ public class User {
     @Column(length = MAX_NAME_LENGTH)
     private String name;
 
-    @Column
-    private String email;
-
-    @Column
+    @Column(nullable = false)
     private String profileImageUrl;
 
-    public User(final String name, final String email, final String profileImageUrl) {
+    @Column(name = "oauth2_id", nullable = false)
+    private String oauth2Id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "oauth2_type", nullable = false)
+    private OAuth2Type oauth2Type;
+
+    public User(final String name, final String profileImageUrl, final String oauth2Id, final OAuth2Type oauth2Type) {
         validateName(name);
         this.name = name;
-        this.email = email;
         this.profileImageUrl = profileImageUrl;
+        this.oauth2Id = oauth2Id;
+        this.oauth2Type = oauth2Type;
     }
 
     private void validateName(final String name) {

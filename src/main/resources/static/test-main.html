@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Saegil 테스트 웹앱</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        .app-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .app-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            transition: transform 0.2s;
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .app-card h2 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+
+        .app-card p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .app-card a {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .app-card a:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<h1>Saegil 테스트 웹앱</h1>
+
+<div class="app-list">
+    <div class="app-card">
+        <h2>LLM 프록시 테스트</h2>
+        <p>LLM 프록시 컨트롤러의 모든 엔드포인트를 테스트하는 웹앱입니다. 텍스트-음성 변환, 음성-텍스트 변환, ChatGPT 기능을 테스트할 수 있습니다.</p>
+        <a href="test-llm-proxy.html">테스트하기</a>
+    </div>
+
+    <div class="app-card">
+        <h2>음성 대화 테스트</h2>
+        <p>마이크 녹음 또는 오디오 파일 업로드를 통해 음성 대화를 테스트하는 웹앱입니다.</p>
+        <a href="test-audio-conversation.html">테스트하기</a>
+    </div>
+
+    <div class="app-card">
+        <h2>음성 변환 테스트</h2>
+        <p>오디오 파일을 텍스트로 변환하는 기능을 테스트하는 웹앱입니다.</p>
+        <a href="test-audio-transcription.html">테스트하기</a>
+    </div>
+
+    <div class="app-card">
+        <h2>텍스트-음성 변환 테스트</h2>
+        <p>텍스트를 음성으로 변환하는 기능을 테스트하는 웹앱입니다.</p>
+        <a href="test-text-to-speech.html">테스트하기</a>
+    </div>
+</div>
+</body>
+</html>

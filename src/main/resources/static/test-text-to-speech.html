@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>텍스트-음성 변환 테스트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        audio {
+            width: 100%;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+<h1>텍스트-음성 변환 테스트</h1>
+<textarea cols="50" id="textInput" placeholder="변환할 텍스트를 입력하세요" rows="5"></textarea>
+<br>
+<button id="sendButton">변환하기</button>
+<br><br>
+<audio controls id="audioPlayer"></audio>
+
+<script>
+    document.getElementById('sendButton').addEventListener('click', async function () {
+        const text = document.getElementById('textInput').value;
+        const requestBody = {text: text};
+
+        try {
+            const response = await fetch('/api/v1/tts/stream', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (!response.ok) {
+                throw new Error('서버 오류: ' + response.status);
+            }
+
+            // 바이너리 데이터(오디오 스트림) 처리
+            const audioBlob = await response.blob();
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const audioPlayer = document.getElementById('audioPlayer');
+            audioPlayer.src = audioUrl;
+            audioPlayer.play();
+        } catch (error) {
+            console.error('오류 발생:', error);
+        }
+    });
+</script>
+</body>
+</html>

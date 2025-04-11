@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>LLM 프록시 테스트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .response {
+            margin-top: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            min-height: 50px;
+        }
+
+        .status {
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .tab-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            background-color: #f1f1f1;
+        }
+
+        .tab.active {
+            background-color: #fff;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<h1>LLM 프록시 테스트</h1>
+
+<div class="tab-container">
+    <div class="tab active" id="ttsTab">텍스트-음성 변환</div>
+    <div class="tab" id="sttTab">음성-텍스트 변환</div>
+    <div class="tab" id="chatgptTab">ChatGPT</div>
+</div>
+
+<!-- 텍스트-음성 변환 섹션 -->
+<div class="tab-content active" id="ttsContent">
+    <div class="section">
+        <h2>텍스트-음성 변환</h2>
+        <div class="form-group">
+            <label for="ttsText">변환할 텍스트:</label>
+            <textarea id="ttsText" placeholder="변환할 텍스트를 입력하세요" rows="4"></textarea>
+        </div>
+        <button id="ttsButton">변환하기</button>
+        <div class="status" id="ttsStatus"></div>
+        <div class="response">
+            <h3>응답:</h3>
+            <audio controls id="ttsAudio"></audio>
+        </div>
+    </div>
+</div>
+
+<!-- 음성-텍스트 변환 섹션 -->
+<div class="tab-content" id="sttContent">
+    <div class="section">
+        <h2>URL에서 음성-텍스트 변환</h2>
+        <div class="form-group">
+            <label for="sttUrl">오디오 URL:</label>
+            <input id="sttUrl" placeholder="오디오 파일의 URL을 입력하세요" type="text">
+        </div>
+        <button id="sttUrlButton">변환하기</button>
+        <div class="status" id="sttUrlStatus"></div>
+        <div class="response">
+            <h3>응답:</h3>
+            <pre id="sttUrlResponse"></pre>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>파일에서 음성-텍스트 변환</h2>
+        <div class="form-group">
+            <label for="sttFile">오디오 파일:</label>
+            <input accept="audio/*" id="sttFile" type="file">
+        </div>
+        <button id="sttFileButton">변환하기</button>
+        <div class="status" id="sttFileStatus"></div>
+        <div class="response">
+            <h3>응답:</h3>
+            <pre id="sttFileResponse"></pre>
+        </div>
+    </div>
+</div>
+
+<!-- ChatGPT 섹션 -->
+<div class="tab-content" id="chatgptContent">
+    <div class="section">
+        <h2>텍스트로 ChatGPT 응답 받기</h2>
+        <div class="form-group">
+            <label for="chatgptText">텍스트:</label>
+            <textarea id="chatgptText" placeholder="질문을 입력하세요" rows="4"></textarea>
+        </div>
+        <button id="chatgptTextButton">응답 받기</button>
+        <div class="status" id="chatgptTextStatus"></div>
+        <div class="response">
+            <h3>응답:</h3>
+            <pre id="chatgptTextResponse"></pre>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>STT 텍스트로 ChatGPT 응답 받기</h2>
+        <div class="form-group">
+            <label for="chatgptSttText">STT 텍스트:</label>
+            <textarea id="chatgptSttText" placeholder="STT로 변환된 텍스트를 입력하세요" rows="4"></textarea>
+        </div>
+        <button id="chatgptSttButton">응답 받기</button>
+        <div class="status" id="chatgptSttStatus"></div>
+        <div class="response">
+            <h3>응답:</h3>
+            <pre id="chatgptSttResponse"></pre>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>오디오 URL로 ChatGPT 응답 받기</h2>
+        <div class="form-group">
+            <label for="chatgptAudioUrl">오디오 URL:</label>
+            <input id="chatgptAudioUrl" placeholder="오디오 파일의 URL을 입력하세요" type="text">
+        </div>
+        <button id="chatgptAudioUrlButton">응답 받기</button>
+        <div class="status" id="chatgptAudioUrlStatus"></div>
+        <div class="response">
+            <h3>응답:</h3>
+            <pre id="chatgptAudioUrlResponse"></pre>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>오디오 파일로 ChatGPT 응답 받기</h2>
+        <div class="form-group">
+            <label for="chatgptFile">오디오 파일:</label>
+            <input accept="audio/*" id="chatgptFile" type="file">
+        </div>
+        <button id="chatgptFileButton">응답 받기</button>
+        <div class="status" id="chatgptFileStatus"></div>
+        <div class="response">
+            <h3>응답:</h3>
+            <pre id="chatgptFileResponse"></pre>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 탭 전환 기능
+    const ttsTab = document.getElementById('ttsTab');
+    const sttTab = document.getElementById('sttTab');
+    const chatgptTab = document.getElementById('chatgptTab');
+    const ttsContent = document.getElementById('ttsContent');
+    const sttContent = document.getElementById('sttContent');
+    const chatgptContent = document.getElementById('chatgptContent');
+
+    ttsTab.addEventListener('click', () => {
+        ttsTab.classList.add('active');
+        sttTab.classList.remove('active');
+        chatgptTab.classList.remove('active');
+        ttsContent.classList.add('active');
+        sttContent.classList.remove('active');
+        chatgptContent.classList.remove('active');
+    });
+
+    sttTab.addEventListener('click', () => {
+        sttTab.classList.add('active');
+        ttsTab.classList.remove('active');
+        chatgptTab.classList.remove('active');
+        sttContent.classList.add('active');
+        ttsContent.classList.remove('active');
+        chatgptContent.classList.remove('active');
+    });
+
+    chatgptTab.addEventListener('click', () => {
+        chatgptTab.classList.add('active');
+        ttsTab.classList.remove('active');
+        sttTab.classList.remove('active');
+        chatgptContent.classList.add('active');
+        ttsContent.classList.remove('active');
+        sttContent.classList.remove('active');
+    });
+
+    // 텍스트-음성 변환
+    document.getElementById('ttsButton').addEventListener('click', async () => {
+        const text = document.getElementById('ttsText').value;
+        const statusElement = document.getElementById('ttsStatus');
+        const audioElement = document.getElementById('ttsAudio');
+
+        if (!text) {
+            statusElement.textContent = '텍스트를 입력해주세요.';
+            return;
+        }
+
+        statusElement.textContent = '변환 중...';
+
+        try {
+            const response = await fetch('/api/llm/text-to-speech', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({text: text})
+            });
+
+            if (!response.ok) {
+                throw new Error('서버 오류: ' + response.status);
+            }
+
+            const audioBlob = await response.blob();
+            const audioUrl = URL.createObjectURL(audioBlob);
+            audioElement.src = audioUrl;
+
+            statusElement.textContent = '변환 완료!';
+        } catch (error) {
+            console.error('오류:', error);
+            statusElement.textContent = '오류 발생: ' + error.message;
+        }
+    });
+
+    // URL에서 음성-텍스트 변환
+    document.getElementById('sttUrlButton').addEventListener('click', async () => {
+        const audioUrl = document.getElementById('sttUrl').value;
+        const statusElement = document.getElementById('sttUrlStatus');
+        const responseElement = document.getElementById('sttUrlResponse');
+
+        if (!audioUrl) {
+            statusElement.textContent = 'URL을 입력해주세요.';
+            return;
+        }
+
+        statusElement.textContent = '변환 중...';
+
+        try {
+            const response = await fetch('/api/llm/speech-to-text/url', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({audioUrl: audioUrl})
+            });
+
+            if (!response.ok) {
+                throw new Error('서버 오류: ' + response.status);
+            }
+
+            const result = await response.json();
+            responseElement.textContent = JSON.stringify(result, null, 2);
+
+            statusElement.textContent = '변환 완료!';
+        } catch (error) {
+            console.error('오류:', error);
+            statusElement.textContent = '오류 발생: ' + error.message;
+        }
+    });
+
+    // 파일에서 음성-텍스트 변환
+    document.getElementById('sttFileButton').addEventListener('click', async () => {
+        const fileInput = document.getElementById('sttFile');
+        const statusElement = document.getElementById('sttFileStatus');
+        const responseElement = document.getElementById('sttFileResponse');
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+            statusElement.textContent = '파일을 선택해주세요.';
+            return;
+        }
+
+        statusElement.textContent = '변환 중...';
+
+        try {
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            const response = await fetch('/api/llm/speech-to-text/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error('서버 오류: ' + response.status);
+            }
+
+            const result = await response.json();
+            responseElement.textContent = JSON.stringify(result, null, 2);
+
+            statusElement.textContent = '변환 완료!';
+        } catch (error) {
+            console.error('오류:', error);
+            statusElement.textContent = '오류 발생: ' + error.message;
+        }
+    });
+
+    // 텍스트로 ChatGPT 응답 받기
+    document.getElementById('chatgptTextButton').addEventListener('click', async () => {
+        const text = document.getElementById('chatgptText').value;
+        const statusElement = document.getElementById('chatgptTextStatus');
+        const responseElement = document.getElementById('chatgptTextResponse');
+
+        if (!text) {
+            statusElement.textContent = '텍스트를 입력해주세요.';
+            return;
+        }
+
+        statusElement.textContent = '응답 받는 중...';
+
+        try {
+            const response = await fetch('/api/llm/chatgpt/text', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({text: text})
+            });
+
+            if (!response.ok) {
+                throw new Error('서버 오류: ' + response.status);
+            }
+
+            const result = await response.json();
+            responseElement.textContent = JSON.stringify(result, null, 2);
+
+            statusElement.textContent = '응답 완료!';
+        } catch (error) {
+            console.error('오류:', error);
+            statusElement.textContent = '오류 발생: ' + error.message;
+        }
+    });
+
+    // STT 텍스트로 ChatGPT 응답 받기
+    document.getElementById('chatgptSttButton').addEventListener('click', async () => {
+        const audioText = document.getElementById('chatgptSttText').value;
+        const statusElement = document.getElementById('chatgptSttStatus');
+        const responseElement = document.getElementById('chatgptSttResponse');
+
+        if (!audioText) {
+            statusElement.textContent = 'STT 텍스트를 입력해주세요.';
+            return;
+        }
+
+        statusElement.textContent = '응답 받는 중...';
+
+        try {
+            const response = await fetch('/api/llm/chatgpt/stt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({audioText: audioText})
+            });
+
+            if (!response.ok) {
+                throw new Error('서버 오류: ' + response.status);
+            }
+
+            const result = await response.json();
+            responseElement.textContent = JSON.stringify(result, null, 2);
+
+            statusElement.textContent = '응답 완료!';
+        } catch (error) {
+            console.error('오류:', error);
+            statusElement.textContent = '오류 발생: ' + error.message;
+        }
+    });
+
+    // 오디오 URL로 ChatGPT 응답 받기
+    document.getElementById('chatgptAudioUrlButton').addEventListener('click', async () => {
+        const audioUrl = document.getElementById('chatgptAudioUrl').value;
+        const statusElement = document.getElementById('chatgptAudioUrlStatus');
+        const responseElement = document.getElementById('chatgptAudioUrlResponse');
+
+        if (!audioUrl) {
+            statusElement.textContent = 'URL을 입력해주세요.';
+            return;
+        }
+
+        statusElement.textContent = '응답 받는 중...';
+
+        try {
+            const response = await fetch('/api/llm/chatgpt/audio-url', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({audioUrl: audioUrl})
+            });
+
+            if (!response.ok) {
+                throw new Error('서버 오류: ' + response.status);
+            }
+
+            const result = await response.json();
+            responseElement.textContent = JSON.stringify(result, null, 2);
+
+            statusElement.textContent = '응답 완료!';
+        } catch (error) {
+            console.error('오류:', error);
+            statusElement.textContent = '오류 발생: ' + error.message;
+        }
+    });
+
+    // 오디오 파일로 ChatGPT 응답 받기
+    document.getElementById('chatgptFileButton').addEventListener('click', async () => {
+        const fileInput = document.getElementById('chatgptFile');
+        const statusElement = document.getElementById('chatgptFileStatus');
+        const responseElement = document.getElementById('chatgptFileResponse');
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+            statusElement.textContent = '파일을 선택해주세요.';
+            return;
+        }
+
+        statusElement.textContent = '응답 받는 중...';
+
+        try {
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            const response = await fetch('/api/llm/chatgpt/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error('서버 오류: ' + response.status);
+            }
+
+            const result = await response.json();
+            responseElement.textContent = JSON.stringify(result, null, 2);
+
+            statusElement.textContent = '응답 완료!';
+        } catch (error) {
+            console.error('오류:', error);
+            statusElement.textContent = '오류 발생: ' + error.message;
+        }
+    });
+</script>
+</body>
+</html>
