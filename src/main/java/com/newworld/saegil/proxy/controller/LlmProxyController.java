@@ -67,8 +67,8 @@ public class LlmProxyController {
     }
 
     @Operation(
-            summary = "Convert speech to text from file",
-            description = "Converts speech to text from an uploaded audio file using OpenAI Whisper API",
+            summary = "파일에서 음성을 텍스트로 변환",
+            description = "업로드된 오디오 파일에서 OpenAI Whisper API를 사용하여 음성을 텍스트로 변환합니다",
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping(value = "/speech-to-text/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -78,8 +78,8 @@ public class LlmProxyController {
     }
 
     @Operation(
-            summary = "Get ChatGPT response from text",
-            description = "Gets a response from ChatGPT based on text input",
+            summary = "텍스트로부터 ChatGPT 응답 받기",
+            description = "텍스트 입력을 기반으로 ChatGPT의 응답을 받습니다",
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping("/chatgpt/text")
@@ -89,8 +89,8 @@ public class LlmProxyController {
     }
 
     @Operation(
-            summary = "Get ChatGPT response from STT text",
-            description = "Gets a response from ChatGPT based on STT-converted text",
+            summary = "STT 텍스트로부터 ChatGPT 응답 받기",
+            description = "STT로 변환된 텍스트를 기반으로 ChatGPT의 응답을 받습니다",
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping("/chatgpt/stt")
@@ -100,8 +100,8 @@ public class LlmProxyController {
     }
 
     @Operation(
-            summary = "Get ChatGPT response from audio URL",
-            description = "Gets a response from ChatGPT based on audio from a URL",
+            summary = "오디오 URL로부터 ChatGPT 응답 받기",
+            description = "URL의 오디오를 기반으로 ChatGPT의 응답을 받습니다",
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping("/chatgpt/audio-url")
@@ -111,8 +111,8 @@ public class LlmProxyController {
     }
 
     @Operation(
-            summary = "Get ChatGPT response from audio file",
-            description = "Gets a response from ChatGPT based on an uploaded audio file",
+            summary = "오디오 파일로부터 ChatGPT 응답 받기",
+            description = "업로드된 오디오 파일을 기반으로 ChatGPT의 응답을 받습니다",
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping(value = "/chatgpt/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

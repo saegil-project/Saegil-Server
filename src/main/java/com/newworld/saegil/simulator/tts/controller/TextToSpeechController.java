@@ -27,8 +27,8 @@ public class TextToSpeechController {
     }
 
     @Operation(
-            summary = "Stream audio from text",
-            description = "Convert text to speech and stream the audio",
+            summary = "텍스트에서 오디오 스트리밍",
+            description = "텍스트를 음성으로 변환하고 오디오를 스트리밍합니다",
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping(value = "/stream", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
