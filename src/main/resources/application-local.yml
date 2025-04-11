@@ -38,3 +38,22 @@ oauth2:
     client_secret: ${KAKAO_CLIENT_SECRET}
     redirect_uri: ${KAKAO_REDIRECT_URI}
     scope: ${KAKAO_SCOPE}
+proxy:
+  target-url: ${PROXY_TARGET_URL:http://localhost:9090/api/process}
+  servers:
+    ai-service: ${PROXY_AI_SERVICE_URL:http://localhost:8091/api}
+    data-service: ${PROXY_DATA_SERVICE_URL:http://localhost:8092/api}
+    llm-service: ${PROXY_LLM_SERVICE_URL:http://localhost:9090}
+  connect-timeout-ms: 10000
+  read-timeout-ms: 10000
+  write-timeout-ms: 10000
+  response-timeout-ms: 10000
+  max-connections: 500
+  max-idle-time-seconds: 20
+  max-life-time-minutes: 5
+  pending-acquire-timeout-seconds: 60
+  evict-background-seconds: 120
+  max-in-memory-size-mb: 16
+  retry-enabled: true
+  max-retries: 3
+  retry-delay-ms: 1000
