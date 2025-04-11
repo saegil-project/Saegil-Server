@@ -25,8 +25,8 @@ public class AudioTranscriptionController {
     private final SpeechToTextService speechToTextService;
 
     @Operation(
-            summary = "Transcribe audio",
-            description = "Transcribe audio file to text",
+            summary = "오디오 변환",
+            description = "오디오 파일을 텍스트로 변환합니다",
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping(value = "/transcribe", consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE)

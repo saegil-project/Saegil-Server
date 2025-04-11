@@ -26,8 +26,8 @@ public class AudioConversationController {
     private final AudioConversationService audioConversationService;
 
     @Operation(
-            summary = "Audio conversation",
-            description = "Process audio and return audio response",
+            summary = "오디오 대화",
+            description = "오디오를 처리하고 오디오 응답을 반환합니다",
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping(
@@ -40,8 +40,8 @@ public class AudioConversationController {
     }
 
     @Operation(
-            summary = "Get last conversation",
-            description = "Retrieve the last conversation",
+            summary = "마지막 대화 가져오기",
+            description = "마지막 대화 내용을 검색합니다",
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping("/last-conversation")
