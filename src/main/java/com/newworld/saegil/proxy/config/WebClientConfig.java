@@ -3,6 +3,8 @@ package com.newworld.saegil.proxy.config;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -24,6 +26,8 @@ import reactor.netty.resources.ConnectionProvider;
 @Configuration
 @RequiredArgsConstructor
 public class WebClientConfig {
+
+    private static final Logger logger = LoggerFactory.getLogger(WebClientConfig.class);
 
     private final ProxyProperties proxyProperties;
 
@@ -97,7 +101,7 @@ public class WebClientConfig {
      */
     private ExchangeFilterFunction logRequest() {
         return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
-            System.out.println("Request: " + clientRequest.method() + " " + clientRequest.url());
+            logger.info("Request: {} {}", clientRequest.method(), clientRequest.url());
             return Mono.just(clientRequest);
         });
     }
@@ -109,7 +113,7 @@ public class WebClientConfig {
      */
     private ExchangeFilterFunction logResponse() {
         return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
-            System.out.println("Response status: " + clientResponse.statusCode());
+            logger.info("Response status: {}", clientResponse.statusCode());
             return Mono.just(clientResponse);
         });
     }
