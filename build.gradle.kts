@@ -40,9 +40,9 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
 
     // Jwt
-    implementation ("io.jsonwebtoken:jjwt-api:$jwtVersion")
-    runtimeOnly ("io.jsonwebtoken:jjwt-impl:$jwtVersion")
-    runtimeOnly ("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
+    implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwtVersion")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
 
     // Testing dependencies
     testImplementation("org.springframework.boot:spring-boot-starter-test")
