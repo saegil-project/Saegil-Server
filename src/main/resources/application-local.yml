@@ -7,6 +7,13 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+        show_sql: true
+        use_sql_comments: true
+    open-in-view: false
   h2:
     console:
       enabled: true
@@ -25,3 +32,9 @@ token:
     refresh-key: ThisIsLocalRefreshKeyThisIsLocalRefreshKey
     access-expired-hours: 1 # 1시간
     refresh-expired-hours: 336  # 14일
+oauth2:
+  kakao:
+    client_id: ${KAKAO_CLIENT_ID}
+    client_secret: ${KAKAO_CLIENT_SECRET}
+    redirect_uri: ${KAKAO_REDIRECT_URI}
+    scope: ${KAKAO_SCOPE}

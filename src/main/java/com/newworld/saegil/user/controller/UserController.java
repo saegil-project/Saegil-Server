@@ -41,8 +41,7 @@ public class UserController {
         return ResponseEntity.ok(new ReadUserResponse(
                 1L,
                 "김주민",
-                "neighbor_kim@naver.com",
-                "https://i.namu.wiki/i/RYsQTAH1KBL6UhqDOp12H5MEk69vd4WroI0bs-hU5ot2HXsvhkf6zjarDYtSXRy4qVJ3b6ogUhsycLcBbyiiqrlajTNKsoPkKj9w1TuRbbqv8glhW9bHLmpxcirJMHue3Qt22jAeAW3bk6eE4AeekQ.svg"
+                "http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg"
         ));
     }
 
