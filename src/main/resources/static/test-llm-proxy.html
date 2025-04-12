@@ -108,6 +108,12 @@
 <body>
 <h1>LLM 프록시 테스트</h1>
 
+<h2>Access Token 입력</h2>
+<div class="form-group">
+    <label for="accessToken">Access Token:</label>
+    <input id="accessToken" placeholder="Access Token을 입력하세요" type="text">
+</div>
+
 <div class="tab-container">
     <div class="tab active" id="ttsTab">텍스트-음성 변환</div>
     <div class="tab" id="sttTab">음성-텍스트 변환</div>
@@ -258,6 +264,10 @@
     });
 
     // 텍스트-음성 변환
+    function getAccessToken() {
+        return document.getElementById('accessToken').value;
+    }
+
     document.getElementById('ttsButton').addEventListener('click', async () => {
         const text = document.getElementById('ttsText').value;
         const statusElement = document.getElementById('ttsStatus');
@@ -274,6 +284,7 @@
             const response = await fetch('/api/v1/llm/text-to-speech', {
                 method: 'POST',
                 headers: {
+                    'Authorization': getAccessToken(),
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({text: text})
@@ -293,8 +304,8 @@
             statusElement.textContent = '오류 발생: ' + error.message;
         }
     });
-
     // URL에서 음성-텍스트 변환
+
     document.getElementById('sttUrlButton').addEventListener('click', async () => {
         const audioUrl = document.getElementById('sttUrl').value;
         const statusElement = document.getElementById('sttUrlStatus');
@@ -311,6 +322,7 @@
             const response = await fetch('/api/v1/llm/speech-to-text/url', {
                 method: 'POST',
                 headers: {
+                    'Authorization': getAccessToken(),
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({audioUrl: audioUrl})
@@ -329,8 +341,8 @@
             statusElement.textContent = '오류 발생: ' + error.message;
         }
     });
-
     // 파일에서 음성-텍스트 변환
+
     document.getElementById('sttFileButton').addEventListener('click', async () => {
         const fileInput = document.getElementById('sttFile');
         const statusElement = document.getElementById('sttFileStatus');
@@ -365,8 +377,8 @@
             statusElement.textContent = '오류 발생: ' + error.message;
         }
     });
-
     // 텍스트로 ChatGPT 응답 받기
+
     document.getElementById('chatgptTextButton').addEventListener('click', async () => {
         const text = document.getElementById('chatgptText').value;
         const statusElement = document.getElementById('chatgptTextStatus');
@@ -383,6 +395,7 @@
             const response = await fetch('/api/v1/llm/chatgpt/text', {
                 method: 'POST',
                 headers: {
+                    'Authorization': getAccessToken(),
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({text: text})
@@ -401,8 +414,8 @@
             statusElement.textContent = '오류 발생: ' + error.message;
         }
     });
-
     // STT 텍스트로 ChatGPT 응답 받기
+
     document.getElementById('chatgptSttButton').addEventListener('click', async () => {
         const audioText = document.getElementById('chatgptSttText').value;
         const statusElement = document.getElementById('chatgptSttStatus');
@@ -419,6 +432,7 @@
             const response = await fetch('/api/v1/llm/chatgpt/stt', {
                 method: 'POST',
                 headers: {
+                    'Authorization': getAccessToken(),
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({audioText: audioText})
@@ -455,6 +469,7 @@
             const response = await fetch('/api/v1/llm/chatgpt/audio-url', {
                 method: 'POST',
                 headers: {
+                    'Authorization': getAccessToken(),
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({audioUrl: audioUrl})
