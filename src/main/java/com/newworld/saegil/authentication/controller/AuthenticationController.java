@@ -1,14 +1,8 @@
 package com.newworld.saegil.authentication.controller;
 
-import com.newworld.saegil.authentication.service.AuthenticationService;
-import com.newworld.saegil.authentication.service.LoginResult;
-import com.newworld.saegil.configuration.SwaggerConfiguration;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import java.net.URI;
+import java.time.LocalDateTime;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +14,17 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.net.URI;
-import java.time.LocalDateTime;
+import com.newworld.saegil.authentication.service.AuthenticationService;
+import com.newworld.saegil.authentication.service.LoginResult;
+import com.newworld.saegil.configuration.SwaggerConfiguration;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/oauth2")
@@ -36,7 +38,8 @@ public class AuthenticationController {
     @Operation(
             summary = "OAuth 2.0 로그인 페이지로 redirect",
             description = """
-                    OAuth 2.0 로그인 페이지로 redirect합니다.\n
+                    OAuth 2.0 로그인 페이지로 redirect합니다.
+                    
                     로그인 이후 redirect 되는 url의 `code` query parameter에 Authorization code가 포함되어 있습니다.
                     """
     )

@@ -8,7 +8,6 @@ plugins {
 
 group = "com.newworld"
 version = "0.0.1-SNAPSHOT"
-val springAiVersion = "1.0.0-M6"
 val jwtVersion = "0.12.6"
 
 java {
@@ -24,9 +23,6 @@ repositories {
 }
 
 dependencies {
-    // Spring AI OpenAI Starter
-    implementation("org.springframework.ai:spring-ai-openai-spring-boot-starter")
-
     // Spring Boot Starters
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
@@ -61,7 +57,7 @@ dependencies {
 
 dependencyManagement {
     imports {
-        mavenBom("org.springframework.ai:spring-ai-bom:$springAiVersion")
+        // Spring AI BOM removed
     }
 }
 
