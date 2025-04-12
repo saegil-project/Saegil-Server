@@ -1,16 +1,5 @@
 package com.newworld.saegil.proxy.controller;
 
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.codec.multipart.FilePart;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.newworld.saegil.configuration.SwaggerConfiguration;
 import com.newworld.saegil.proxy.dto.request.ChatGptAudioUrlRequest;
 import com.newworld.saegil.proxy.dto.request.ChatGptSttRequest;
@@ -20,13 +9,21 @@ import com.newworld.saegil.proxy.dto.request.TextToSpeechRequest;
 import com.newworld.saegil.proxy.dto.response.ChatGptResponse;
 import com.newworld.saegil.proxy.dto.response.SpeechToTextResponse;
 import com.newworld.saegil.proxy.service.LlmProxyService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Mono;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * FastAPI LLM 서버로 요청을 프록시하는 컨트롤러.
@@ -46,13 +43,16 @@ public class LlmProxyController {
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping(value = "/text-to-speech", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public Mono<ResponseEntity<Resource>> textToSpeech(@RequestBody TextToSpeechRequest request) {
+    public ResponseEntity<Resource> textToSpeech(@RequestBody TextToSpeechRequest request) {
         log.info("Received text-to-speech request: {}", request.getText());
-        return llmProxyService.textToSpeech(request)
-                              .map(resource -> ResponseEntity.ok()
-                                                             .header(HttpHeaders.CONTENT_DISPOSITION,
-                                                                     "attachment; filename=\"speech.mp3\"")
-                                                             .body(resource));
+        final Resource responseResource = llmProxyService.textToSpeech(request);
+        if (responseResource == null) {
+            throw new RuntimeException("Failed tts response");
+        }
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"speech.mp3\"")
+                .body(responseResource);
     }
 
     @Operation(
@@ -61,7 +61,7 @@ public class LlmProxyController {
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping("/speech-to-text/url")
-    public Mono<SpeechToTextResponse> speechToTextFromUrl(@RequestBody SpeechToTextUrlRequest request) {
+    public SpeechToTextResponse speechToTextFromUrl(@RequestBody SpeechToTextUrlRequest request) {
         log.info("Received speech-to-text URL request: {}", request.getAudioUrl());
         return llmProxyService.speechToTextFromUrl(request);
     }
@@ -72,9 +72,9 @@ public class LlmProxyController {
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping(value = "/speech-to-text/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<SpeechToTextResponse> speechToTextFromFile(@RequestPart("file") FilePart filePart) {
-        log.info("Received speech-to-text file upload request: {}", filePart.filename());
-        return llmProxyService.speechToTextFromFile(filePart);
+    public SpeechToTextResponse speechToTextFromFile(@RequestPart("file") MultipartFile multipartFile) {
+        log.info("Received speech-to-text file upload request: {}", multipartFile.getOriginalFilename());
+        return llmProxyService.speechToTextFromFile(multipartFile);
     }
 
     @Operation(
@@ -83,7 +83,7 @@ public class LlmProxyController {
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping("/chatgpt/text")
-    public Mono<ChatGptResponse> chatGptFromText(@RequestBody ChatGptTextRequest request) {
+    public ChatGptResponse chatGptFromText(@RequestBody ChatGptTextRequest request) {
         log.info("Received ChatGPT text request: {}", request.getText());
         return llmProxyService.chatGptFromText(request);
     }
@@ -94,7 +94,7 @@ public class LlmProxyController {
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping("/chatgpt/stt")
-    public Mono<ChatGptResponse> chatGptFromStt(@RequestBody ChatGptSttRequest request) {
+    public ChatGptResponse chatGptFromStt(@RequestBody ChatGptSttRequest request) {
         log.info("Received ChatGPT STT request: {}", request.getAudioText());
         return llmProxyService.chatGptFromStt(request);
     }
@@ -105,7 +105,7 @@ public class LlmProxyController {
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping("/chatgpt/audio-url")
-    public Mono<ChatGptResponse> chatGptFromAudioUrl(@RequestBody ChatGptAudioUrlRequest request) {
+    public ChatGptResponse chatGptFromAudioUrl(@RequestBody ChatGptAudioUrlRequest request) {
         log.info("Received ChatGPT audio URL request: {}", request.getAudioUrl());
         return llmProxyService.chatGptFromAudioUrl(request);
     }
@@ -116,8 +116,8 @@ public class LlmProxyController {
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping(value = "/chatgpt/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ChatGptResponse> chatGptFromFile(@RequestPart("file") FilePart filePart) {
-        log.info("Received ChatGPT file upload request: {}", filePart.filename());
-        return llmProxyService.chatGptFromFile(filePart);
+    public ChatGptResponse chatGptFromFile(@RequestPart("file") MultipartFile multipartFile) {
+        log.info("Received ChatGPT file upload request: {}", multipartFile.getOriginalFilename());
+        return llmProxyService.chatGptFromFile(multipartFile);
     }
 }

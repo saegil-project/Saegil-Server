@@ -29,11 +29,13 @@ dependencies {
 
     // Spring Boot Starters
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
+//    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
     // Swagger / OpenAPI for WebFlux
-    implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.2.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")
+//    implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.2.0")
 
     // Lombok for boilerplate code reduction
     compileOnly("org.projectlombok:lombok")
@@ -46,7 +48,6 @@ dependencies {
 
     // Testing dependencies
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     // MySQL 커넥터 의존성 추가

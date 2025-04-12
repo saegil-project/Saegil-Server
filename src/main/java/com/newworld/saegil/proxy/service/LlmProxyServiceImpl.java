@@ -1,15 +1,6 @@
 package com.newworld.saegil.proxy.service;
 
-import java.time.Duration;
-
-import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.MultipartBodyBuilder;
-import org.springframework.http.codec.multipart.FilePart;
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
-
+import com.newworld.saegil.proxy.config.ProxyProperties;
 import com.newworld.saegil.proxy.dto.request.ChatGptAudioUrlRequest;
 import com.newworld.saegil.proxy.dto.request.ChatGptSttRequest;
 import com.newworld.saegil.proxy.dto.request.ChatGptTextRequest;
@@ -17,117 +8,171 @@ import com.newworld.saegil.proxy.dto.request.SpeechToTextUrlRequest;
 import com.newworld.saegil.proxy.dto.request.TextToSpeechRequest;
 import com.newworld.saegil.proxy.dto.response.ChatGptResponse;
 import com.newworld.saegil.proxy.dto.response.SpeechToTextResponse;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
-/**
- * Implementation of the LlmProxyService interface.
- * This service proxies requests to the FastAPI LLM server.
- */
+import java.io.IOException;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class LlmProxyServiceImpl implements LlmProxyService {
 
-    private final WebClient llmServerWebClient;
+    private final RestTemplate restTemplate;
+    private final ProxyProperties proxyProperties;
 
     @Override
-    public Mono<Resource> textToSpeech(TextToSpeechRequest request) {
+    public Resource textToSpeech(TextToSpeechRequest request) {
         log.info("Converting text to speech: {}", request.getText());
-        return llmServerWebClient.post()
-                                 .uri("/text-to-speech/")
-                                 .contentType(MediaType.APPLICATION_JSON)
-                                 .body(BodyInserters.fromValue(request))
-                                 .retrieve()
-                                 .bodyToMono(Resource.class)
-                                 .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(1)))
-                                 .doOnError(e -> log.error("Error converting text to speech", e));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<TextToSpeechRequest> requestEntity = new HttpEntity<>(request, headers);
+
+        ResponseEntity<Resource> response = restTemplate.exchange(
+                proxyProperties.getLlmServerUrl() + "/text-to-speech/",
+                HttpMethod.POST,
+                requestEntity,
+                Resource.class
+        );
+        return response.getBody();
     }
 
     @Override
-    public Mono<SpeechToTextResponse> speechToTextFromUrl(SpeechToTextUrlRequest request) {
+    public SpeechToTextResponse speechToTextFromUrl(SpeechToTextUrlRequest request) {
         log.info("Converting speech to text from URL: {}", request.getAudioUrl());
-        return llmServerWebClient.post()
-                                 .uri("/speech-to-text/")
-                                 .contentType(MediaType.APPLICATION_JSON)
-                                 .body(BodyInserters.fromValue(request))
-                                 .retrieve()
-                                 .bodyToMono(SpeechToTextResponse.class)
-                                 .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(1)))
-                                 .doOnError(e -> log.error("Error converting speech to text from URL", e));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<SpeechToTextUrlRequest> requestEntity = new HttpEntity<>(request, headers);
+
+        ResponseEntity<SpeechToTextResponse> response = restTemplate.exchange(
+                proxyProperties.getLlmServerUrl() + "/speech-to-text/",
+                HttpMethod.POST,
+                requestEntity,
+                SpeechToTextResponse.class
+        );
+
+        return response.getBody();
     }
 
     @Override
-    public Mono<SpeechToTextResponse> speechToTextFromFile(FilePart filePart) {
-        log.info("Converting speech to text from file: {}", filePart.filename());
-        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
-        bodyBuilder.part("file", filePart);
+    public SpeechToTextResponse speechToTextFromFile(MultipartFile multipartFile) {
+        log.info("Converting speech to text from file: {}", multipartFile.getOriginalFilename());
 
-        return llmServerWebClient.post()
-                                 .uri("/speech-to-text/upload")
-                                 .contentType(MediaType.MULTIPART_FORM_DATA)
-                                 .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
-                                 .retrieve()
-                                 .bodyToMono(SpeechToTextResponse.class)
-                                 .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(1)))
-                                 .doOnError(e -> log.error("Error converting speech to text from file", e));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        final MultipartInputStreamFileResource multipartInputStreamFileResource;
+        try {
+            multipartInputStreamFileResource = new MultipartInputStreamFileResource(multipartFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        body.add("file", multipartInputStreamFileResource);
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<SpeechToTextResponse> response = restTemplate.exchange(
+                proxyProperties.getLlmServerUrl() + "/speech-to-text/upload",
+                HttpMethod.POST,
+                requestEntity,
+                SpeechToTextResponse.class
+        );
+
+        return response.getBody();
     }
 
     @Override
-    public Mono<ChatGptResponse> chatGptFromText(ChatGptTextRequest request) {
+    public ChatGptResponse chatGptFromText(ChatGptTextRequest request) {
         log.info("Getting ChatGPT response from text: {}", request.getText());
-        return llmServerWebClient.post()
-                                 .uri("/chatgpt/")
-                                 .contentType(MediaType.APPLICATION_JSON)
-                                 .body(BodyInserters.fromValue(request))
-                                 .retrieve()
-                                 .bodyToMono(ChatGptResponse.class)
-                                 .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(1)))
-                                 .doOnError(e -> log.error("Error getting ChatGPT response from text", e));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<ChatGptTextRequest> entity = new HttpEntity<>(request, headers);
+
+        ResponseEntity<ChatGptResponse> response = restTemplate.exchange(
+                proxyProperties.getLlmServerUrl() + "/chatgpt/",
+                HttpMethod.POST,
+                entity,
+                ChatGptResponse.class
+        );
+
+        return response.getBody();
     }
 
     @Override
-    public Mono<ChatGptResponse> chatGptFromStt(ChatGptSttRequest request) {
+    public ChatGptResponse chatGptFromStt(ChatGptSttRequest request) {
         log.info("Getting ChatGPT response from STT text: {}", request.getAudioText());
-        return llmServerWebClient.post()
-                                 .uri("/chatgpt/stt")
-                                 .contentType(MediaType.APPLICATION_JSON)
-                                 .body(BodyInserters.fromValue(request))
-                                 .retrieve()
-                                 .bodyToMono(ChatGptResponse.class)
-                                 .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(1)))
-                                 .doOnError(e -> log.error("Error getting ChatGPT response from STT text", e));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<ChatGptSttRequest> entity = new HttpEntity<>(request, headers);
+
+        ResponseEntity<ChatGptResponse> response = restTemplate.exchange(
+                proxyProperties.getLlmServerUrl() + "/chatgpt/stt",
+                HttpMethod.POST,
+                entity,
+                ChatGptResponse.class
+        );
+
+        return response.getBody();
     }
 
     @Override
-    public Mono<ChatGptResponse> chatGptFromAudioUrl(ChatGptAudioUrlRequest request) {
+    public ChatGptResponse chatGptFromAudioUrl(ChatGptAudioUrlRequest request) {
         log.info("Getting ChatGPT response from audio URL: {}", request.getAudioUrl());
-        return llmServerWebClient.post()
-                                 .uri("/chatgpt/audio")
-                                 .contentType(MediaType.APPLICATION_JSON)
-                                 .body(BodyInserters.fromValue(request))
-                                 .retrieve()
-                                 .bodyToMono(ChatGptResponse.class)
-                                 .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(1)))
-                                 .doOnError(e -> log.error("Error getting ChatGPT response from audio URL", e));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<ChatGptAudioUrlRequest> entity = new HttpEntity<>(request, headers);
+
+        ResponseEntity<ChatGptResponse> response = restTemplate.exchange(
+                proxyProperties.getLlmServerUrl() + "/chatgpt/audio",
+                HttpMethod.POST,
+                entity,
+                ChatGptResponse.class
+        );
+
+        return response.getBody();
     }
 
     @Override
-    public Mono<ChatGptResponse> chatGptFromFile(FilePart filePart) {
-        log.info("Getting ChatGPT response from audio file: {}", filePart.filename());
-        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
-        bodyBuilder.part("file", filePart);
+    public ChatGptResponse chatGptFromFile(MultipartFile multipartFile) {
+        log.info("Getting ChatGPT response from audio file: {}", multipartFile.getOriginalFilename());
 
-        return llmServerWebClient.post()
-                                 .uri("/chatgpt/upload")
-                                 .contentType(MediaType.MULTIPART_FORM_DATA)
-                                 .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
-                                 .retrieve()
-                                 .bodyToMono(ChatGptResponse.class)
-                                 .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(1)))
-                                 .doOnError(e -> log.error("Error getting ChatGPT response from audio file", e));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        final MultipartInputStreamFileResource multipartInputStreamFileResource;
+        try {
+            multipartInputStreamFileResource = new MultipartInputStreamFileResource(multipartFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        body.add("file", multipartInputStreamFileResource);
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<ChatGptResponse> response = restTemplate.exchange(
+                proxyProperties.getLlmServerUrl() + "/chatgpt/upload",
+                HttpMethod.POST,
+                requestEntity,
+                ChatGptResponse.class
+        );
+
+        return response.getBody();
     }
 }
