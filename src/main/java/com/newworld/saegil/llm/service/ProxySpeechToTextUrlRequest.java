@@ -1,10 +1,10 @@
-package com.newworld.saegil.proxy.service;
+package com.newworld.saegil.llm.service;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record ProxyChatGptTextRequest(
-        String text
+public record ProxySpeechToTextUrlRequest(
+        String audioUrl
 ) {
 }

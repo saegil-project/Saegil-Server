@@ -1,10 +1,10 @@
-package com.newworld.saegil.proxy.service;
+package com.newworld.saegil.llm.service;
 
-import com.newworld.saegil.proxy.controller.ChatGptAudioUrlRequest;
-import com.newworld.saegil.proxy.controller.ChatGptSttRequest;
-import com.newworld.saegil.proxy.controller.ChatGptTextRequest;
-import com.newworld.saegil.proxy.controller.SpeechToTextUrlRequest;
-import com.newworld.saegil.proxy.controller.TextToSpeechRequest;
+import com.newworld.saegil.llm.controller.ChatGptAudioUrlRequest;
+import com.newworld.saegil.llm.controller.ChatGptSttRequest;
+import com.newworld.saegil.llm.controller.ChatGptTextRequest;
+import com.newworld.saegil.llm.controller.SpeechToTextUrlRequest;
+import com.newworld.saegil.llm.controller.TextToSpeechRequest;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 

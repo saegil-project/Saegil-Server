@@ -1,4 +1,4 @@
-package com.newworld.saegil.proxy.config;
+package com.newworld.saegil.llm.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

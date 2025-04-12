@@ -1,4 +1,4 @@
-package com.newworld.saegil.proxy.service;
+package com.newworld.saegil.llm.service;
 
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;

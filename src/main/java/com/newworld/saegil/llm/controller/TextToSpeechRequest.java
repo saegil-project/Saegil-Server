@@ -1,4 +1,4 @@
-package com.newworld.saegil.proxy.controller;
+package com.newworld.saegil.llm.controller;
 
 public record TextToSpeechRequest(
         String text

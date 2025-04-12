@@ -1,14 +1,7 @@
-package com.newworld.saegil.proxy.controller;
+package com.newworld.saegil.llm.controller;
 
 import com.newworld.saegil.configuration.SwaggerConfiguration;
-import com.newworld.saegil.proxy.service.ProxyChatGptAudioUrlRequest;
-import com.newworld.saegil.proxy.service.ProxyChatGptSttRequest;
-import com.newworld.saegil.proxy.service.ProxyChatGptTextRequest;
-import com.newworld.saegil.proxy.service.ProxySpeechToTextUrlRequest;
-import com.newworld.saegil.proxy.service.ProxyTextToSpeechRequest;
-import com.newworld.saegil.proxy.service.ProxyChatGptResponse;
-import com.newworld.saegil.proxy.service.ProxySpeechToTextResponse;
-import com.newworld.saegil.proxy.service.LlmService;
+import com.newworld.saegil.llm.service.LlmService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
