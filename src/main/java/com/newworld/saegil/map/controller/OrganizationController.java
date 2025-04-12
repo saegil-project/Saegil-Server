@@ -1,5 +1,6 @@
 package com.newworld.saegil.map.controller;
 
+import com.newworld.saegil.global.swagger.ApiResponseCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,7 +25,7 @@ public class OrganizationController {
             summary = "근처 기관 조회",
             description = "사용자의 현재 위치와 반경을 기준으로 주변 기관을 조회합니다."
     )
-    @ApiResponse(responseCode = "200", description = "근처 기관 조회 성공")
+    @ApiResponse(responseCode = ApiResponseCode.OK, description = "근처 기관 조회 성공")
     public ResponseEntity<List<ReadOrganizationResponse>> getNearbyOrganizations(
             @Parameter(description = "현재 위도", example = "37.5326")
             @RequestParam double latitude,

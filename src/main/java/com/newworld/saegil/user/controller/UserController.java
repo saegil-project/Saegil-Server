@@ -1,6 +1,7 @@
 package com.newworld.saegil.user.controller;
 
 import com.newworld.saegil.configuration.SwaggerConfiguration;
+import com.newworld.saegil.global.swagger.ApiResponseCode;
 import com.newworld.saegil.user.service.UserDto;
 import com.newworld.saegil.user.service.UserService;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -32,12 +33,12 @@ public class UserController {
             description = "access token을 통해 유저 본인 정보를 조회합니다.",
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
-    @ApiResponse(responseCode = "200", description = "유저 본인 정보 조회 성공")
+    @ApiResponse(responseCode = ApiResponseCode.OK, description = "유저 본인 정보 조회 성공")
     public ResponseEntity<ReadUserResponse> readUserInfo(
             @Parameter(description = "Bearer {accessToken}", required = true)
             @RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken
     ) {
-        // TODO: 유저 정보 조회 기능 개발 후 삭제
+        // TODO: 유저 본인 정보 조회 기능 개발 후 삭제
         return ResponseEntity.ok(new ReadUserResponse(
                 1L,
                 "김주민",
@@ -45,6 +46,7 @@ public class UserController {
         ));
     }
 
+    // TODO: 유저 본인 정보 조회 기능 개발 후 삭제
     @Hidden
     @GetMapping("/{id}")
     public ResponseEntity<ReadUserResponse> readById(@PathVariable final Long id) {
