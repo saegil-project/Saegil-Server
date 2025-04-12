@@ -271,7 +271,7 @@
         statusElement.textContent = '변환 중...';
 
         try {
-            const response = await fetch('/api/llm/text-to-speech', {
+            const response = await fetch('/api/v1/llm/text-to-speech', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -308,7 +308,7 @@
         statusElement.textContent = '변환 중...';
 
         try {
-            const response = await fetch('/api/llm/speech-to-text/url', {
+            const response = await fetch('/api/v1/llm/speech-to-text/url', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -347,7 +347,7 @@
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
 
-            const response = await fetch('/api/llm/speech-to-text/upload', {
+            const response = await fetch('/api/v1/llm/speech-to-text/upload', {
                 method: 'POST',
                 body: formData
             });
@@ -380,7 +380,7 @@
         statusElement.textContent = '응답 받는 중...';
 
         try {
-            const response = await fetch('/api/llm/chatgpt/text', {
+            const response = await fetch('/api/v1/llm/chatgpt/text', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -416,7 +416,7 @@
         statusElement.textContent = '응답 받는 중...';
 
         try {
-            const response = await fetch('/api/llm/chatgpt/stt', {
+            const response = await fetch('/api/v1/llm/chatgpt/stt', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -452,7 +452,7 @@
         statusElement.textContent = '응답 받는 중...';
 
         try {
-            const response = await fetch('/api/llm/chatgpt/audio-url', {
+            const response = await fetch('/api/v1/llm/chatgpt/audio-url', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -491,7 +491,7 @@
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
 
-            const response = await fetch('/api/llm/chatgpt/upload', {
+            const response = await fetch('/api/v1/llm/chatgpt/upload', {
                 method: 'POST',
                 body: formData
             });

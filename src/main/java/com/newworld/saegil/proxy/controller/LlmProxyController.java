@@ -33,7 +33,7 @@ import reactor.core.publisher.Mono;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/llm")
+@RequestMapping("/api/v1/llm")
 @RequiredArgsConstructor
 @Tag(name = "LLM 프록시", description = "FastAPI LLM 서버로 요청을 프록시하는 엔드포인트")
 public class LlmProxyController {
