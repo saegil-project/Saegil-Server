@@ -61,4 +61,8 @@ public class Notice {
         }
         return this.date.isBefore(lastDate);
     }
+
+    public boolean hasSameTitle(final Notice other) {
+        return this.title.equals(other.title);
+    }
 }
