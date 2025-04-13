@@ -3,6 +3,7 @@ package com.newworld.saegil.authentication.controller;
 import com.newworld.saegil.authentication.domain.TokenType;
 import com.newworld.saegil.authentication.service.AuthenticationService;
 import com.newworld.saegil.authentication.service.LoginResult;
+import com.newworld.saegil.authentication.service.TokenRefreshResult;
 import com.newworld.saegil.configuration.SwaggerConfiguration;
 import com.newworld.saegil.global.swagger.ApiResponseCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -118,7 +119,10 @@ public class AuthenticationController {
     public ResponseEntity<TokenRefreshResponse> refreshToken(
             @RequestBody @Valid final TokenRefreshRequest request
     ) {
-        return null;
+        final TokenRefreshResult result = authenticationService.refreshToken(LocalDateTime.now(), request.refreshToken());
+        final TokenRefreshResponse response = TokenRefreshResponse.from(result);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/withdrawal")

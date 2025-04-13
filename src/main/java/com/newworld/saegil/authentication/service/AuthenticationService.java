@@ -118,4 +118,18 @@ public class AuthenticationService {
         return userRepository.existsById(privateClaims.userId()) &&
                 !blacklistTokenRepository.existsByUserIdAndToken(privateClaims.userId(), targetToken);
     }
+
+    public TokenRefreshResult refreshToken(final LocalDateTime requestTime, final String refreshToken) {
+        final PrivateClaims privateClaims = getValidPrivateClaims(TokenType.REFRESH, refreshToken);
+        final Token token = tokenProcessor.generateToken(requestTime, privateClaims.toMap());
+
+        final BlacklistToken blacklistRefreshToken = new BlacklistToken(
+                privateClaims.userId(),
+                TokenType.REFRESH,
+                refreshToken
+        );
+        blacklistTokenRepository.save(blacklistRefreshToken);
+
+        return new TokenRefreshResult(token.accessToken(), token.refreshToken());
+    }
 }

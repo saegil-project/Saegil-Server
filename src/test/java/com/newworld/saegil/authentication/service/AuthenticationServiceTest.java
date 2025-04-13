@@ -317,4 +317,58 @@ class AuthenticationServiceTest {
             }
         }
     }
+
+    @Nested
+    @DisplayName("리프레시 토큰으로 토큰을 갱신할 때")
+    class Describe_refreshToken {
+
+        @Nested
+        @DisplayName("유효한 리프레시 토큰이 주어지면")
+        class Context_with_valid_refresh_token {
+
+            @Test
+            void 새로운_액세스_토큰과_리프레시_토큰을_발급한다() {
+                // given
+                final User user = new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO);
+                userRepository.save(user);
+                final LocalDateTime 갱신요청시간 = LocalDateTime.now();
+                final LocalDateTime 갱신요청_10분전 = 갱신요청시간.minusMinutes(10L);
+                final Token token = tokenProcessor.generateToken(갱신요청_10분전, new PrivateClaims(user.getId()).toMap());
+                entityManager.flush();
+                entityManager.clear();
+
+                // when
+                final TokenRefreshResult actual = authenticationService.refreshToken(갱신요청시간, token.refreshToken());
+
+                // then
+                SoftAssertions.assertSoftly(softAssertions -> {
+                    softAssertions.assertThat(actual.accessToken()).startsWith("Bearer ");
+                    softAssertions.assertThat(actual.accessToken()).isNotEqualTo(token.accessToken());
+                    softAssertions.assertThat(actual.refreshToken()).startsWith("Bearer ");
+                    softAssertions.assertThat(actual.refreshToken()).isNotEqualTo(token.refreshToken());
+                });
+            }
+        }
+
+        @Test
+        void 토큰_갱신에_사용한_refreshToken은_블랙리스트에_등록된다() {
+            // given
+            final User user = new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO);
+            userRepository.save(user);
+            final Token token = tokenProcessor.generateToken(LocalDateTime.now(), new PrivateClaims(user.getId()).toMap());
+            entityManager.flush();
+            entityManager.clear();
+
+            // when
+            authenticationService.refreshToken(LocalDateTime.now(), token.refreshToken());
+            entityManager.flush();
+            entityManager.clear();
+
+            // then
+            final boolean isBlacklisted =
+                    blacklistTokenRepository.existsByUserIdAndToken(user.getId(), token.refreshToken());
+
+            assertThat(isBlacklisted).isTrue();
+        }
+    }
 }
