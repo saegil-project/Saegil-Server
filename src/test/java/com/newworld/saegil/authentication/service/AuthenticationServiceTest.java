@@ -1,5 +1,7 @@
 package com.newworld.saegil.authentication.service;
 
+import com.newworld.saegil.authentication.domain.BlacklistToken;
+import com.newworld.saegil.authentication.domain.InvalidTokenException;
 import com.newworld.saegil.authentication.domain.OAuth2Handler;
 import com.newworld.saegil.authentication.domain.OAuth2HandlerComposite;
 import com.newworld.saegil.authentication.domain.OAuth2Type;
@@ -7,6 +9,7 @@ import com.newworld.saegil.authentication.domain.OAuth2UserInfo;
 import com.newworld.saegil.authentication.domain.PrivateClaims;
 import com.newworld.saegil.authentication.domain.Token;
 import com.newworld.saegil.authentication.domain.TokenProcessor;
+import com.newworld.saegil.authentication.domain.TokenType;
 import com.newworld.saegil.authentication.repository.BlacklistTokenRepository;
 import com.newworld.saegil.user.domain.User;
 import com.newworld.saegil.user.repository.UserRepository;
@@ -25,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -116,6 +120,7 @@ class AuthenticationServiceTest {
                 // given
                 given(mockOAuth2Handler.getOAuth2AccessToken(카카오_인증_코드)).willReturn(카카오_액세스_토큰);
                 given(mockOAuth2Handler.getUserInfo(카카오_액세스_토큰)).willReturn(OAUTH2_회원_정보);
+                final long userCountBeforeSignup = userRepository.count();
 
                 // when
                 final LoginResult result = authenticationService.login("KAKAO", 카카오_인증_코드, LocalDateTime.now());
@@ -123,12 +128,81 @@ class AuthenticationServiceTest {
                 entityManager.clear();
 
                 // then
-                final User savedUser = userRepository.findById(1L).get();
+                final long userCountAfterSignup = userRepository.count();
 
-                SoftAssertions.assertSoftly(softly -> {
-                    softly.assertThat(result.id()).isEqualTo(savedUser.getId());
-                    softly.assertThat(result.accessToken()).startsWith(SERVICE_TOKEN_PREFIX);
-                    softly.assertThat(result.refreshToken()).startsWith(SERVICE_TOKEN_PREFIX);
+                SoftAssertions.assertSoftly(softAssertions -> {
+                    softAssertions.assertThat(userCountAfterSignup > userCountBeforeSignup).isTrue();
+                    softAssertions.assertThat(result.accessToken()).startsWith(SERVICE_TOKEN_PREFIX);
+                    softAssertions.assertThat(result.refreshToken()).startsWith(SERVICE_TOKEN_PREFIX);
+                });
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("유효한 PrivateClaims를 가져올 때")
+    class Describe_get_valid_private_claims {
+
+        @Nested
+        @DisplayName("유효한 토큰이 주어지면")
+        class Context_with_valid_token {
+
+            @Test
+            void PrivateClaims를_반환한다() {
+                // given
+                final User user = new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO);
+                userRepository.save(user);
+                final Token token = tokenProcessor.generateToken(LocalDateTime.now(), new PrivateClaims(user.getId()).toMap());
+
+                // when
+                final PrivateClaims privateClaims = authenticationService.getValidPrivateClaims(TokenType.ACCESS, token.accessToken());
+
+                // then
+                assertThat(privateClaims.userId()).isEqualTo(user.getId());
+            }
+        }
+
+        @Nested
+        @DisplayName("유효하지 않은 토큰 즉")
+        class Context_with_invalid_token {
+
+            @Test
+            void 존재하지_않는_유저의_토큰이면_예외가_발생한다() {
+                // given
+                final Token token = tokenProcessor.generateToken(LocalDateTime.now(), new PrivateClaims(-999L).toMap());
+
+                // when & then
+                SoftAssertions.assertSoftly(softAssertions -> {
+                    softAssertions.assertThatThrownBy(() -> authenticationService.getValidPrivateClaims(TokenType.ACCESS, token.accessToken()))
+                                  .isInstanceOf(NoSuchUserException.class)
+                                  .hasMessage("존재하지 않는 유저의 토큰입니다.");
+
+                    softAssertions.assertThatThrownBy(() -> authenticationService.getValidPrivateClaims(TokenType.REFRESH, token.refreshToken()))
+                                  .isInstanceOf(NoSuchUserException.class)
+                                  .hasMessage("존재하지 않는 유저의 토큰입니다.");
+                });
+            }
+
+            @Test
+            void 로그아웃된_토큰이면_예외가_발생한다() {
+                // given
+                final User user = new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO);
+                userRepository.save(user);
+                final Token token = tokenProcessor.generateToken(LocalDateTime.now(), new PrivateClaims(user.getId()).toMap());
+                blacklistTokenRepository.save(new BlacklistToken(user.getId(), TokenType.ACCESS, token.accessToken()));
+                blacklistTokenRepository.save(new BlacklistToken(user.getId(), TokenType.REFRESH, token.refreshToken()));
+
+                entityManager.flush();
+                entityManager.clear();
+
+                // when & then
+                SoftAssertions.assertSoftly(softAssertions -> {
+                    softAssertions.assertThatThrownBy(() -> authenticationService.getValidPrivateClaims(TokenType.ACCESS, token.accessToken()))
+                                  .isInstanceOf(InvalidTokenException.class)
+                                  .hasMessage("로그아웃되었습니다.");
+                    softAssertions.assertThatThrownBy(() -> authenticationService.getValidPrivateClaims(TokenType.REFRESH, token.refreshToken()))
+                                  .isInstanceOf(InvalidTokenException.class)
+                                  .hasMessage("로그아웃되었습니다.");
                 });
             }
         }

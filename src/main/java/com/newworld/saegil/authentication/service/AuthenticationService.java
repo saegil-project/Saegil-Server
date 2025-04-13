@@ -83,6 +83,9 @@ public class AuthenticationService {
         if (!userRepository.existsById(userId)) {
             throw new NoSuchUserException("존재하지 않는 유저의 토큰입니다.");
         }
+        if (blacklistTokenRepository.existsByUserIdAndToken(userId, token)) {
+            throw new InvalidTokenException("로그아웃되었습니다.");
+        }
 
         return privateClaims;
     }
