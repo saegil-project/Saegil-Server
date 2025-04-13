@@ -86,7 +86,10 @@ public class AuthenticationController {
             @RequestHeader(HttpHeaders.AUTHORIZATION) final String accessToken,
             @RequestBody @Valid final LogoutRequest request
     ) {
-        return null;
+        authenticationService.logout(accessToken, request.refreshToken());
+
+        return ResponseEntity.noContent()
+                             .build();
     }
 
     @GetMapping("/validate-token")

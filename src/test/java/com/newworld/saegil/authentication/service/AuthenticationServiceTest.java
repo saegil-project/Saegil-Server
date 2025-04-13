@@ -4,6 +4,10 @@ import com.newworld.saegil.authentication.domain.OAuth2Handler;
 import com.newworld.saegil.authentication.domain.OAuth2HandlerComposite;
 import com.newworld.saegil.authentication.domain.OAuth2Type;
 import com.newworld.saegil.authentication.domain.OAuth2UserInfo;
+import com.newworld.saegil.authentication.domain.PrivateClaims;
+import com.newworld.saegil.authentication.domain.Token;
+import com.newworld.saegil.authentication.domain.TokenProcessor;
+import com.newworld.saegil.authentication.repository.BlacklistTokenRepository;
 import com.newworld.saegil.user.domain.User;
 import com.newworld.saegil.user.repository.UserRepository;
 import jakarta.persistence.EntityManager;
@@ -35,6 +39,12 @@ class AuthenticationServiceTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private BlacklistTokenRepository blacklistTokenRepository;
+
+    @Autowired
+    private TokenProcessor tokenProcessor;
 
     @MockitoBean
     private OAuth2HandlerComposite oauth2HandlerComposite;
@@ -119,6 +129,35 @@ class AuthenticationServiceTest {
                     softly.assertThat(result.id()).isEqualTo(savedUser.getId());
                     softly.assertThat(result.accessToken()).startsWith(SERVICE_TOKEN_PREFIX);
                     softly.assertThat(result.refreshToken()).startsWith(SERVICE_TOKEN_PREFIX);
+                });
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("로그아웃 할 때")
+    class Describe_logout {
+
+        @Nested
+        @DisplayName("유효한 토큰이 주어지면")
+        class Context_with_valid_token {
+
+            @Test
+            void 토큰이_블랙리스트_토큰_목록에_등록된다() {
+                // given
+                final User user = new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO);
+                userRepository.save(user);
+                final Token token = tokenProcessor.generateToken(LocalDateTime.now(), new PrivateClaims(user.getId()).toMap());
+
+                // when
+                authenticationService.logout(token.accessToken(), token.refreshToken());
+                entityManager.flush();
+                entityManager.clear();
+
+                // then
+                SoftAssertions.assertSoftly(softAssertions -> {
+                    softAssertions.assertThat(blacklistTokenRepository.existsByUserIdAndToken(user.getId(), token.accessToken())).isTrue();
+                    softAssertions.assertThat(blacklistTokenRepository.existsByUserIdAndToken(user.getId(), token.refreshToken())).isTrue();
                 });
             }
         }
