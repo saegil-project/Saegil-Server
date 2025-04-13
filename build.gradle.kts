@@ -52,6 +52,9 @@ dependencies {
 
     // AssertJ 의존성 추가
     testImplementation("org.assertj:assertj-core:4.0.0-M1")
+
+    // Jsoup 의존성 추가
+    implementation("org.jsoup:jsoup:1.19.1")
 }
 
 tasks.withType<Test> {
