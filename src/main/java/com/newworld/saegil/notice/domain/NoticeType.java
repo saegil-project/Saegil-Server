@@ -78,6 +78,22 @@ public enum NoticeType {
             "https://www.koreahana.or.kr/home/kor/board.do?menuPos=59&pageIndex=",
             "https://www.koreahana.or.kr/home/kor/board.do?menuPos=59&act=detail&idx="
     ),
+    UNIKOREA_NOTICE(
+            2,
+            "통일부",
+            "공지사항",
+            "https://www.unikorea.go.kr/unikorea/notify/notice/",
+            "https://www.unikorea.go.kr/unikorea/notify/notice/?mode=list&pageIdx=",
+            "https://www.unikorea.go.kr/unikorea/notify/notice/?mode=view&cntId="
+    ),
+    UNIKOREA_RECRUIT(
+            2,
+            "통일부",
+            "채용공고",
+            "https://www.unikorea.go.kr/unikorea/notify/recruit/",
+            "https://www.unikorea.go.kr/unikorea/notify/recruit/?mode=list&pageIdx=",
+            "https://www.unikorea.go.kr/unikorea/notify/recruit/?mode=view&cntId="
+    ),
     ;
 
     private final int sourceId;
