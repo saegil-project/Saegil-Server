@@ -18,6 +18,9 @@ spring:
     console:
       enabled: true
       path: /h2-console
+  task:
+    notice_scheduler:
+      enabled: false
 server:
   port: 8080
 springdoc:
