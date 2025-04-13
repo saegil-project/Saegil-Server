@@ -44,3 +44,6 @@ out/
 
 ### MP3 Files ###
 *.mp3
+
+### Junie ###
+.junie/
