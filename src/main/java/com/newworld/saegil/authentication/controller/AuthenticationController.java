@@ -1,7 +1,9 @@
 package com.newworld.saegil.authentication.controller;
 
+import com.newworld.saegil.authentication.domain.TokenType;
 import com.newworld.saegil.authentication.service.AuthenticationService;
 import com.newworld.saegil.authentication.service.LoginResult;
+import com.newworld.saegil.authentication.service.TokenRefreshResult;
 import com.newworld.saegil.configuration.SwaggerConfiguration;
 import com.newworld.saegil.global.swagger.ApiResponseCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -86,7 +88,10 @@ public class AuthenticationController {
             @RequestHeader(HttpHeaders.AUTHORIZATION) final String accessToken,
             @RequestBody @Valid final LogoutRequest request
     ) {
-        return null;
+        authenticationService.logout(accessToken, request.refreshToken());
+
+        return ResponseEntity.noContent()
+                             .build();
     }
 
     @GetMapping("/validate-token")
@@ -99,7 +104,10 @@ public class AuthenticationController {
     public ResponseEntity<ValidateTokenResponse> validateToken(
             @RequestHeader(HttpHeaders.AUTHORIZATION) final String accessToken
     ) {
-        return null;
+        final boolean validated = authenticationService.isValidToken(TokenType.ACCESS, accessToken);
+        final ValidateTokenResponse response = new ValidateTokenResponse(validated);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/refresh-token")
@@ -111,7 +119,10 @@ public class AuthenticationController {
     public ResponseEntity<TokenRefreshResponse> refreshToken(
             @RequestBody @Valid final TokenRefreshRequest request
     ) {
-        return null;
+        final TokenRefreshResult result = authenticationService.refreshToken(LocalDateTime.now(), request.refreshToken());
+        final TokenRefreshResponse response = TokenRefreshResponse.from(result);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/withdrawal")
