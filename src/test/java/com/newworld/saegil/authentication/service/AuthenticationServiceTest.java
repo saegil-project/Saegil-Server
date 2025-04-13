@@ -234,6 +234,87 @@ class AuthenticationServiceTest {
                     softAssertions.assertThat(blacklistTokenRepository.existsByUserIdAndToken(user.getId(), token.refreshToken())).isTrue();
                 });
             }
+
+            @Test
+            void 로그아웃에_사용된_토큰은_더이상_유효하지_않다() {
+                // given
+                final User user = new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO);
+                userRepository.save(user);
+                final Token token = tokenProcessor.generateToken(LocalDateTime.now(), new PrivateClaims(user.getId()).toMap());
+
+                // when
+                authenticationService.logout(token.accessToken(), token.refreshToken());
+                entityManager.flush();
+                entityManager.clear();
+
+                // then
+                SoftAssertions.assertSoftly(softAssertions -> {
+                    softAssertions.assertThat(authenticationService.isValidToken(TokenType.ACCESS, token.accessToken())).isFalse();
+                    softAssertions.assertThat(authenticationService.isValidToken(TokenType.REFRESH, token.refreshToken())).isFalse();
+                });
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("토큰 유효성 검사 시")
+    class Describe_validate_token {
+
+        @Nested
+        @DisplayName("유효한 토큰이 주어지면")
+        class Context_with_valid_token {
+
+            @Test
+            void true를_반환한다() {
+                // given
+                final User user = new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO);
+                userRepository.save(user);
+                final Token token = tokenProcessor.generateToken(LocalDateTime.now(), new PrivateClaims(user.getId()).toMap());
+                entityManager.flush();
+                entityManager.clear();
+
+                // when
+                final boolean actual = authenticationService.isValidToken(TokenType.ACCESS, token.accessToken());
+
+                // then
+                assertThat(actual).isTrue();
+            }
+        }
+
+        @Nested
+        @DisplayName("유효하지 않은 토큰 즉")
+        class Context_with_invalid_token {
+
+            @Test
+            void 존재하지_않는_유저의_토큰이면_false를_반환한다() {
+                // given
+                final Token token = tokenProcessor.generateToken(LocalDateTime.now(), new PrivateClaims(-999L).toMap());
+
+                // when
+                final boolean actual = authenticationService.isValidToken(TokenType.ACCESS, token.accessToken());
+
+                // then
+                assertThat(actual).isFalse();
+            }
+
+            @Test
+            void 로그아웃된_토큰이면_false를_반환한다() {
+                // given
+                final User user = new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO);
+                userRepository.save(user);
+                final Token token = tokenProcessor.generateToken(LocalDateTime.now(), new PrivateClaims(user.getId()).toMap());
+                blacklistTokenRepository.save(new BlacklistToken(user.getId(), TokenType.ACCESS, token.accessToken()));
+                blacklistTokenRepository.save(new BlacklistToken(user.getId(), TokenType.REFRESH, token.refreshToken()));
+
+                entityManager.flush();
+                entityManager.clear();
+
+                // when
+                final boolean actual = authenticationService.isValidToken(TokenType.ACCESS, token.accessToken());
+
+                // then
+                assertThat(actual).isFalse();
+            }
         }
     }
 }

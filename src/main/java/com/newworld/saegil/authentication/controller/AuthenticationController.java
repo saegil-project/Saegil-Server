@@ -1,5 +1,6 @@
 package com.newworld.saegil.authentication.controller;
 
+import com.newworld.saegil.authentication.domain.TokenType;
 import com.newworld.saegil.authentication.service.AuthenticationService;
 import com.newworld.saegil.authentication.service.LoginResult;
 import com.newworld.saegil.configuration.SwaggerConfiguration;
@@ -102,7 +103,10 @@ public class AuthenticationController {
     public ResponseEntity<ValidateTokenResponse> validateToken(
             @RequestHeader(HttpHeaders.AUTHORIZATION) final String accessToken
     ) {
-        return null;
+        final boolean validated = authenticationService.isValidToken(TokenType.ACCESS, accessToken);
+        final ValidateTokenResponse response = new ValidateTokenResponse(validated);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/refresh-token")
