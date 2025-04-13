@@ -1,5 +1,6 @@
 package com.newworld.saegil.authentication.service;
 
+import com.newworld.saegil.authentication.domain.InvalidTokenException;
 import com.newworld.saegil.authentication.domain.OAuth2Handler;
 import com.newworld.saegil.authentication.domain.OAuth2HandlerComposite;
 import com.newworld.saegil.authentication.domain.OAuth2Type;
@@ -7,8 +8,10 @@ import com.newworld.saegil.authentication.domain.OAuth2UserInfo;
 import com.newworld.saegil.authentication.domain.PrivateClaims;
 import com.newworld.saegil.authentication.domain.Token;
 import com.newworld.saegil.authentication.domain.TokenProcessor;
+import com.newworld.saegil.authentication.domain.TokenType;
 import com.newworld.saegil.user.domain.User;
 import com.newworld.saegil.user.repository.UserRepository;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,5 +69,18 @@ public class AuthenticationService {
 
             return userRepository.save(newUser);
         });
+    }
+
+    public PrivateClaims getValidPrivateClaims(final TokenType tokenType, final String token) {
+        final Claims claims = tokenProcessor.decode(tokenType, token)
+                                            .orElseThrow(() -> new InvalidTokenException("유효한 토큰이 아닙니다."));
+        final PrivateClaims privateClaims = PrivateClaims.from(claims);
+
+        final Long userId = privateClaims.userId();
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchUserException("존재하지 않는 유저의 토큰입니다.");
+        }
+
+        return privateClaims;
     }
 }
