@@ -199,10 +199,10 @@ class AuthenticationServiceTest {
                 SoftAssertions.assertSoftly(softAssertions -> {
                     softAssertions.assertThatThrownBy(() -> authenticationService.getValidPrivateClaims(TokenType.ACCESS, token.accessToken()))
                                   .isInstanceOf(InvalidTokenException.class)
-                                  .hasMessage("로그아웃되었습니다.");
+                                  .hasMessage("사용할 수 없는 토큰입니다.");
                     softAssertions.assertThatThrownBy(() -> authenticationService.getValidPrivateClaims(TokenType.REFRESH, token.refreshToken()))
                                   .isInstanceOf(InvalidTokenException.class)
-                                  .hasMessage("로그아웃되었습니다.");
+                                  .hasMessage("사용할 수 없는 토큰입니다.");
                 });
             }
         }
