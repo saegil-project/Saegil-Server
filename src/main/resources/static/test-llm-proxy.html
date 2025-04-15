@@ -361,6 +361,9 @@
 
             const response = await fetch('/api/v1/llm/speech-to-text/upload', {
                 method: 'POST',
+                headers: {
+                    'Authorization': getAccessToken(),
+                },
                 body: formData
             });
 
@@ -508,6 +511,9 @@
 
             const response = await fetch('/api/v1/llm/chatgpt/upload', {
                 method: 'POST',
+                headers: {
+                    'Authorization': getAccessToken(),
+                },
                 body: formData
             });
 
