@@ -22,6 +22,7 @@ public class WebConfiguration implements WebMvcConfigurer {
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/")
+                .excludePathPatterns("/webjars/swagger-ui/**")
                 .excludePathPatterns("/index.html")
                 .excludePathPatterns("/test-llm-proxy.html")
                 .excludePathPatterns("/api/v1/organizations/**")
