@@ -7,6 +7,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableConfigurationProperties({JwtProperties.class, KakaoOAuth2Properties.class, ProxyProperties.class})
+@EnableConfigurationProperties({JwtProperties.class, KakaoOAuth2Properties.class, ProxyProperties.class, CorsProperties.class})
 public class PropertiesConfiguration {
 }
