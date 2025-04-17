@@ -29,6 +29,7 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .excludePathPatterns("/test-llm-proxy.html")
                 .excludePathPatterns("/api/v1/organizations/**")
                 .excludePathPatterns("/api/v1/notices/**")
+                .excludePathPatterns("/api/v1/scenarios/**")
                 .excludePathPatterns("/api/v1/oauth2/**");
     }
 
