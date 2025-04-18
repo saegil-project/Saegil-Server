@@ -1,5 +1,7 @@
 package com.newworld.saegil.configuration;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -32,7 +34,7 @@ public class SwaggerConfiguration {
     private Components components() {
         return new Components()
                 .addSecuritySchemes(SERVICE_SECURITY_SCHEME_NAME, serviceSecurityScheme())
-                .addSecuritySchemes(OAUTH_SECURITY_SCHEME_NAME,oauthSecurityScheme());
+                .addSecuritySchemes(OAUTH_SECURITY_SCHEME_NAME, oauthSecurityScheme());
     }
 
     private SecurityScheme serviceSecurityScheme() {

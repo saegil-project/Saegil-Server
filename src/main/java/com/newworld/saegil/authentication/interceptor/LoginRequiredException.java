@@ -1,7 +1,8 @@
 package com.newworld.saegil.authentication.interceptor;
 
-import com.newworld.saegil.exception.CustomException;
 import org.springframework.http.HttpStatus;
+
+import com.newworld.saegil.exception.CustomException;
 
 public class LoginRequiredException extends CustomException {
 

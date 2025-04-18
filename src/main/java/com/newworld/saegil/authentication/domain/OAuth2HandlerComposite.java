@@ -1,10 +1,10 @@
 package com.newworld.saegil.authentication.domain;
 
-import org.springframework.stereotype.Component;
-
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.springframework.stereotype.Component;
 
 @Component
 public class OAuth2HandlerComposite {

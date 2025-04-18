@@ -1,10 +1,7 @@
 package com.newworld.saegil.user.service;
 
-import com.newworld.saegil.authentication.domain.OAuth2Type;
-import com.newworld.saegil.exception.UserNotFoundException;
-import com.newworld.saegil.user.domain.User;
-import com.newworld.saegil.user.repository.UserRepository;
-import jakarta.persistence.EntityManager;
+import static org.assertj.core.api.Assertions.*;
+
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -15,7 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import com.newworld.saegil.authentication.domain.OAuth2Type;
+import com.newworld.saegil.exception.UserNotFoundException;
+import com.newworld.saegil.user.domain.User;
+import com.newworld.saegil.user.repository.UserRepository;
+
+import jakarta.persistence.EntityManager;
 
 @SpringBootTest
 @Transactional

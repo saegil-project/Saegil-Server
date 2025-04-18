@@ -1,16 +1,16 @@
 package com.newworld.saegil.authentication.domain;
 
-import com.newworld.saegil.security.oauth2.KakaoOAuth2Handler;
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.Set;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import com.newworld.saegil.security.oauth2.KakaoOAuth2Handler;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")

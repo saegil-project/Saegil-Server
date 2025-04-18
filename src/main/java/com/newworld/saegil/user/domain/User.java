@@ -1,6 +1,7 @@
 package com.newworld.saegil.user.domain;
 
 import com.newworld.saegil.authentication.domain.OAuth2Type;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

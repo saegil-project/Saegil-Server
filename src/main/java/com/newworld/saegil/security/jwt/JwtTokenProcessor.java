@@ -1,22 +1,24 @@
 package com.newworld.saegil.security.jwt;
 
-import com.newworld.saegil.authentication.domain.InvalidTokenException;
-import com.newworld.saegil.authentication.domain.Token;
-import com.newworld.saegil.authentication.domain.TokenProcessor;
-import com.newworld.saegil.authentication.domain.TokenType;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
+
+import org.springframework.stereotype.Component;
+
+import com.newworld.saegil.authentication.domain.InvalidTokenException;
+import com.newworld.saegil.authentication.domain.Token;
+import com.newworld.saegil.authentication.domain.TokenProcessor;
+import com.newworld.saegil.authentication.domain.TokenType;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -69,10 +71,10 @@ public class JwtTokenProcessor implements TokenProcessor {
         final String key = jwtProperties.findTokenKey(tokenType);
         try {
             final Claims claims = Jwts.parser()
-                                     .verifyWith(Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8)))
-                                     .build()
-                                     .parseSignedClaims(findPureToken(token))
-                                     .getPayload();
+                                      .verifyWith(Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8)))
+                                      .build()
+                                      .parseSignedClaims(findPureToken(token))
+                                      .getPayload();
 
             return Optional.of(claims);
         } catch (final JwtException ignored) {

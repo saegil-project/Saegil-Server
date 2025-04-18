@@ -1,7 +1,8 @@
 package com.newworld.saegil.exception;
 
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
+
+import lombok.Getter;
 
 @Getter
 public class CustomException extends RuntimeException {
