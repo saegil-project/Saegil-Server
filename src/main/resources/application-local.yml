@@ -51,4 +51,5 @@ proxy:
 #    chatgpt-from-stt-text-path: /chatgpt/stt
 #    chatgpt-from-audio-url-path: /chatgpt/audio
     chatgpt-from-audio-file-path: /chatgpt/upload
+    stt-chatgpt-tts-file-path: /stt-chatgpt-tts/upload
 

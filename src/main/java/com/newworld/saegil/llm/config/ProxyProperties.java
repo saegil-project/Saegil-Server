@@ -11,7 +11,8 @@ public record ProxyProperties(
         String chatgptFromTextPath,
         String chatgptFromSttTextPath,
         String chatgptFromAudioUrlPath,
-        String chatgptFromAudioFilePath
+        String chatgptFromAudioFilePath,
+        String sttChatgptTtsFilePath
 ) {
 
     public String getTtsPath() {
@@ -40,5 +41,9 @@ public record ProxyProperties(
 
     public String getChatgptFromAudioFilePath() {
         return llmServerUrl + chatgptFromAudioFilePath;
+    }
+
+    public String getSttChatgptTtsFilePath() {
+        return llmServerUrl + sttChatgptTtsFilePath;
     }
 }
