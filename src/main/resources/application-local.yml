@@ -21,6 +21,9 @@ spring:
   task:
     notice_scheduler:
       enabled: false
+  cors:
+    allowed-origins:
+      - http://localhost:8080
 server:
   port: 8080
 springdoc:
@@ -45,7 +48,7 @@ proxy:
     stt-path: /speech-to-text/
     stt-from-audio-file-path: /speech-to-text/upload
     chatgpt-from-text-path: /chatgpt/
-    chatgpt-from-stt-text-path: /chatgpt/stt
-    chatgpt-from-audio-url-path: /chatgpt/audio
+#    chatgpt-from-stt-text-path: /chatgpt/stt
+#    chatgpt-from-audio-url-path: /chatgpt/audio
     chatgpt-from-audio-file-path: /chatgpt/upload
 
