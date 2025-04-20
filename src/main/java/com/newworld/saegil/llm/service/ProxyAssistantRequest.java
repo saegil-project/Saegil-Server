@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record ProxyAssistantRequest(
-        String text,
-        String threadId
+        String text
 ) {
 }

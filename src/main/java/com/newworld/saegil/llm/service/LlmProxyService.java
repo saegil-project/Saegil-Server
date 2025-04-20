@@ -211,7 +211,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         try {
             final HttpHeaders requestHeader = new HttpHeaders();
             requestHeader.setContentType(MediaType.APPLICATION_JSON);
-            final ProxyAssistantRequest requestBody = new ProxyAssistantRequest(request.text(), threadId);
+            final ProxyAssistantRequest requestBody = new ProxyAssistantRequest(request.text());
             final HttpEntity<ProxyAssistantRequest> requestEntity = new HttpEntity<>(requestBody, requestHeader);
 
             String assistantPath = proxyProperties.getAssistantPath();
@@ -298,8 +298,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         try {
             final HttpHeaders requestHeader = new HttpHeaders();
             requestHeader.setContentType(MediaType.APPLICATION_JSON);
-            // Pass threadId to the constructor
-            final ProxyAssistantRequest requestBody = new ProxyAssistantRequest(request.text(), threadId);
+            final ProxyAssistantRequest requestBody = new ProxyAssistantRequest(request.text());
             final HttpEntity<ProxyAssistantRequest> requestEntity = new HttpEntity<>(requestBody, requestHeader);
 
             String assistantAudioPath = proxyProperties.getAssistantAudioPath();
@@ -380,15 +379,4 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
 
         return requestBody;
     }
-
-    // --- Inner Record Classes (Proxy Requests/Responses) ---
-    private record ProxyTextToSpeechRequest(String text) {}
-    private record ProxySpeechToTextUrlRequest(String audioUrl) {}
-    private record ProxySpeechToTextResponse(String text) {}
-    private record ProxyChatGptTextRequest(String text) {}
-    private record ProxyChatGptSttRequest(String audioText) {}
-    private record ProxyChatGptAudioUrlRequest(String audioUrl) {}
-    private record ProxyChatGptResponse(String response) {}
-    private record ProxyAssistantRequest(String text, String threadId) {}
-    private record ProxyAssistantResponse(String response, String threadId, String text) {}
 }
