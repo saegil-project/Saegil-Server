@@ -1,7 +1,7 @@
 package com.newworld.saegil.llm.controller;
 
 import com.newworld.saegil.configuration.SwaggerConfiguration;
-import com.newworld.saegil.llm.service.LlmService;
+import com.newworld.saegil.llm.service.ChatGptService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "ChatGPT API", description = "ChatGPT 관련 API")
 public class ChatGptController {
 
-    private final LlmService llmService;
+    private final ChatGptService chatGptService;
 
     @Operation(
             summary = "텍스트로부터 ChatGPT 응답 받기",
@@ -33,7 +33,7 @@ public class ChatGptController {
     @PostMapping("/text")
     public ResponseEntity<ChatGptResponse> chatGptFromText(@RequestBody ChatGptTextRequest request) {
         log.info("Received ChatGPT text request: {}", request.text());
-        final String gptResponseText = llmService.receiveChatGptResponseFromText(request);
+        final String gptResponseText = chatGptService.receiveChatGptResponseFromText(request);
         final ChatGptResponse response = new ChatGptResponse(gptResponseText);
 
         return ResponseEntity.ok(response);
@@ -47,7 +47,7 @@ public class ChatGptController {
     @PostMapping("/stt-text")
     public ResponseEntity<ChatGptResponse> chatGptFromStt(@RequestBody ChatGptSttRequest request) {
         log.info("Received ChatGPT STT request: {}", request.audioText());
-        final String gptResponseText = llmService.receiveChatGptResponseFromSttText(request);
+        final String gptResponseText = chatGptService.receiveChatGptResponseFromSttText(request);
         final ChatGptResponse response = new ChatGptResponse(gptResponseText);
 
         return ResponseEntity.ok(response);
@@ -61,7 +61,7 @@ public class ChatGptController {
     @PostMapping("/audio-url")
     public ResponseEntity<ChatGptResponse> chatGptFromAudioUrl(@RequestBody ChatGptAudioUrlRequest request) {
         log.info("Received ChatGPT audio URL request: {}", request.audioUrl());
-        final String gptResponseText = llmService.receiveChatGptResponseFromAudioUrl(request);
+        final String gptResponseText = chatGptService.receiveChatGptResponseFromAudioUrl(request);
         final ChatGptResponse response = new ChatGptResponse(gptResponseText);
 
         return ResponseEntity.ok(response);
@@ -75,7 +75,7 @@ public class ChatGptController {
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ChatGptResponse> chatGptFromFile(@RequestPart("file") MultipartFile multipartFile) {
         log.info("Received ChatGPT file upload request: {}", multipartFile.getOriginalFilename());
-        final String gptResponseText = llmService.receiveChatGptResponseFromAudioFile(multipartFile);
+        final String gptResponseText = chatGptService.receiveChatGptResponseFromAudioFile(multipartFile);
         final ChatGptResponse response = new ChatGptResponse(gptResponseText);
 
         return ResponseEntity.ok(response);

@@ -1,7 +1,7 @@
 package com.newworld.saegil.llm.controller;
 
 import com.newworld.saegil.configuration.SwaggerConfiguration;
-import com.newworld.saegil.llm.service.LlmService;
+import com.newworld.saegil.llm.service.TextToSpeechService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Text-to-Speech API", description = "텍스트를 음성으로 변환하는 API")
 public class TextToSpeechController {
 
-    private final LlmService llmService;
+    private final TextToSpeechService textToSpeechService;
 
     @Operation(
             summary = "텍스트를 음성으로 변환",
@@ -33,7 +33,7 @@ public class TextToSpeechController {
     @PostMapping(produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<Resource> textToSpeech(@RequestBody TextToSpeechRequest request) {
         log.info("Received text-to-speech request: {}", request.text());
-        final Resource responseResource = llmService.textToSpeech(request);
+        final Resource responseResource = textToSpeechService.textToSpeech(request);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"speech.mp3\"")

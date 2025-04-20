@@ -1,11 +1,10 @@
 package com.newworld.saegil.llm.controller;
 
 import com.newworld.saegil.configuration.SwaggerConfiguration;
-import com.newworld.saegil.llm.service.LlmService;
+import com.newworld.saegil.llm.service.AssistantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "Assistant API", description = "OpenAI Assistant API 관련 기능")
 public class AssistantController {
 
-    private final LlmService llmService;
+    private final AssistantService assistantService;
 
     @Operation(
             summary = "텍스트 쿼리에 대한 Assistant 응답 가져오기",
@@ -43,7 +42,7 @@ public class AssistantController {
             @Parameter(description = "기존 대화 스레드 ID (선택 사항)") @RequestParam(value = "thread_id", required = false) String threadId
     ) {
         log.info("Received Assistant request: text='{}', threadId='{}'", request.text(), threadId);
-        AssistantResponse response = llmService.getAssistantResponse(request, threadId);
+        AssistantResponse response = assistantService.getAssistantResponse(request, threadId);
         return ResponseEntity.ok(response);
     }
 
@@ -59,7 +58,7 @@ public class AssistantController {
     ) {
         log.info("Received Assistant file upload request: {}, threadId: {}",
                 multipartFile.getOriginalFilename(), threadId);
-        AssistantResponse response = llmService.getAssistantResponseFromAudioFile(multipartFile, threadId);
+        AssistantResponse response = assistantService.getAssistantResponseFromAudioFile(multipartFile, threadId);
         return ResponseEntity.ok(response);
     }
 
@@ -75,7 +74,7 @@ public class AssistantController {
             @Parameter(description = "음성 합성 엔진 (openai 또는 elevenlabs, 기본값: openai)") @RequestParam(value = "provider", required = false, defaultValue = "openai") String provider
     ) {
         log.info("Received Assistant audio request: text='{}', threadId='{}', provider: {}", request.text(), threadId, provider);
-        Resource responseResource = llmService.getAssistantAudioResponse(request, threadId, provider);
+        Resource responseResource = assistantService.getAssistantAudioResponse(request, threadId, provider);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"assistant_response.mp3\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
@@ -114,7 +113,7 @@ public class AssistantController {
     ) {
         log.info("Received Assistant audio file upload request: {}, threadId: {}, provider: {}",
                 multipartFile.getOriginalFilename(), threadId, provider);
-        Resource responseResource = llmService.getAssistantAudioResponseFromAudioFile(multipartFile, threadId, provider);
+        Resource responseResource = assistantService.getAssistantAudioResponseFromAudioFile(multipartFile, threadId, provider);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"assistant_response.mp3\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)

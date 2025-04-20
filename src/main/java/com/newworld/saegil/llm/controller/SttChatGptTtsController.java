@@ -1,7 +1,7 @@
 package com.newworld.saegil.llm.controller;
 
 import com.newworld.saegil.configuration.SwaggerConfiguration;
-import com.newworld.saegil.llm.service.LlmService;
+import com.newworld.saegil.llm.service.SttChatGptTtsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,7 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "STT-ChatGPT-TTS API", description = "음성-텍스트-음성 통합 서비스 API")
 public class SttChatGptTtsController {
 
-    private final LlmService llmService;
+    private final SttChatGptTtsService sttChatGptTtsService;
 
     @Operation(
             summary = "MP3 파일로부터 ChatGPT 응답을 MP3 파일로 받기",
@@ -58,7 +58,7 @@ public class SttChatGptTtsController {
             @RequestPart("file") MultipartFile multipartFile
     ) {
         log.info("Received STT-ChatGPT-TTS file upload request: {}", multipartFile.getOriginalFilename());
-        Resource resource = llmService.receiveSttChatGptTtsResponseFromAudioFile(multipartFile);
+        Resource resource = sttChatGptTtsService.receiveSttChatGptTtsResponseFromAudioFile(multipartFile);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"response.mp3\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
