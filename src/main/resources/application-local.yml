@@ -48,8 +48,6 @@ proxy:
     stt-path: /speech-to-text/
     stt-from-audio-file-path: /speech-to-text/upload
     chatgpt-from-text-path: /chatgpt/
-#    chatgpt-from-stt-text-path: /chatgpt/stt
-#    chatgpt-from-audio-url-path: /chatgpt/audio
     chatgpt-from-audio-file-path: /chatgpt/upload
     stt-chatgpt-tts-file-path: /stt-chatgpt-tts/upload
 

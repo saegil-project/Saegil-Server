@@ -1,20 +1,18 @@
 package com.newworld.saegil.notice.service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.newworld.saegil.notice.domain.Notice;
 import com.newworld.saegil.notice.domain.NoticeCrawler;
 import com.newworld.saegil.notice.domain.NoticeType;
 import com.newworld.saegil.notice.repository.NoticeRepository;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -59,12 +57,12 @@ public class NoticeService {
         final LocalDate lastDate = latestNotices.isEmpty() ? null : latestNotices.getFirst().getDate();
         final List<Notice> crawledNotices = crawler.crawl(noticeType, lastDate);
 
-        final List<Notice> newNotices = crawledNotices.stream()
-                                                      .filter(newNotice -> latestNotices.stream()
-                                                                                        .noneMatch(
-                                                                                                latestNotice -> latestNotice.hasSameTitle(
-                                                                                                        newNotice))
-                                                      ).toList();
+        final List<Notice> newNotices =
+                crawledNotices.stream()
+                        .filter(newNotice ->
+                                latestNotices.stream()
+                                        .noneMatch(latestNotice -> latestNotice.hasSameTitle(newNotice))
+                        ).toList();
         log.info("새로운 {} {} 개수: {}",
                 noticeType.getSource(), noticeType.getCategory(), newNotices.size()
         );

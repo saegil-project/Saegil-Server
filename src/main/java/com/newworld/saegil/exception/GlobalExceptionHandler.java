@@ -28,7 +28,8 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                              .body(new ExceptionResponse(
-                                     ex.getMessage() == null ? "Internal Server Error" : ex.getMessage()));
+                                     ex.getMessage() == null ? "Internal Server Error" : ex.getMessage()
+                             ));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

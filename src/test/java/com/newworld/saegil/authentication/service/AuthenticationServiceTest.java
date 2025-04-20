@@ -1,38 +1,22 @@
 package com.newworld.saegil.authentication.service;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
-
-import java.time.LocalDateTime;
-
+import com.newworld.saegil.authentication.domain.*;
+import com.newworld.saegil.authentication.repository.BlacklistTokenRepository;
+import com.newworld.saegil.user.domain.User;
+import com.newworld.saegil.user.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.newworld.saegil.authentication.domain.BlacklistToken;
-import com.newworld.saegil.authentication.domain.InvalidTokenException;
-import com.newworld.saegil.authentication.domain.OAuth2Handler;
-import com.newworld.saegil.authentication.domain.OAuth2HandlerComposite;
-import com.newworld.saegil.authentication.domain.OAuth2Type;
-import com.newworld.saegil.authentication.domain.OAuth2UserInfo;
-import com.newworld.saegil.authentication.domain.PrivateClaims;
-import com.newworld.saegil.authentication.domain.Token;
-import com.newworld.saegil.authentication.domain.TokenProcessor;
-import com.newworld.saegil.authentication.domain.TokenType;
-import com.newworld.saegil.authentication.repository.BlacklistTokenRepository;
-import com.newworld.saegil.user.domain.User;
-import com.newworld.saegil.user.repository.UserRepository;
+import java.time.LocalDateTime;
 
-import jakarta.persistence.EntityManager;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
 @Transactional
@@ -154,12 +138,10 @@ class AuthenticationServiceTest {
                 // given
                 final User user = new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO);
                 userRepository.save(user);
-                final Token token = tokenProcessor.generateToken(LocalDateTime.now(),
-                        new PrivateClaims(user.getId()).toMap());
+                final Token token = tokenProcessor.generateToken(LocalDateTime.now(), new PrivateClaims(user.getId()).toMap());
 
                 // when
-                final PrivateClaims privateClaims = authenticationService.getValidPrivateClaims(TokenType.ACCESS,
-                        token.accessToken());
+                final PrivateClaims privateClaims = authenticationService.getValidPrivateClaims(TokenType.ACCESS, token.accessToken());
 
                 // then
                 assertThat(privateClaims.userId()).isEqualTo(user.getId());
@@ -178,14 +160,14 @@ class AuthenticationServiceTest {
                 // when & then
                 SoftAssertions.assertSoftly(softAssertions -> {
                     softAssertions.assertThatThrownBy(
-                                          () -> authenticationService.getValidPrivateClaims(TokenType.ACCESS, token.accessToken()))
-                                  .isInstanceOf(NoSuchUserException.class)
-                                  .hasMessage("존재하지 않는 유저의 토큰입니다.");
+                                    () -> authenticationService.getValidPrivateClaims(TokenType.ACCESS, token.accessToken()))
+                            .isInstanceOf(NoSuchUserException.class)
+                            .hasMessage("존재하지 않는 유저의 토큰입니다.");
 
                     softAssertions.assertThatThrownBy(
-                                          () -> authenticationService.getValidPrivateClaims(TokenType.REFRESH, token.refreshToken()))
-                                  .isInstanceOf(NoSuchUserException.class)
-                                  .hasMessage("존재하지 않는 유저의 토큰입니다.");
+                                    () -> authenticationService.getValidPrivateClaims(TokenType.REFRESH, token.refreshToken()))
+                            .isInstanceOf(NoSuchUserException.class)
+                            .hasMessage("존재하지 않는 유저의 토큰입니다.");
                 });
             }
 
@@ -206,13 +188,13 @@ class AuthenticationServiceTest {
                 // when & then
                 SoftAssertions.assertSoftly(softAssertions -> {
                     softAssertions.assertThatThrownBy(
-                                          () -> authenticationService.getValidPrivateClaims(TokenType.ACCESS, token.accessToken()))
-                                  .isInstanceOf(InvalidTokenException.class)
-                                  .hasMessage("사용할 수 없는 토큰입니다.");
+                                    () -> authenticationService.getValidPrivateClaims(TokenType.ACCESS, token.accessToken()))
+                            .isInstanceOf(InvalidTokenException.class)
+                            .hasMessage("사용할 수 없는 토큰입니다.");
                     softAssertions.assertThatThrownBy(
-                                          () -> authenticationService.getValidPrivateClaims(TokenType.REFRESH, token.refreshToken()))
-                                  .isInstanceOf(InvalidTokenException.class)
-                                  .hasMessage("사용할 수 없는 토큰입니다.");
+                                    () -> authenticationService.getValidPrivateClaims(TokenType.REFRESH, token.refreshToken()))
+                            .isInstanceOf(InvalidTokenException.class)
+                            .hasMessage("사용할 수 없는 토큰입니다.");
                 });
             }
         }
@@ -242,11 +224,11 @@ class AuthenticationServiceTest {
                 // then
                 SoftAssertions.assertSoftly(softAssertions -> {
                     softAssertions.assertThat(
-                                          blacklistTokenRepository.existsByUserIdAndToken(user.getId(), token.accessToken()))
-                                  .isTrue();
+                                    blacklistTokenRepository.existsByUserIdAndToken(user.getId(), token.accessToken()))
+                            .isTrue();
                     softAssertions.assertThat(
-                                          blacklistTokenRepository.existsByUserIdAndToken(user.getId(), token.refreshToken()))
-                                  .isTrue();
+                                    blacklistTokenRepository.existsByUserIdAndToken(user.getId(), token.refreshToken()))
+                            .isTrue();
                 });
             }
 
@@ -266,7 +248,7 @@ class AuthenticationServiceTest {
                 // then
                 SoftAssertions.assertSoftly(softAssertions -> {
                     softAssertions.assertThat(authenticationService.isValidToken(TokenType.ACCESS, token.accessToken()))
-                                  .isFalse();
+                            .isFalse();
                     softAssertions.assertThat(
                             authenticationService.isValidToken(TokenType.REFRESH, token.refreshToken())).isFalse();
                 });
@@ -343,31 +325,31 @@ class AuthenticationServiceTest {
     @DisplayName("리프레시 토큰으로 토큰을 갱신할 때")
     class Describe_refreshToken {
 
-        @Test
-        void 토큰_갱신에_사용한_refreshToken은_블랙리스트에_등록된다() {
-            // given
-            final User user = new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO);
-            userRepository.save(user);
-            final Token token = tokenProcessor.generateToken(LocalDateTime.now(),
-                    new PrivateClaims(user.getId()).toMap());
-            entityManager.flush();
-            entityManager.clear();
-
-            // when
-            authenticationService.refreshToken(LocalDateTime.now(), token.refreshToken());
-            entityManager.flush();
-            entityManager.clear();
-
-            // then
-            final boolean isBlacklisted =
-                    blacklistTokenRepository.existsByUserIdAndToken(user.getId(), token.refreshToken());
-
-            assertThat(isBlacklisted).isTrue();
-        }
-
         @Nested
         @DisplayName("유효한 리프레시 토큰이 주어지면")
         class Context_with_valid_refresh_token {
+
+            @Test
+            void 토큰_갱신에_사용한_refreshToken은_블랙리스트에_등록된다() {
+                // given
+                final User user = new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO);
+                userRepository.save(user);
+                final Token token = tokenProcessor.generateToken(LocalDateTime.now(),
+                        new PrivateClaims(user.getId()).toMap());
+                entityManager.flush();
+                entityManager.clear();
+
+                // when
+                authenticationService.refreshToken(LocalDateTime.now(), token.refreshToken());
+                entityManager.flush();
+                entityManager.clear();
+
+                // then
+                final boolean isBlacklisted =
+                        blacklistTokenRepository.existsByUserIdAndToken(user.getId(), token.refreshToken());
+
+                assertThat(isBlacklisted).isTrue();
+            }
 
             @Test
             void 새로운_액세스_토큰과_리프레시_토큰을_발급한다() {

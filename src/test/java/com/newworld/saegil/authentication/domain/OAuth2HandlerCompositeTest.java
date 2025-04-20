@@ -1,16 +1,12 @@
 package com.newworld.saegil.authentication.domain;
 
-import static org.assertj.core.api.Assertions.*;
+import com.newworld.saegil.security.oauth2.KakaoOAuth2Handler;
+import org.junit.jupiter.api.*;
 
 import java.util.Set;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
-import com.newworld.saegil.security.oauth2.KakaoOAuth2Handler;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -47,7 +43,7 @@ class OAuth2HandlerCompositeTest {
                 // given
                 final OAuth2HandlerComposite emptyComposite = new OAuth2HandlerComposite(Set.of());
 
-                // when & then
+                // when and then
                 assertThatThrownBy(() -> emptyComposite.findHandler(OAuth2Type.KAKAO))
                         .isInstanceOf(UnsupportedOAuth2LoginException.class)
                         .hasMessage("지원하는 소셜 로그인 기능이 아닙니다.");

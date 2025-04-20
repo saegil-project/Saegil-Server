@@ -46,8 +46,13 @@ public class Notice {
     @Column(nullable = false)
     private String webLink;
 
-    public Notice(final String title, final String content, final NoticeType noticeType, final LocalDate date,
-            final String webLink) {
+    public Notice(
+            final String title, 
+            final String content, 
+            final NoticeType noticeType, 
+            final LocalDate date,
+            final String webLink
+    ) {
         this.title = title;
         this.content = content;
         this.sourceId = noticeType.getSourceId();

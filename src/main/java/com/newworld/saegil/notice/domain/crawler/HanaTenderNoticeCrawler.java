@@ -1,22 +1,20 @@
 package com.newworld.saegil.notice.domain.crawler;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
+import com.newworld.saegil.notice.domain.Notice;
+import com.newworld.saegil.notice.domain.NoticeCrawler;
+import com.newworld.saegil.notice.domain.NoticeType;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
-import com.newworld.saegil.notice.domain.Notice;
-import com.newworld.saegil.notice.domain.NoticeCrawler;
-import com.newworld.saegil.notice.domain.NoticeType;
-
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Component
@@ -64,8 +62,7 @@ public class HanaTenderNoticeCrawler implements NoticeCrawler {
         log.info("{} {} 크롤링 완료. 날짜({})일 이후의 게시물 총 {}개를 수집했습니다.",
                 noticeType.getSource(), noticeType.getCategory(), lastDate, newNotices.size()
         );
-        log.info("{} {} 크롤링 소요 시간: {}ms", noticeType.getSource(), noticeType.getCategory(),
-                crawlEndTime - crawlStartTime);
+        log.info("{} {} 크롤링 소요 시간: {}ms", noticeType.getSource(), noticeType.getCategory(), crawlEndTime - crawlStartTime);
 
         return newNotices;
     }
