@@ -22,6 +22,11 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+// Enum 정의 추가
+enum TtsProvider {
+    OPENAI, ELEVENLABS
+}
+
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/llm/assistant")
@@ -71,10 +76,10 @@ public class AssistantController {
     public ResponseEntity<Resource> getAssistantAudioResponse(
             @Parameter(description = "텍스트 쿼리") @RequestBody AssistantRequest request,
             @Parameter(description = "기존 대화 스레드 ID (선택 사항)") @RequestParam(value = "thread_id", required = false) String threadId,
-            @Parameter(description = "음성 합성 엔진 (openai 또는 elevenlabs, 기본값: openai)") @RequestParam(value = "provider", required = false, defaultValue = "openai") String provider
+            @Parameter(description = "음성 합성 엔진 (openai 또는 elevenlabs, 기본값: openai)") @RequestParam(value = "provider", required = false, defaultValue = "OPENAI") TtsProvider provider
     ) {
         log.info("Received Assistant audio request: text='{}', threadId='{}', provider: {}", request.text(), threadId, provider);
-        Resource responseResource = assistantService.getAssistantAudioResponse(request, threadId, provider);
+        Resource responseResource = assistantService.getAssistantAudioResponse(request, threadId, provider.name().toLowerCase());
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"assistant_response.mp3\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
@@ -109,11 +114,11 @@ public class AssistantController {
     public ResponseEntity<Resource> getAssistantAudioResponseFromFile(
             @Parameter(description = "음성 파일 (MP3 등)") @RequestPart("file") MultipartFile multipartFile,
             @Parameter(description = "기존 대화 스레드 ID (선택 사항)") @RequestParam(value = "thread_id", required = false) String threadId,
-            @Parameter(description = "음성 합성 엔진 (openai 또는 elevenlabs, 기본값: openai)") @RequestParam(value = "provider", required = false, defaultValue = "openai") String provider
+            @Parameter(description = "음성 합성 엔진 (openai 또는 elevenlabs, 기본값: openai)") @RequestParam(value = "provider", required = false, defaultValue = "OPENAI") TtsProvider provider
     ) {
         log.info("Received Assistant audio file upload request: {}, threadId: {}, provider: {}",
                 multipartFile.getOriginalFilename(), threadId, provider);
-        Resource responseResource = assistantService.getAssistantAudioResponseFromAudioFile(multipartFile, threadId, provider);
+        Resource responseResource = assistantService.getAssistantAudioResponseFromAudioFile(multipartFile, threadId, provider.name().toLowerCase());
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"assistant_response.mp3\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
