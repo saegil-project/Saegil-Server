@@ -10,6 +10,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ public class UniKoreaCrawler implements NoticeCrawler {
         return newNotices;
     }
 
-    private Notice parseToNotice(final Element element, final NoticeType noticeType) {
+    private Notice parseToNotice(final Element element, final NoticeType noticeType) throws IOException {
         final Element titleElement = element.selectFirst("td.title a");
         if (titleElement == null) {
             return null;
@@ -75,13 +76,18 @@ public class UniKoreaCrawler implements NoticeCrawler {
         final String title = titleElement.text().trim();
         final String href = titleElement.attr("href").replace("&amp;", "&");
         final String webLink = noticeType.getBaseUrl() + href;
+
+        final Document document = Jsoup.connect(webLink).get();
+        final Element editorView = document.selectFirst("div.board_content");
+        final String content = editorView != null ? editorView.text().substring(0, 100) : "";
+
         final Element dateElement = element.selectFirst("td.created");
         final String dateValue = (dateElement != null) ? dateElement.text() : null;
         final LocalDate date = parseDate(dateValue, webLink);
 
         return new Notice(
                 title,
-                "",
+                content,
                 noticeType,
                 date,
                 webLink
