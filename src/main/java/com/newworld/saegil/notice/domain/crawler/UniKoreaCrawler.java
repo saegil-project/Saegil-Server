@@ -3,6 +3,7 @@ package com.newworld.saegil.notice.domain.crawler;
 import com.newworld.saegil.notice.domain.Notice;
 import com.newworld.saegil.notice.domain.NoticeCrawler;
 import com.newworld.saegil.notice.domain.NoticeType;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -12,14 +13,16 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class UniKoreaCrawler implements NoticeCrawler {
+
+    private final NoticeCrawlerHelper noticeCrawlerHelper;
 
     @Override
     public Set<NoticeType> getSupportingNoticeType() {
@@ -32,7 +35,7 @@ public class UniKoreaCrawler implements NoticeCrawler {
     @Override
     public List<Notice> crawl(final NoticeType noticeType, final LocalDate lastDate) {
         final long crawlStartTime = System.currentTimeMillis();
-        log.info ("{} {} 크롤링 시작", noticeType.getSource(), noticeType.getCategory());
+        log.info("{} {} 크롤링 시작", noticeType.getSource(), noticeType.getCategory());
         final List<Notice> newNotices = new ArrayList<>();
         int page = 1;
         boolean done = false;
@@ -76,14 +79,11 @@ public class UniKoreaCrawler implements NoticeCrawler {
         final String title = titleElement.text().trim();
         final String href = titleElement.attr("href").replace("&amp;", "&");
         final String webLink = noticeType.getBaseUrl() + href;
-
-        final Document document = Jsoup.connect(webLink).get();
-        final Element editorView = document.selectFirst("div.board_content");
-        final String content = editorView != null ? editorView.text().substring(0, 100) : "";
+        final String content = noticeCrawlerHelper.extractContentBody(webLink, "div.board_content");
 
         final Element dateElement = element.selectFirst("td.created");
         final String dateValue = (dateElement != null) ? dateElement.text() : null;
-        final LocalDate date = parseDate(dateValue, webLink);
+        final LocalDate date = noticeCrawlerHelper.parseDate(dateValue, webLink);
 
         return new Notice(
                 title,
@@ -92,19 +92,5 @@ public class UniKoreaCrawler implements NoticeCrawler {
                 date,
                 webLink
         );
-    }
-
-    private LocalDate parseDate(final String dateValue, final String webLink) {
-        if (dateValue == null) {
-            return null;
-        }
-
-        final String formatted = dateValue.replace(" ", "").substring(0, 10);
-        try {
-            return LocalDate.parse(formatted);
-        } catch (final DateTimeParseException e) {
-            log.warn("게시글 등록일 파싱에 실패했습니다. webLink = {}, dateValue = {}", webLink, dateValue);
-            return null;
-        }
     }
 }
