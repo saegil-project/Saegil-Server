@@ -31,7 +31,7 @@ public class ChatGptController {
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping("/text")
-    public ResponseEntity<ChatGptResponse> chatGptFromText(@RequestBody ChatGptTextRequest request) {
+    public ResponseEntity<ChatGptResponse> chatGptFromText(@RequestBody final ChatGptTextRequest request) {
         log.info("Received ChatGPT text request: {}", request.text());
         final String gptResponseText = chatGptService.receiveChatGptResponseFromText(request);
         final ChatGptResponse response = new ChatGptResponse(gptResponseText);
@@ -45,7 +45,7 @@ public class ChatGptController {
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping("/stt-text")
-    public ResponseEntity<ChatGptResponse> chatGptFromStt(@RequestBody ChatGptSttRequest request) {
+    public ResponseEntity<ChatGptResponse> chatGptFromStt(@RequestBody final ChatGptSttRequest request) {
         log.info("Received ChatGPT STT request: {}", request.audioText());
         final String gptResponseText = chatGptService.receiveChatGptResponseFromSttText(request);
         final ChatGptResponse response = new ChatGptResponse(gptResponseText);
@@ -59,7 +59,7 @@ public class ChatGptController {
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping("/audio-url")
-    public ResponseEntity<ChatGptResponse> chatGptFromAudioUrl(@RequestBody ChatGptAudioUrlRequest request) {
+    public ResponseEntity<ChatGptResponse> chatGptFromAudioUrl(@RequestBody final ChatGptAudioUrlRequest request) {
         log.info("Received ChatGPT audio URL request: {}", request.audioUrl());
         final String gptResponseText = chatGptService.receiveChatGptResponseFromAudioUrl(request);
         final ChatGptResponse response = new ChatGptResponse(gptResponseText);
@@ -73,7 +73,7 @@ public class ChatGptController {
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
     )
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ChatGptResponse> chatGptFromFile(@RequestPart("file") MultipartFile multipartFile) {
+    public ResponseEntity<ChatGptResponse> chatGptFromFile(@RequestPart("file") final MultipartFile multipartFile) {
         log.info("Received ChatGPT file upload request: {}", multipartFile.getOriginalFilename());
         final String gptResponseText = chatGptService.receiveChatGptResponseFromAudioFile(multipartFile);
         final ChatGptResponse response = new ChatGptResponse(gptResponseText);

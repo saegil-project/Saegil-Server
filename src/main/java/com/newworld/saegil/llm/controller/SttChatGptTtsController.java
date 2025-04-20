@@ -55,10 +55,10 @@ public class SttChatGptTtsController {
             produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
     )
     public ResponseEntity<Resource> speechChatGptResponseFromFile(
-            @RequestPart("file") MultipartFile multipartFile
+            @RequestPart("file") final MultipartFile multipartFile
     ) {
         log.info("Received STT-ChatGPT-TTS file upload request: {}", multipartFile.getOriginalFilename());
-        Resource resource = sttChatGptTtsService.receiveSttChatGptTtsResponseFromAudioFile(multipartFile);
+        final Resource resource = sttChatGptTtsService.receiveSttChatGptTtsResponseFromAudioFile(multipartFile);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"response.mp3\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)

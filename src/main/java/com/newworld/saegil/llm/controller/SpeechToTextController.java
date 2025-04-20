@@ -23,7 +23,7 @@ public class SpeechToTextController {
     private final SpeechToTextService speechToTextService;
 
     @PostMapping("/audio-url")
-    public ResponseEntity<SpeechToTextResponse> speechToTextFromUrl(@RequestBody SpeechToTextUrlRequest request) {
+    public ResponseEntity<SpeechToTextResponse> speechToTextFromUrl(@RequestBody final SpeechToTextUrlRequest request) {
         log.info("Received speech-to-text URL request: {}", request.audioUrl());
         final String text = speechToTextService.speechToTextFromAudioUrl(request);
         final SpeechToTextResponse response = new SpeechToTextResponse(text);
@@ -32,7 +32,7 @@ public class SpeechToTextController {
     }
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<SpeechToTextResponse> speechToTextFromFile(@RequestPart("file") MultipartFile multipartFile) {
+    public ResponseEntity<SpeechToTextResponse> speechToTextFromFile(@RequestPart("file") final MultipartFile multipartFile) {
         log.info("Received speech-to-text file upload request: {}", multipartFile.getOriginalFilename());
         final String text = speechToTextService.speechToTextFromAudioFile(multipartFile);
         final SpeechToTextResponse response = new SpeechToTextResponse(text);

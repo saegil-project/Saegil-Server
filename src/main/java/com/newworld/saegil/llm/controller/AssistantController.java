@@ -42,11 +42,11 @@ public class AssistantController {
     )
     @PostMapping
     public ResponseEntity<AssistantResponse> getAssistantResponse(
-            @Parameter(description = "텍스트 쿼리") @RequestBody AssistantRequest request,
-            @Parameter(description = "기존 대화 스레드 ID (선택 사항)") @RequestParam(value = "thread_id", required = false) String threadId
+            @Parameter(description = "텍스트 쿼리") @RequestBody final AssistantRequest request,
+            @Parameter(description = "기존 대화 스레드 ID (선택 사항)") @RequestParam(value = "thread_id", required = false) final String threadId
     ) {
         log.info("Received Assistant request: text='{}', threadId='{}'", request.text(), threadId);
-        AssistantResponse response = assistantService.getAssistantResponse(request, threadId);
+        final AssistantResponse response = assistantService.getAssistantResponse(request, threadId);
         return ResponseEntity.ok(response);
     }
 
@@ -57,12 +57,12 @@ public class AssistantController {
     )
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AssistantResponse> getAssistantResponseFromFile(
-            @Parameter(description = "음성 파일 (MP3 등)") @RequestPart("file") MultipartFile multipartFile,
-            @Parameter(description = "기존 대화 스레드 ID (선택 사항)") @RequestParam(value = "thread_id", required = false) String threadId
+            @Parameter(description = "음성 파일 (MP3 등)") @RequestPart("file") final MultipartFile multipartFile,
+            @Parameter(description = "기존 대화 스레드 ID (선택 사항)") @RequestParam(value = "thread_id", required = false) final String threadId
     ) {
         log.info("Received Assistant file upload request: {}, threadId: {}",
                 multipartFile.getOriginalFilename(), threadId);
-        AssistantResponse response = assistantService.getAssistantResponseFromAudioFile(multipartFile, threadId);
+        final AssistantResponse response = assistantService.getAssistantResponseFromAudioFile(multipartFile, threadId);
         return ResponseEntity.ok(response);
     }
 
@@ -73,12 +73,12 @@ public class AssistantController {
     )
     @PostMapping(value = "/audio", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<Resource> getAssistantAudioResponse(
-            @Parameter(description = "텍스트 쿼리") @RequestBody AssistantRequest request,
-            @Parameter(description = "기존 대화 스레드 ID (선택 사항)") @RequestParam(value = "thread_id", required = false) String threadId,
-            @Parameter(description = "음성 합성 엔진 (openai 또는 elevenlabs, 기본값: openai)") @RequestParam(value = "provider", required = false, defaultValue = "OPENAI") TtsProvider provider
+            @Parameter(description = "텍스트 쿼리") @RequestBody final AssistantRequest request,
+            @Parameter(description = "기존 대화 스레드 ID (선택 사항)") @RequestParam(value = "thread_id", required = false) final String threadId,
+            @Parameter(description = "음성 합성 엔진 (openai 또는 elevenlabs, 기본값: openai)") @RequestParam(value = "provider", required = false, defaultValue = "OPENAI") final TtsProvider provider
     ) {
         log.info("Received Assistant audio request: text='{}', threadId='{}', provider: {}", request.text(), threadId, provider);
-        Resource responseResource = assistantService.getAssistantAudioResponse(request, threadId, provider.name().toLowerCase());
+        final Resource responseResource = assistantService.getAssistantAudioResponse(request, threadId, provider.name().toLowerCase());
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"assistant_response.mp3\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
@@ -111,13 +111,13 @@ public class AssistantController {
             produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
     )
     public ResponseEntity<Resource> getAssistantAudioResponseFromFile(
-            @Parameter(description = "음성 파일 (MP3 등)") @RequestPart("file") MultipartFile multipartFile,
-            @Parameter(description = "기존 대화 스레드 ID (선택 사항)") @RequestParam(value = "thread_id", required = false) String threadId,
-            @Parameter(description = "음성 합성 엔진 (openai 또는 elevenlabs, 기본값: openai)") @RequestParam(value = "provider", required = false, defaultValue = "OPENAI") TtsProvider provider
+            @Parameter(description = "음성 파일 (MP3 등)") @RequestPart("file") final MultipartFile multipartFile,
+            @Parameter(description = "기존 대화 스레드 ID (선택 사항)") @RequestParam(value = "thread_id", required = false) final String threadId,
+            @Parameter(description = "음성 합성 엔진 (openai 또는 elevenlabs, 기본값: openai)") @RequestParam(value = "provider", required = false, defaultValue = "OPENAI") final TtsProvider provider
     ) {
         log.info("Received Assistant audio file upload request: {}, threadId: {}, provider: {}",
                 multipartFile.getOriginalFilename(), threadId, provider);
-        Resource responseResource = assistantService.getAssistantAudioResponseFromAudioFile(multipartFile, threadId, provider.name().toLowerCase());
+        final Resource responseResource = assistantService.getAssistantAudioResponseFromAudioFile(multipartFile, threadId, provider.name().toLowerCase());
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"assistant_response.mp3\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)

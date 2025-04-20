@@ -48,9 +48,9 @@ public class TextToSpeechController {
             }
     )
     @PostMapping(produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<Resource> textToSpeech(@RequestBody TextToSpeechRequest request) {
+    public ResponseEntity<Resource> textToSpeech(@RequestBody final TextToSpeechRequest request) {
         log.info("Received text-to-speech request: {}", request.text());
-        Resource resource = textToSpeechService.textToSpeech(request);
+        final Resource resource = textToSpeechService.textToSpeech(request);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"response.mp3\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
