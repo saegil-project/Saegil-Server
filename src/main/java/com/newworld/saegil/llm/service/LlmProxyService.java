@@ -73,6 +73,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         );
 
         ProxySpeechToTextResponse body = Objects.requireNonNull(responseEntity.getBody(), "STT (URL) API 응답 본문이 null입니다.");
+        log.debug("STT (URL) API response text: {}", body.text());
         return body.text();
     }
 
@@ -93,6 +94,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         );
 
         ProxySpeechToTextResponse body = Objects.requireNonNull(response.getBody(), "STT (File) API 응답 본문이 null입니다.");
+        log.debug("STT (File) API response text: {}", body.text());
         return body.text();
     }
 
@@ -114,6 +116,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         );
 
         ProxyChatGptResponse body = Objects.requireNonNull(responseEntity.getBody(), "ChatGPT (Text) API 응답 본문이 null입니다.");
+        log.debug("ChatGPT (Text) API response: {}", body.response());
         return body.response();
     }
 
@@ -134,6 +137,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         );
 
         ProxyChatGptResponse body = Objects.requireNonNull(responseEntity.getBody(), "ChatGPT (STT Text) API 응답 본문이 null입니다.");
+        log.debug("ChatGPT (STT Text) API response: {}", body.response());
         return body.response();
     }
 
@@ -154,6 +158,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         );
 
         ProxyChatGptResponse body = Objects.requireNonNull(responseEntity.getBody(), "ChatGPT (Audio URL) API 응답 본문이 null입니다.");
+        log.debug("ChatGPT (Audio URL) API response: {}", body.response());
         return body.response();
     }
 
@@ -174,6 +179,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         );
 
         ProxyChatGptResponse body = Objects.requireNonNull(responseEntity.getBody(), "ChatGPT (Audio File) API 응답 본문이 null입니다.");
+        log.debug("ChatGPT (Audio File) API response: {}", body.response());
         return body.response();
     }
 
@@ -225,6 +231,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
             );
 
             final ProxyAssistantResponse proxyResponse = Objects.requireNonNull(responseEntity.getBody(), "Assistant API 응답 본문이 null입니다.");
+            log.debug("Assistant API response: response='{}', threadId='{}', text='{}'", proxyResponse.response(), proxyResponse.threadId(), proxyResponse.text());
 
             return new AssistantResponse(
                     proxyResponse.response(),
@@ -263,6 +270,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
             );
 
             final ProxyAssistantResponse proxyResponse = Objects.requireNonNull(responseEntity.getBody(), "Assistant (Audio File) API 응답 본문이 null입니다.");
+            log.debug("Assistant (Audio File) API response: response='{}', threadId='{}', text='{}'", proxyResponse.response(), proxyResponse.threadId(), proxyResponse.text());
 
             if (responseEntity.getStatusCode().is2xxSuccessful()) {
                 return new AssistantResponse(
