@@ -1,8 +1,8 @@
 package com.newworld.saegil.security.oauth2;
 
-import java.util.List;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import java.util.List;
 
 @ConfigurationProperties(prefix = "oauth2.kakao")
 public record KakaoOAuth2Properties(
