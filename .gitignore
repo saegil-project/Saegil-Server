@@ -36,6 +36,10 @@ out/
 ### VS Code ###
 .vscode/
 
+### Copilot ###
+copilot-instructions.md
+.github/prompts/
+
 ### macOS ###
 .DS_Store
 
