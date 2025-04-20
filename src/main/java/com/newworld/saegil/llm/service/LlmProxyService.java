@@ -1,6 +1,8 @@
 package com.newworld.saegil.llm.service;
 
 import com.newworld.saegil.llm.config.ProxyProperties;
+import com.newworld.saegil.llm.controller.AssistantRequest;
+import com.newworld.saegil.llm.controller.AssistantResponse;
 import com.newworld.saegil.llm.controller.ChatGptAudioUrlRequest;
 import com.newworld.saegil.llm.controller.ChatGptSttRequest;
 import com.newworld.saegil.llm.controller.ChatGptTextRequest;
@@ -19,8 +21,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -46,7 +51,7 @@ public class LlmProxyService implements LlmService {
                 Resource.class
         );
 
-        return responseEntity.getBody();
+        return Objects.requireNonNull(responseEntity.getBody(), "TTS API 응답 본문이 null입니다.");
     }
 
     @Override
@@ -65,7 +70,8 @@ public class LlmProxyService implements LlmService {
                 ProxySpeechToTextResponse.class
         );
 
-        return responseEntity.getBody().text();
+        ProxySpeechToTextResponse body = Objects.requireNonNull(responseEntity.getBody(), "STT (URL) API 응답 본문이 null입니다.");
+        return body.text();
     }
 
     @Override
@@ -84,7 +90,8 @@ public class LlmProxyService implements LlmService {
                 ProxySpeechToTextResponse.class
         );
 
-        return response.getBody().text();
+        ProxySpeechToTextResponse body = Objects.requireNonNull(response.getBody(), "STT (File) API 응답 본문이 null입니다.");
+        return body.text();
     }
 
     private MultiValueMap<String, Object> requestBodyFromMultiPartFile(final MultipartFile multipartFile) {
@@ -117,7 +124,8 @@ public class LlmProxyService implements LlmService {
                 ProxyChatGptResponse.class
         );
 
-        return responseEntity.getBody().response();
+        ProxyChatGptResponse body = Objects.requireNonNull(responseEntity.getBody(), "ChatGPT (Text) API 응답 본문이 null입니다.");
+        return body.response();
     }
 
     @Override
@@ -136,7 +144,8 @@ public class LlmProxyService implements LlmService {
                 ProxyChatGptResponse.class
         );
 
-        return responseEntity.getBody().response();
+        ProxyChatGptResponse body = Objects.requireNonNull(responseEntity.getBody(), "ChatGPT (STT Text) API 응답 본문이 null입니다.");
+        return body.response();
     }
 
     @Override
@@ -155,7 +164,8 @@ public class LlmProxyService implements LlmService {
                 ProxyChatGptResponse.class
         );
 
-        return responseEntity.getBody().response();
+        ProxyChatGptResponse body = Objects.requireNonNull(responseEntity.getBody(), "ChatGPT (Audio URL) API 응답 본문이 null입니다.");
+        return body.response();
     }
 
     @Override
@@ -174,7 +184,8 @@ public class LlmProxyService implements LlmService {
                 ProxyChatGptResponse.class
         );
 
-        return responseEntity.getBody().response();
+        ProxyChatGptResponse body = Objects.requireNonNull(responseEntity.getBody(), "ChatGPT (Audio File) API 응답 본문이 null입니다.");
+        return body.response();
     }
 
     @Override
@@ -193,7 +204,170 @@ public class LlmProxyService implements LlmService {
                 Resource.class
         );
 
-        return responseEntity.getBody();
+        return Objects.requireNonNull(responseEntity.getBody(), "STT-ChatGPT-TTS API 응답 본문이 null입니다.");
     }
 
+    @Override
+    public AssistantResponse getAssistantResponse(AssistantRequest request, String threadId) {
+        log.info("Getting Assistant response for text: {}, threadId: {}", request.text(), threadId);
+
+        try {
+            final HttpHeaders requestHeader = new HttpHeaders();
+            requestHeader.setContentType(MediaType.APPLICATION_JSON);
+            final ProxyAssistantRequest requestBody = new ProxyAssistantRequest(request.text());
+            final HttpEntity<ProxyAssistantRequest> requestEntity = new HttpEntity<>(requestBody, requestHeader);
+
+            String assistantPath = proxyProperties.getAssistantPath();
+            if (!assistantPath.endsWith("/")) {
+                assistantPath += "/";
+            }
+
+            final String url = UriComponentsBuilder.fromUriString(assistantPath)
+                    .queryParamIfPresent("thread_id", Optional.ofNullable(threadId).filter(s -> !s.isEmpty()))
+                    .build().toUriString();
+
+            final ResponseEntity<ProxyAssistantResponse> responseEntity = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    requestEntity,
+                    ProxyAssistantResponse.class
+            );
+
+            final ProxyAssistantResponse proxyResponse = Objects.requireNonNull(responseEntity.getBody(), "Assistant API 응답 본문이 null입니다.");
+
+            return new AssistantResponse(
+                    proxyResponse.response(),
+                    proxyResponse.threadId(),
+                    proxyResponse.text()
+            );
+        } catch (Exception e) {
+            log.error("Assistant API 호출 중 에러 발생: {}", e.getMessage(), e);
+            return new AssistantResponse("서비스 연결 중 오류가 발생했습니다. 다시 시도해주세요.",
+                    threadId != null ? threadId : "", request.text());
+        }
+    }
+
+    @Override
+    public AssistantResponse getAssistantResponseFromAudioFile(final MultipartFile multipartFile, String threadId) {
+        log.info("Getting Assistant response from audio file: {}, threadId: {}", multipartFile.getOriginalFilename(), threadId);
+
+        try {
+            final HttpHeaders requestHeader = new HttpHeaders();
+            requestHeader.setContentType(MediaType.MULTIPART_FORM_DATA);
+            final MultiValueMap<String, Object> requestBody = requestBodyFromMultiPartFile(multipartFile);
+
+            String assistantAudioFilePath = proxyProperties.getAssistantFromAudioFilePath();
+            if (!assistantAudioFilePath.endsWith("/")) {
+                assistantAudioFilePath += "/";
+            }
+
+            final String url = UriComponentsBuilder.fromUriString(assistantAudioFilePath)
+                    .queryParamIfPresent("thread_id", Optional.ofNullable(threadId).filter(s -> !s.isEmpty()))
+                    .build().toUriString();
+
+            final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
+
+            final ResponseEntity<ProxyAssistantResponse> responseEntity = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    requestEntity,
+                    ProxyAssistantResponse.class
+            );
+
+            final ProxyAssistantResponse proxyResponse = Objects.requireNonNull(responseEntity.getBody(), "Assistant (Audio File) API 응답 본문이 null입니다.");
+
+            return new AssistantResponse(
+                    proxyResponse.response(),
+                    proxyResponse.threadId(),
+                    proxyResponse.text()
+            );
+        } catch (Exception e) {
+            log.error("Assistant API 오디오 파일 호출 중 에러 발생: {}", e.getMessage(), e);
+            return new AssistantResponse("서비스 연결 중 오류가 발생했습니다. 다시 시도해주세요.",
+                    threadId != null ? threadId : "", "");
+        }
+    }
+
+    @Override
+    public Resource getAssistantAudioResponse(AssistantRequest request, String threadId, String provider) {
+        log.info("Getting Assistant audio response for text: {}, threadId: {}, provider: {}", request.text(), threadId, provider);
+
+        try {
+            final HttpHeaders requestHeader = new HttpHeaders();
+            requestHeader.setContentType(MediaType.APPLICATION_JSON);
+            final ProxyAssistantRequest requestBody = new ProxyAssistantRequest(request.text());
+            final HttpEntity<ProxyAssistantRequest> requestEntity = new HttpEntity<>(requestBody, requestHeader);
+
+            String assistantAudioPath = proxyProperties.getAssistantAudioPath();
+            if (!assistantAudioPath.endsWith("/")) {
+                assistantAudioPath += "/";
+            }
+
+            final String url = UriComponentsBuilder.fromUriString(assistantAudioPath)
+                    .queryParam("provider", provider != null ? provider : "openai")
+                    .queryParamIfPresent("thread_id", Optional.ofNullable(threadId).filter(s -> !s.isEmpty()))
+                    .build().toUriString();
+
+            final ResponseEntity<Resource> responseEntity = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    requestEntity,
+                    Resource.class
+            );
+
+            Resource responseResource = Objects.requireNonNull(responseEntity.getBody(), "Assistant Audio API 응답 본문이 null입니다.");
+
+            return responseResource;
+        } catch (Exception e) {
+            log.error("Assistant Audio API 호출 중 에러 발생: {}", e.getMessage(), e);
+            throw new RuntimeException("오디오 응답 생성 중 오류가 발생했습니다: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public Resource getAssistantAudioResponseFromAudioFile(final MultipartFile multipartFile, String threadId, String provider) {
+        log.info("Getting Assistant audio response from audio file: {}, threadId: {}, provider: {}", multipartFile.getOriginalFilename(), threadId, provider);
+
+        try {
+            final HttpHeaders requestHeader = new HttpHeaders();
+            requestHeader.setContentType(MediaType.MULTIPART_FORM_DATA);
+            final MultiValueMap<String, Object> requestBody = requestBodyFromMultiPartFile(multipartFile);
+
+            String assistantAudioFromFilePath = proxyProperties.getAssistantAudioFromFilePath();
+            if (!assistantAudioFromFilePath.endsWith("/")) {
+                assistantAudioFromFilePath += "/";
+            }
+
+            final String url = UriComponentsBuilder.fromUriString(assistantAudioFromFilePath)
+                    .queryParam("provider", provider != null ? provider : "openai")
+                    .queryParamIfPresent("thread_id", Optional.ofNullable(threadId).filter(s -> !s.isEmpty()))
+                    .build().toUriString();
+
+            final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
+
+            final ResponseEntity<Resource> responseEntity = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    requestEntity,
+                    Resource.class
+            );
+
+            Resource responseResource = Objects.requireNonNull(responseEntity.getBody(), "Assistant Audio (Audio File) API 응답 본문이 null입니다.");
+
+            return responseResource;
+        } catch (Exception e) {
+            log.error("Assistant Audio API 오디오 파일 호출 중 에러 발생: {}", e.getMessage(), e);
+            throw new RuntimeException("오디오 응답 생성 중 오류가 발생했습니다: " + e.getMessage(), e);
+        }
+    }
+
+    public static record ProxyAssistantRequest(String text) {}
+    public static record ProxyAssistantResponse(String response, String threadId, String text) {}
+    public static record ProxyTextToSpeechRequest(String text) {}
+    public static record ProxySpeechToTextUrlRequest(String audioUrl) {}
+    public static record ProxySpeechToTextResponse(String text) {}
+    public static record ProxyChatGptTextRequest(String text) {}
+    public static record ProxyChatGptResponse(String response) {}
+    public static record ProxyChatGptSttRequest(String audioText) {}
+    public static record ProxyChatGptAudioUrlRequest(String audioUrl) {}
 }

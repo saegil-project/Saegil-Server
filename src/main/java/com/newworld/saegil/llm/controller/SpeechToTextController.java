@@ -1,0 +1,55 @@
+package com.newworld.saegil.llm.controller;
+
+import com.newworld.saegil.configuration.SwaggerConfiguration;
+import com.newworld.saegil.llm.service.LlmService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+@Slf4j
+@RestController
+@RequestMapping("/api/v1/llm/speech-to-text")
+@RequiredArgsConstructor
+@Tag(name = "Speech-to-Text API", description = "음성을 텍스트로 변환하는 API")
+public class SpeechToTextController {
+
+    private final LlmService llmService;
+
+    @Operation(
+            summary = "오디오 URL에서 음성을 텍스트로 변환",
+            description = "OpenAI Whisper API를 사용하여 오디오 URL에서 음성을 텍스트로 변환합니다",
+            security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
+    )
+    @PostMapping("/audio-url")
+    public ResponseEntity<SpeechToTextResponse> speechToTextFromUrl(@RequestBody SpeechToTextUrlRequest request) {
+        log.info("Received speech-to-text URL request: {}", request.audioUrl());
+        final String text = llmService.speechToTextFromAudioUrl(request);
+        final SpeechToTextResponse response = new SpeechToTextResponse(text);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "파일에서 음성을 텍스트로 변환",
+            description = "업로드된 MP3 파일에서 OpenAI Whisper API를 사용하여 음성을 텍스트로 변환합니다",
+            security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
+    )
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<SpeechToTextResponse> speechToTextFromFile(@RequestPart("file") MultipartFile multipartFile) {
+        log.info("Received speech-to-text file upload request: {}", multipartFile.getOriginalFilename());
+        final String text = llmService.speechToTextFromAudioFile(multipartFile);
+        final SpeechToTextResponse response = new SpeechToTextResponse(text);
+
+        return ResponseEntity.ok(response);
+    }
+}

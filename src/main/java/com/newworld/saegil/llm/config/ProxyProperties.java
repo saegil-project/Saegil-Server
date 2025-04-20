@@ -1,49 +1,29 @@
 package com.newworld.saegil.llm.config;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
-@ConfigurationProperties(prefix = "proxy.llm")
-public record ProxyProperties(
-        String llmServerUrl,
-        String ttsPath,
-        String sttPath,
-        String sttFromAudioFilePath,
-        String chatgptFromTextPath,
-        String chatgptFromSttTextPath,
-        String chatgptFromAudioUrlPath,
-        String chatgptFromAudioFilePath,
-        String sttChatgptTtsFilePath
-) {
+@Setter
+@Getter
+@Component
+@ConfigurationProperties(prefix = "llm.proxy")
+public class ProxyProperties {
 
-    public String getTtsPath() {
-        return llmServerUrl + ttsPath;
-    }
+    private String ttsPath;
+    private String sttPath;
+    private String sttFromAudioFilePath;
+    private String chatgptFromTextPath;
+    private String chatgptFromSttTextPath;
+    private String chatgptFromAudioUrlPath;
+    private String chatgptFromAudioFilePath;
+    private String sttChatgptTtsFilePath;
+    
+    // Assistant API 관련 경로
+    private String assistantPath;
+    private String assistantFromAudioFilePath;
+    private String assistantAudioPath;
+    private String assistantAudioFromFilePath;
 
-    public String getSttPath() {
-        return llmServerUrl + sttPath;
-    }
-
-    public String getSttFromAudioFilePath() {
-        return llmServerUrl + sttFromAudioFilePath;
-    }
-
-    public String getChatgptFromTextPath() {
-        return llmServerUrl + chatgptFromTextPath;
-    }
-
-    public String getChatgptFromSttTextPath() {
-        return llmServerUrl + chatgptFromSttTextPath;
-    }
-
-    public String getChatgptFromAudioUrlPath() {
-        return llmServerUrl + chatgptFromAudioUrlPath;
-    }
-
-    public String getChatgptFromAudioFilePath() {
-        return llmServerUrl + chatgptFromAudioFilePath;
-    }
-
-    public String getSttChatgptTtsFilePath() {
-        return llmServerUrl + sttChatgptTtsFilePath;
-    }
 }
