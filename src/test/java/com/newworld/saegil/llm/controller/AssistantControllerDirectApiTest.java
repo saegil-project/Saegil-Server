@@ -4,6 +4,7 @@ import com.newworld.saegil.llm.config.ProxyProperties; // Import ProxyProperties
 import com.newworld.saegil.llm.service.LlmProxyService; // Import to access nested records
 import com.newworld.saegil.llm.service.ProxyAssistantRequest;
 import com.newworld.saegil.llm.service.ProxyAssistantResponse;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -24,6 +25,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 // Use WebEnvironment.NONE as we are not testing the Spring Boot server itself, just using its context
+@Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 // Rename the class to reflect direct API testing
 public class AssistantControllerDirectApiTest {

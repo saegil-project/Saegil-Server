@@ -20,7 +20,7 @@ public class ProxyProperties {
     private String chatgptFromAudioFilePath;
     private String sttChatgptTtsFilePath;
     
-    // Assistant API 관련 경로
+
     private String assistantPath;
     private String assistantFromAudioFilePath;
     private String assistantAudioPath;

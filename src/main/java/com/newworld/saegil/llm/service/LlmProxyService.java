@@ -36,7 +36,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
     private final RestTemplate restTemplate;
     private final ProxyProperties proxyProperties;
 
-    // --- TextToSpeechService Implementation ---
+
     @Override
     public Resource textToSpeech(TextToSpeechRequest request) {
         log.info("Converting text to speech: {}", request.text());
@@ -56,7 +56,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         return Objects.requireNonNull(responseEntity.getBody(), "TTS API 응답 본문이 null입니다.");
     }
 
-    // --- SpeechToTextService Implementation ---
+
     @Override
     public String speechToTextFromAudioUrl(SpeechToTextUrlRequest request) {
         log.info("Converting speech to text from URL: {}", request.audioUrl());
@@ -99,7 +99,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         return body.text();
     }
 
-    // --- ChatGptService Implementation ---
+
     @Override
     public String receiveChatGptResponseFromText(final ChatGptTextRequest request) {
         log.info("Getting ChatGPT response from text: {}", request.text());
@@ -184,7 +184,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         return body.response();
     }
 
-    // --- SttChatGptTtsService Implementation ---
+
     @Override
     public Resource receiveSttChatGptTtsResponseFromAudioFile(final MultipartFile multipartFile) {
         log.info("Getting STT ChatGPT TTS response from audio file: {}", multipartFile.getOriginalFilename());
@@ -204,7 +204,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         return Objects.requireNonNull(responseEntity.getBody(), "STT-ChatGPT-TTS API 응답 본문이 null입니다.");
     }
 
-    // --- AssistantService Implementation ---
+
     @Override
     public AssistantResponse getAssistantResponse(AssistantRequest request, String threadId) {
         log.info("Getting Assistant response for text: {}, threadId: {}", request.text(), threadId);
@@ -370,7 +370,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         }
     }
 
-    // --- Helper Methods ---
+
     private MultiValueMap<String, Object> requestBodyFromMultiPartFile(final MultipartFile multipartFile) {
         MultipartInputStreamFileResource inputStreamFileResource;
         try {

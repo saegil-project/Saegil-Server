@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-// Enum 정의 추가
 enum TtsProvider {
     OPENAI, ELEVENLABS
 }

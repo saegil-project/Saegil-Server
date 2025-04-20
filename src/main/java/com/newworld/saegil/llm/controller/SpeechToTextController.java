@@ -1,9 +1,6 @@
 package com.newworld.saegil.llm.controller;
 
-import com.newworld.saegil.configuration.SwaggerConfiguration;
 import com.newworld.saegil.llm.service.SpeechToTextService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,11 +22,6 @@ public class SpeechToTextController {
 
     private final SpeechToTextService speechToTextService;
 
-    @Operation(
-            summary = "오디오 URL에서 음성을 텍스트로 변환",
-            description = "OpenAI Whisper API를 사용하여 오디오 URL에서 음성을 텍스트로 변환합니다",
-            security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
-    )
     @PostMapping("/audio-url")
     public ResponseEntity<SpeechToTextResponse> speechToTextFromUrl(@RequestBody SpeechToTextUrlRequest request) {
         log.info("Received speech-to-text URL request: {}", request.audioUrl());
@@ -39,11 +31,6 @@ public class SpeechToTextController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(
-            summary = "파일에서 음성을 텍스트로 변환",
-            description = "업로드된 MP3 파일에서 OpenAI Whisper API를 사용하여 음성을 텍스트로 변환합니다",
-            security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
-    )
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SpeechToTextResponse> speechToTextFromFile(@RequestPart("file") MultipartFile multipartFile) {
         log.info("Received speech-to-text file upload request: {}", multipartFile.getOriginalFilename());
