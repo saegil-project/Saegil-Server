@@ -18,7 +18,7 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class NoticeService {
+public class NoticeCrawlingService {
 
     private final NoticeRepository noticeRepository;
     private final Set<NoticeCrawler> crawlers;
