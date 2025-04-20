@@ -10,6 +10,7 @@ import com.newworld.saegil.llm.controller.SpeechToTextUrlRequest;
 import com.newworld.saegil.llm.controller.TextToSpeechRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -302,25 +303,25 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
             final HttpEntity<ProxyAssistantRequest> requestEntity = new HttpEntity<>(requestBody, requestHeader);
 
             String assistantAudioPath = proxyProperties.getAssistantAudioPath();
-            if (!assistantAudioPath.endsWith("/")) {
-                assistantAudioPath += "/";
-            }
 
             final String url = UriComponentsBuilder.fromUriString(assistantAudioPath)
                     .queryParam("provider", provider != null ? provider : "openai")
                     .queryParamIfPresent("thread_id", Optional.ofNullable(threadId).filter(s -> !s.isEmpty()))
                     .build().toUriString();
 
-            final ResponseEntity<Resource> responseEntity = restTemplate.exchange(
+            final ResponseEntity<byte[]> responseEntity = restTemplate.exchange(
                     url,
                     HttpMethod.POST,
                     requestEntity,
-                    Resource.class
+                    byte[].class
             );
 
-            Resource responseResource = Objects.requireNonNull(responseEntity.getBody(), "Assistant Audio API 응답 본문이 null입니다.");
+            byte[] responseBody = Objects.requireNonNull(responseEntity.getBody(), "Assistant Audio API 응답 본문이 null입니다.");
+            if (responseBody.length == 0) {
+                log.warn("Assistant Audio API 응답 본문이 비어 있습니다.");
+            }
 
-            return responseResource;
+            return new ByteArrayResource(responseBody);
         } catch (Exception e) {
             log.error("Assistant Audio API 호출 중 에러 발생: {}", e.getMessage(), e);
             throw new RuntimeException("오디오 응답 생성 중 오류가 발생했습니다: " + e.getMessage(), e);
@@ -345,17 +346,21 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
 
             final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
 
-            final ResponseEntity<Resource> responseEntity = restTemplate.exchange(
+            final ResponseEntity<byte[]> responseEntity = restTemplate.exchange(
                     url,
                     HttpMethod.POST,
                     requestEntity,
-                    Resource.class
+                    byte[].class
             );
 
-            if (responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
-                return responseEntity.getBody();
+            if (responseEntity.getStatusCode().is2xxSuccessful()) {
+                byte[] responseBody = Objects.requireNonNull(responseEntity.getBody(), "Assistant Audio (Audio File) API 응답 본문이 null입니다.");
+                if (responseBody.length == 0) {
+                    log.warn("Assistant Audio (Audio File) API 응답 본문이 비어 있습니다.");
+                }
+                return new ByteArrayResource(responseBody);
             } else {
-                log.error("Assistant Audio (Audio File) API call failed with status: {} and body: {}", responseEntity.getStatusCode(), responseEntity.getBody());
+                log.error("Assistant Audio (Audio File) API call failed with status: {}", responseEntity.getStatusCode());
                 throw new RuntimeException("오디오 응답 생성 중 오류가 발생했습니다. 상태 코드: " + responseEntity.getStatusCode());
             }
 
