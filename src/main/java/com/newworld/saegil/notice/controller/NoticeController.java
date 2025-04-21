@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,16 +52,13 @@ public class NoticeController {
             @Parameter(description = "기관명 필터 (ex. 남북하나재단, 통일부) (필수 x)", example = "남북하나재단")
             @RequestParam(required = false) final Long sourceId,
 
-            @Parameter(description = "마지막으로 조회된 공지사항 날짜 (무한스크롤 방식) (첫 요청 = null)", example = "2025-04-01")
-            @RequestParam(required = false) final LocalDate lastDate,
-
             @Parameter(description = "마지막으로 조회된 공지사항 ID (무한스크롤 방식) (첫 요청 = null)", example = "101")
             @RequestParam(required = false) final Long lastId,
 
             @Parameter(description = "페이지당 항목 개수 (필수 x)", example = "10")
             @RequestParam(defaultValue = "10") final int size
     ) {
-        final ReadNoticesResult result = noticeService.readAll(query, sourceId, lastDate, lastId, size);
+        final ReadNoticesResult result = noticeService.readAll(query, sourceId, lastId, size);
         final ReadNoticesResponse response = ReadNoticesResponse.from(result);
 
         return ResponseEntity.ok(response);

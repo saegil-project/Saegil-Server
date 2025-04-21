@@ -13,9 +13,6 @@ public record ReadNoticesResponse(
         @Schema(description = "공지사항 목록")
         List<ReadNoticeItemResponse> notices,
 
-        @Schema(description = "마지막으로 조회된 공지사항 날짜 (다음 리스트 요청 시 사용할 lastDate 파라미터 값)", example = "2025-04-01")
-        LocalDate lastResultDate,
-
         @Schema(description = "마지막으로 조회된 공지사항 ID (다음 리스트 요청 시 사용할 lastId 파라미터 값)", example = "101")
         Long lastResultId,
 
@@ -31,7 +28,6 @@ public record ReadNoticesResponse(
 
         return new ReadNoticesResponse(
                 readNoticeItemResponses,
-                result.lastResultDate(),
                 result.lastResultId(),
                 result.hasNext()
         );

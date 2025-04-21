@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -21,13 +20,11 @@ public class NoticeService {
     public ReadNoticesResult readAll(
             final String query,
             final Long sourceId,
-            final LocalDate lastDate,
             final Long lastId,
             final int size
     ) {
         final Pageable pageable = PageRequest.of(0, size);
-        final List<Notice> notices = noticeRepository.findAllByCursor(query, sourceId, lastDate, lastId, pageable);
-        final LocalDate lastResultDate = notices.isEmpty() ? null : notices.getLast().getDate();
+        final List<Notice> notices = noticeRepository.findAllByCursor(query, sourceId, lastId, pageable);
         final Long lastResultId = notices.isEmpty() ? null : notices.getLast().getId();
         final boolean hasNext = notices.size() == size;
 
@@ -35,7 +32,6 @@ public class NoticeService {
                 notices.stream()
                        .map(NoticeDto::from)
                        .toList(),
-                lastResultDate,
                 lastResultId,
                 hasNext
         );
