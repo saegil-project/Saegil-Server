@@ -15,6 +15,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NoticeService {
 
+    private static final int FIRST_PAGE = 0;
+
     private final NoticeRepository noticeRepository;
 
     public ReadNoticesResult readAll(
@@ -23,7 +25,7 @@ public class NoticeService {
             final Long lastId,
             final int size
     ) {
-        final Pageable pageable = PageRequest.of(0, size);
+        final Pageable pageable = PageRequest.of(FIRST_PAGE, size);
         final List<Notice> notices = noticeRepository.findAllByCursor(query, sourceId, lastId, pageable);
         final Long lastResultId = notices.isEmpty() ? null : notices.getLast().getId();
         final boolean hasNext = notices.size() == size;
