@@ -30,12 +30,33 @@ public class NoticeService {
 
         log.info("공지사항 크롤링 완료. 크롤링 소요 시간: {} ms", crawlEndTime - crawlStartTime);
 
+        if (noticeRepository.count() == 0) {
+            sortByDateAsc(newNoticesToSave);
+        }
+
         final long saveStartTime = System.currentTimeMillis();
         noticeRepository.saveAll(newNoticesToSave);
         final long saveEndTime = System.currentTimeMillis();
 
         log.info("공지사항 저장 완료. 저장 소요 시간: {} ms", saveEndTime - saveStartTime);
         log.info("총 크롤링 및 저장 소요 시간: {} ms", saveEndTime - crawlStartTime);
+    }
+
+    private void sortByDateAsc(final List<Notice> newNoticesToSave) {
+        newNoticesToSave.sort(((o1, o2) -> {
+            if (o1.getDate() != null && o2.getDate() != null) {
+                return o1.getDate().compareTo(o2.getDate());
+            }
+            if (o1.getDate() == null && o2.getDate() == null) {
+                return 0;
+            }
+            if (o1.getDate() != null && o2.getDate() == null) {
+                return 1;
+            }
+            else {
+                return -1;
+            }
+        }));
     }
 
     private List<Notice> crawlAllNotices() {
