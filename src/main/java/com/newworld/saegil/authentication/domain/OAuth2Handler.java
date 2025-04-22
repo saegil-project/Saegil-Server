@@ -6,4 +6,5 @@ public interface OAuth2Handler {
     String provideAuthCodeRequestUrl();
     String getOAuth2AccessToken(final String authorizationCode);
     OAuth2UserInfo getUserInfo(final String accessToken);
+    void unlink(String oauth2Id);
 }
