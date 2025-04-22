@@ -1,5 +1,6 @@
 package com.newworld.saegil.configuration;
 
+import com.newworld.saegil.llm.config.FileProperties;
 import com.newworld.saegil.llm.config.ProxyProperties;
 import com.newworld.saegil.security.jwt.JwtProperties;
 import com.newworld.saegil.security.oauth2.KakaoOAuth2Properties;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
         JwtProperties.class,
         KakaoOAuth2Properties.class,
         ProxyProperties.class,
+        FileProperties.class,
         CorsProperties.class})
 public class PropertiesConfiguration {
 }

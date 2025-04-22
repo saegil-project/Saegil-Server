@@ -1,29 +1,21 @@
 package com.newworld.saegil.llm.config;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
-@Setter
-@Getter
-@Component
 @ConfigurationProperties(prefix = "llm.proxy")
-public class ProxyProperties {
+public record ProxyProperties(
+    String ttsPath,
+    String sttPath,
+    String sttFromAudioFilePath,
+    String chatgptFromTextPath,
+    String chatgptFromSttTextPath,
+    String chatgptFromAudioUrlPath,
+    String chatgptFromAudioFilePath,
+    String sttChatgptTtsFilePath,
 
-    private String ttsPath;
-    private String sttPath;
-    private String sttFromAudioFilePath;
-    private String chatgptFromTextPath;
-    private String chatgptFromSttTextPath;
-    private String chatgptFromAudioUrlPath;
-    private String chatgptFromAudioFilePath;
-    private String sttChatgptTtsFilePath;
-    
-
-    private String assistantPath;
-    private String assistantFromAudioFilePath;
-    private String assistantAudioPath;
-    private String assistantAudioFromFilePath;
-
+    String assistantPath,
+    String assistantFromAudioFilePath,
+    String assistantAudioPath,
+    String assistantAudioFromFilePath
+) {
 }

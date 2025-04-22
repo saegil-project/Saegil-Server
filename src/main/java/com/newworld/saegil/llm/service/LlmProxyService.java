@@ -46,7 +46,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         final HttpEntity<ProxyTextToSpeechRequest> requestEntity = new HttpEntity<>(requestBody, requestHeader);
 
         final ResponseEntity<Resource> responseEntity = restTemplate.exchange(
-                proxyProperties.getTtsPath(),
+                proxyProperties.ttsPath(),
                 HttpMethod.POST,
                 requestEntity,
                 Resource.class
@@ -65,7 +65,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         final HttpEntity<ProxySpeechToTextUrlRequest> requestEntity = new HttpEntity<>(requestBody, requestHeader);
 
         final ResponseEntity<ProxySpeechToTextResponse> responseEntity = restTemplate.exchange(
-                proxyProperties.getSttPath(),
+                proxyProperties.sttPath(),
                 HttpMethod.POST,
                 requestEntity,
                 ProxySpeechToTextResponse.class
@@ -86,7 +86,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
 
         final ResponseEntity<ProxySpeechToTextResponse> response = restTemplate.exchange(
-                proxyProperties.getSttFromAudioFilePath(),
+                proxyProperties.sttFromAudioFilePath(),
                 HttpMethod.POST,
                 requestEntity,
                 ProxySpeechToTextResponse.class
@@ -107,7 +107,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         final HttpEntity<ProxyChatGptTextRequest> requestEntity = new HttpEntity<>(requestBody, requestHeader);
 
         final ResponseEntity<ProxyChatGptResponse> responseEntity = restTemplate.exchange(
-                proxyProperties.getChatgptFromTextPath(),
+                proxyProperties.chatgptFromTextPath(),
                 HttpMethod.POST,
                 requestEntity,
                 ProxyChatGptResponse.class
@@ -128,7 +128,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         final HttpEntity<ProxyChatGptSttRequest> requestEntity = new HttpEntity<>(requestBody, requestHeader);
 
         final ResponseEntity<ProxyChatGptResponse> responseEntity = restTemplate.exchange(
-                proxyProperties.getChatgptFromSttTextPath(),
+                proxyProperties.chatgptFromSttTextPath(),
                 HttpMethod.POST,
                 requestEntity,
                 ProxyChatGptResponse.class
@@ -149,7 +149,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         final HttpEntity<ProxyChatGptAudioUrlRequest> requestEntity = new HttpEntity<>(requestBody, requestHeader);
 
         final ResponseEntity<ProxyChatGptResponse> responseEntity = restTemplate.exchange(
-                proxyProperties.getChatgptFromAudioUrlPath(),
+                proxyProperties.chatgptFromAudioUrlPath(),
                 HttpMethod.POST,
                 requestEntity,
                 ProxyChatGptResponse.class
@@ -170,7 +170,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
 
         final ResponseEntity<ProxyChatGptResponse> responseEntity = restTemplate.exchange(
-                proxyProperties.getChatgptFromAudioFilePath(),
+                proxyProperties.chatgptFromAudioFilePath(),
                 HttpMethod.POST,
                 requestEntity,
                 ProxyChatGptResponse.class
@@ -191,7 +191,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
         final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
 
         final ResponseEntity<Resource> responseEntity = restTemplate.exchange(
-                proxyProperties.getSttChatgptTtsFilePath(),
+                proxyProperties.sttChatgptTtsFilePath(),
                 HttpMethod.POST,
                 requestEntity,
                 Resource.class
@@ -210,7 +210,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
             final ProxyAssistantRequest requestBody = new ProxyAssistantRequest(request.text());
             final HttpEntity<ProxyAssistantRequest> requestEntity = new HttpEntity<>(requestBody, requestHeader);
 
-            String assistantPath = proxyProperties.getAssistantPath();
+            String assistantPath = proxyProperties.assistantPath();
             if (!assistantPath.endsWith("/")) {
                 assistantPath += "/";
             }
@@ -251,7 +251,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
             requestHeader.setContentType(MediaType.MULTIPART_FORM_DATA);
             final MultiValueMap<String, Object> requestBody = requestBodyFromMultiPartFile(multipartFile);
 
-            final String assistantAudioFilePath = proxyProperties.getAssistantFromAudioFilePath();
+            final String assistantAudioFilePath = proxyProperties.assistantFromAudioFilePath();
 
             final String url = UriComponentsBuilder.fromUriString(assistantAudioFilePath)
                     .queryParamIfPresent("thread_id", Optional.ofNullable(threadId).filter(s -> !s.isEmpty()))
@@ -299,7 +299,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
             final ProxyAssistantRequest requestBody = new ProxyAssistantRequest(request.text());
             final HttpEntity<ProxyAssistantRequest> requestEntity = new HttpEntity<>(requestBody, requestHeader);
 
-            final String assistantAudioPath = proxyProperties.getAssistantAudioPath();
+            final String assistantAudioPath = proxyProperties.assistantAudioPath();
 
             final String url = UriComponentsBuilder.fromUriString(assistantAudioPath)
                     .queryParam("provider", provider != null ? provider : "openai")
@@ -335,7 +335,7 @@ public class LlmProxyService implements TextToSpeechService, SpeechToTextService
             requestHeader.setContentType(MediaType.MULTIPART_FORM_DATA);
             final MultiValueMap<String, Object> requestBody = requestBodyFromMultiPartFile(multipartFile);
 
-            final String assistantAudioFromFilePath = proxyProperties.getAssistantAudioFromFilePath();
+            final String assistantAudioFromFilePath = proxyProperties.assistantAudioFromFilePath();
 
             final String url = UriComponentsBuilder.fromUriString(assistantAudioFromFilePath)
                     .queryParam("provider", provider != null ? provider : "openai")
