@@ -136,6 +136,9 @@ public class AuthenticationController {
             @RequestHeader(HttpHeaders.AUTHORIZATION) final String accessToken,
             @RequestBody @Valid final WithdrawalRequest request
     ) {
-        return null;
+        authenticationService.withdrawal(accessToken, request.refreshToken());
+
+        return ResponseEntity.noContent()
+                             .build();
     }
 }
