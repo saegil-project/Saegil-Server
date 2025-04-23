@@ -69,7 +69,7 @@ public class AssistantControllerDirectApiTest {
     @MethodSource("provideQuestions")
     void testFastApiAssistantDirectly(String question) {
         // Given: Prepare the request for the FastAPI endpoint using ProxyProperties
-        String assistantPath = proxyProperties.getAssistantPath(); // Get the full path from properties
+        String assistantPath = proxyProperties.assistantPath(); // Get the full path from properties
         if (!assistantPath.endsWith("/")) {
             assistantPath += "/";
         }
