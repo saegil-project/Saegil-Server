@@ -58,3 +58,7 @@ llm:
     assistant-audio-from-file-path: ${llm.proxy.llm-server-url}/api/v1/assistant/upload/audio
   file:
     result-file-name: assistant_response.mp3
+logging:
+  file:
+    name:
+    path:
