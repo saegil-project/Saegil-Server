@@ -132,4 +132,16 @@ public class AuthenticationService {
 
         return new TokenRefreshResult(token.accessToken(), token.refreshToken());
     }
+
+    public void withdrawal(final String accessToken, final String refreshToken) {
+        final PrivateClaims privateClaims = getValidPrivateClaims(TokenType.ACCESS, accessToken);
+        final User user = userRepository.findById(privateClaims.userId())
+                                        .orElseThrow(() -> new InvalidWithdrawalException("이미 탈퇴되었습니다."));
+        final OAuth2Handler handler = oauth2HandlerComposite.findHandler(user.getOauth2Type());
+
+        blacklistTokenRepository.save(new BlacklistToken(user.getId(), TokenType.ACCESS, accessToken));
+        blacklistTokenRepository.save(new BlacklistToken(user.getId(), TokenType.REFRESH, refreshToken));
+        userRepository.deleteById(user.getId());
+        handler.unlink(user.getOauth2Id());
+    }
 }

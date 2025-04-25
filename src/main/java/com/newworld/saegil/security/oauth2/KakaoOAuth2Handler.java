@@ -21,6 +21,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class KakaoOAuth2Handler implements OAuth2Handler {
 
+    private static final String KAKAO_ADMIN_TOKEN_TYPE = "KakaoAK ";
+
     private final KakaoOAuth2Properties kakaoOAuth2Properties;
     private final RestTemplate restTemplate;
 
@@ -106,5 +108,35 @@ public class KakaoOAuth2Handler implements OAuth2Handler {
         final String profileImageUrl = (String) properties.get("profile_image");
 
         return new OAuth2UserInfo(id, OAuth2Type.KAKAO, nickname, profileImageUrl);
+    }
+
+    @Override
+    public void unlink(final String oauth2Id) {
+        final HttpEntity<MultiValueMap<String, String>> requestEntity = createUnlinkRequest(oauth2Id);
+        final ResponseEntity<Map> response = restTemplate.exchange(
+                "https://kapi.kakao.com/v1/user/unlink",
+                HttpMethod.POST,
+                requestEntity,
+                Map.class
+        );
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new OAuth2ProcessingException("Kakao unlink 요청에 실패했습니다.");
+        }
+    }
+
+    private HttpEntity<MultiValueMap<String, String>> createUnlinkRequest(final String oauth2Id) {
+        final HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        requestHeaders.set(
+                HttpHeaders.AUTHORIZATION,
+                KAKAO_ADMIN_TOKEN_TYPE + kakaoOAuth2Properties.adminKey()
+        );
+
+        final MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+        requestBody.add("target_id_type", "user_id");
+        requestBody.add("target_id", oauth2Id);
+
+        return new HttpEntity<>(requestBody, requestHeaders);
     }
 }

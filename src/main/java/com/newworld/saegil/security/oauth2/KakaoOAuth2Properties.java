@@ -6,6 +6,7 @@ import java.util.List;
 
 @ConfigurationProperties(prefix = "oauth2.kakao")
 public record KakaoOAuth2Properties(
+        String adminKey,
         String clientId,
         String clientSecret,
         String redirectUri,

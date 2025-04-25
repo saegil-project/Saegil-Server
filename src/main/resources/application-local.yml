@@ -37,6 +37,7 @@ token:
     refresh-expired-hours: 336  # 14일
 oauth2:
   kakao:
+    admin-key: ${KAKAO_ADMIN_KEY}
     client_id: ${KAKAO_CLIENT_ID}
     client_secret: ${KAKAO_CLIENT_SECRET}
     redirect_uri: ${KAKAO_REDIRECT_URI}
