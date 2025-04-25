@@ -59,10 +59,10 @@ public class NoticeService {
 
         final List<Notice> newNotices =
                 crawledNotices.stream()
-                        .filter(newNotice ->
-                                latestNotices.stream()
-                                        .noneMatch(latestNotice -> latestNotice.hasSameTitle(newNotice))
-                        ).toList();
+                              .filter(newNotice ->
+                                      latestNotices.stream()
+                                                   .noneMatch(latestNotice -> latestNotice.hasSameTitle(newNotice))
+                              ).toList();
         log.info("새로운 {} {} 개수: {}",
                 noticeType.getSource(), noticeType.getCategory(), newNotices.size()
         );

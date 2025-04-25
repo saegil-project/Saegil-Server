@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
         KakaoOAuth2Properties.class,
         ProxyProperties.class,
         FileProperties.class,
-        CorsProperties.class})
+        CorsProperties.class
+})
 public class PropertiesConfiguration {
 }

@@ -58,7 +58,7 @@ public class NoticeController {
         // TODO: 공지사항 목록 조회 기능 개발 후 삭제
         List<ReadNoticesResponse.ReadNoticeItemResponse> dummyNotices = new ArrayList<>();
         for (int i = 1; i <= 30; i++) {
-            dummyNotices.add(createDummyNoticeItem((long)i));
+            dummyNotices.add(createDummyNoticeItem((long) i));
         }
 
         String sourceName = null;

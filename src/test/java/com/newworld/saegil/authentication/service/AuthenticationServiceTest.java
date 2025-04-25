@@ -103,10 +103,10 @@ class AuthenticationServiceTest {
                 final LoginResult result = authenticationService.login("KAKAO", 카카오_인증_코드, LocalDateTime.now());
 
                 // then
-                SoftAssertions.assertSoftly(softly -> {
-                    softly.assertThat(result.id()).isEqualTo(가입된_유저.getId());
-                    softly.assertThat(result.accessToken()).startsWith(SERVICE_TOKEN_PREFIX);
-                    softly.assertThat(result.refreshToken()).startsWith(SERVICE_TOKEN_PREFIX);
+                SoftAssertions.assertSoftly(softAssertions -> {
+                    softAssertions.assertThat(result.id()).isEqualTo(가입된_유저.getId());
+                    softAssertions.assertThat(result.accessToken()).startsWith(SERVICE_TOKEN_PREFIX);
+                    softAssertions.assertThat(result.refreshToken()).startsWith(SERVICE_TOKEN_PREFIX);
                 });
             }
         }
@@ -150,12 +150,19 @@ class AuthenticationServiceTest {
             @Test
             void PrivateClaims를_반환한다() {
                 // given
-                final User user = new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO);
-                userRepository.save(user);
-                final Token token = tokenProcessor.generateToken(LocalDateTime.now(), new PrivateClaims(user.getId()).toMap());
+                final User user = userRepository.save(
+                        new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO)
+                );
+                final Token token = tokenProcessor.generateToken(
+                        LocalDateTime.now(),
+                        new PrivateClaims(user.getId()).toMap()
+                );
 
                 // when
-                final PrivateClaims privateClaims = authenticationService.getValidPrivateClaims(TokenType.ACCESS, token.accessToken());
+                final PrivateClaims privateClaims = authenticationService.getValidPrivateClaims(
+                        TokenType.ACCESS,
+                        token.accessToken()
+                );
 
                 // then
                 assertThat(privateClaims.userId()).isEqualTo(user.getId());
@@ -169,32 +176,36 @@ class AuthenticationServiceTest {
             @Test
             void 존재하지_않는_유저의_토큰이면_예외가_발생한다() {
                 // given
-                final Token token = tokenProcessor.generateToken(LocalDateTime.now(), new PrivateClaims(-999L).toMap());
+                final Token token = tokenProcessor.generateToken(
+                        LocalDateTime.now(),
+                        new PrivateClaims(-999L).toMap()
+                );
 
                 // when & then
                 SoftAssertions.assertSoftly(softAssertions -> {
                     softAssertions.assertThatThrownBy(
-                                    () -> authenticationService.getValidPrivateClaims(TokenType.ACCESS, token.accessToken()))
-                            .isInstanceOf(NoSuchUserException.class)
-                            .hasMessage("존재하지 않는 유저의 토큰입니다.");
-
+                                          () -> authenticationService.getValidPrivateClaims(TokenType.ACCESS, token.accessToken())
+                                  ).isInstanceOf(NoSuchUserException.class)
+                                  .hasMessage("존재하지 않는 유저의 토큰입니다.");
                     softAssertions.assertThatThrownBy(
-                                    () -> authenticationService.getValidPrivateClaims(TokenType.REFRESH, token.refreshToken()))
-                            .isInstanceOf(NoSuchUserException.class)
-                            .hasMessage("존재하지 않는 유저의 토큰입니다.");
+                                          () -> authenticationService.getValidPrivateClaims(TokenType.REFRESH, token.refreshToken())
+                                  ).isInstanceOf(NoSuchUserException.class)
+                                  .hasMessage("존재하지 않는 유저의 토큰입니다.");
                 });
             }
 
             @Test
             void 로그아웃된_토큰이면_예외가_발생한다() {
                 // given
-                final User user = new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO);
-                userRepository.save(user);
-                final Token token = tokenProcessor.generateToken(LocalDateTime.now(),
-                        new PrivateClaims(user.getId()).toMap());
+                final User user = userRepository.save(
+                        new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO)
+                );
+                final Token token = tokenProcessor.generateToken(
+                        LocalDateTime.now(),
+                        new PrivateClaims(user.getId()).toMap()
+                );
                 blacklistTokenRepository.save(new BlacklistToken(user.getId(), TokenType.ACCESS, token.accessToken()));
-                blacklistTokenRepository.save(
-                        new BlacklistToken(user.getId(), TokenType.REFRESH, token.refreshToken()));
+                blacklistTokenRepository.save(new BlacklistToken(user.getId(), TokenType.REFRESH, token.refreshToken()));
 
                 entityManager.flush();
                 entityManager.clear();
@@ -202,13 +213,13 @@ class AuthenticationServiceTest {
                 // when & then
                 SoftAssertions.assertSoftly(softAssertions -> {
                     softAssertions.assertThatThrownBy(
-                                    () -> authenticationService.getValidPrivateClaims(TokenType.ACCESS, token.accessToken()))
-                            .isInstanceOf(InvalidTokenException.class)
-                            .hasMessage("사용할 수 없는 토큰입니다.");
+                                          () -> authenticationService.getValidPrivateClaims(TokenType.ACCESS, token.accessToken())
+                                  ).isInstanceOf(InvalidTokenException.class)
+                                  .hasMessage("사용할 수 없는 토큰입니다.");
                     softAssertions.assertThatThrownBy(
-                                    () -> authenticationService.getValidPrivateClaims(TokenType.REFRESH, token.refreshToken()))
-                            .isInstanceOf(InvalidTokenException.class)
-                            .hasMessage("사용할 수 없는 토큰입니다.");
+                                          () -> authenticationService.getValidPrivateClaims(TokenType.REFRESH, token.refreshToken())
+                                  ).isInstanceOf(InvalidTokenException.class)
+                                  .hasMessage("사용할 수 없는 토큰입니다.");
                 });
             }
         }
@@ -225,10 +236,13 @@ class AuthenticationServiceTest {
             @Test
             void 토큰이_블랙리스트_토큰_목록에_등록된다() {
                 // given
-                final User user = new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO);
-                userRepository.save(user);
-                final Token token = tokenProcessor.generateToken(LocalDateTime.now(),
-                        new PrivateClaims(user.getId()).toMap());
+                final User user = userRepository.save(
+                        new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO)
+                );
+                final Token token = tokenProcessor.generateToken(
+                        LocalDateTime.now(),
+                        new PrivateClaims(user.getId()).toMap()
+                );
 
                 // when
                 authenticationService.logout(token.accessToken(), token.refreshToken());
@@ -237,22 +251,23 @@ class AuthenticationServiceTest {
 
                 // then
                 SoftAssertions.assertSoftly(softAssertions -> {
-                    softAssertions.assertThat(
-                                    blacklistTokenRepository.existsByUserIdAndToken(user.getId(), token.accessToken()))
-                            .isTrue();
-                    softAssertions.assertThat(
-                                    blacklistTokenRepository.existsByUserIdAndToken(user.getId(), token.refreshToken()))
-                            .isTrue();
+                    softAssertions.assertThat(blacklistTokenRepository.existsByUserIdAndToken(user.getId(), token.accessToken()))
+                                  .isTrue();
+                    softAssertions.assertThat(blacklistTokenRepository.existsByUserIdAndToken(user.getId(), token.refreshToken()))
+                                  .isTrue();
                 });
             }
 
             @Test
             void 로그아웃에_사용된_토큰은_더이상_유효하지_않다() {
                 // given
-                final User user = new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO);
-                userRepository.save(user);
-                final Token token = tokenProcessor.generateToken(LocalDateTime.now(),
-                        new PrivateClaims(user.getId()).toMap());
+                final User user = userRepository.save(
+                        new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO)
+                );
+                final Token token = tokenProcessor.generateToken(
+                        LocalDateTime.now(),
+                        new PrivateClaims(user.getId()).toMap()
+                );
 
                 // when
                 authenticationService.logout(token.accessToken(), token.refreshToken());
@@ -262,9 +277,9 @@ class AuthenticationServiceTest {
                 // then
                 SoftAssertions.assertSoftly(softAssertions -> {
                     softAssertions.assertThat(authenticationService.isValidToken(TokenType.ACCESS, token.accessToken()))
-                            .isFalse();
-                    softAssertions.assertThat(
-                            authenticationService.isValidToken(TokenType.REFRESH, token.refreshToken())).isFalse();
+                                  .isFalse();
+                    softAssertions.assertThat(authenticationService.isValidToken(TokenType.REFRESH, token.refreshToken()))
+                                  .isFalse();
                 });
             }
         }
@@ -281,10 +296,13 @@ class AuthenticationServiceTest {
             @Test
             void true를_반환한다() {
                 // given
-                final User user = new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO);
-                userRepository.save(user);
-                final Token token = tokenProcessor.generateToken(LocalDateTime.now(),
-                        new PrivateClaims(user.getId()).toMap());
+                final User user = userRepository.save(
+                        new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO)
+                );
+                final Token token = tokenProcessor.generateToken(
+                        LocalDateTime.now(),
+                        new PrivateClaims(user.getId()).toMap()
+                );
                 entityManager.flush();
                 entityManager.clear();
 
@@ -303,7 +321,10 @@ class AuthenticationServiceTest {
             @Test
             void 존재하지_않는_유저의_토큰이면_false를_반환한다() {
                 // given
-                final Token token = tokenProcessor.generateToken(LocalDateTime.now(), new PrivateClaims(-999L).toMap());
+                final Token token = tokenProcessor.generateToken(
+                        LocalDateTime.now(),
+                        new PrivateClaims(-999L).toMap()
+                );
 
                 // when
                 final boolean actual = authenticationService.isValidToken(TokenType.ACCESS, token.accessToken());
@@ -315,13 +336,13 @@ class AuthenticationServiceTest {
             @Test
             void 로그아웃된_토큰이면_false를_반환한다() {
                 // given
-                final User user = new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO);
-                userRepository.save(user);
+                final User user = userRepository.save(
+                        new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO)
+                );
                 final Token token = tokenProcessor.generateToken(LocalDateTime.now(),
                         new PrivateClaims(user.getId()).toMap());
                 blacklistTokenRepository.save(new BlacklistToken(user.getId(), TokenType.ACCESS, token.accessToken()));
-                blacklistTokenRepository.save(
-                        new BlacklistToken(user.getId(), TokenType.REFRESH, token.refreshToken()));
+                blacklistTokenRepository.save(new BlacklistToken(user.getId(), TokenType.REFRESH, token.refreshToken()));
 
                 entityManager.flush();
                 entityManager.clear();
@@ -346,10 +367,13 @@ class AuthenticationServiceTest {
             @Test
             void 토큰_갱신에_사용한_refreshToken은_블랙리스트에_등록된다() {
                 // given
-                final User user = new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO);
-                userRepository.save(user);
-                final Token token = tokenProcessor.generateToken(LocalDateTime.now(),
-                        new PrivateClaims(user.getId()).toMap());
+                final User user = userRepository.save(
+                        new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO)
+                );
+                final Token token = tokenProcessor.generateToken(
+                        LocalDateTime.now(),
+                        new PrivateClaims(user.getId()).toMap()
+                );
                 entityManager.flush();
                 entityManager.clear();
 
@@ -368,11 +392,15 @@ class AuthenticationServiceTest {
             @Test
             void 새로운_액세스_토큰과_리프레시_토큰을_발급한다() {
                 // given
-                final User user = new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO);
-                userRepository.save(user);
+                final User user = userRepository.save(
+                        new User("권예진", "http://example.com/profile.jpg", "1234567", OAuth2Type.KAKAO)
+                );
                 final LocalDateTime 갱신요청시간 = LocalDateTime.now();
                 final LocalDateTime 갱신요청_10분전 = 갱신요청시간.minusMinutes(10L);
-                final Token token = tokenProcessor.generateToken(갱신요청_10분전, new PrivateClaims(user.getId()).toMap());
+                final Token token = tokenProcessor.generateToken(
+                        갱신요청_10분전,
+                        new PrivateClaims(user.getId()).toMap()
+                );
                 entityManager.flush();
                 entityManager.clear();
 

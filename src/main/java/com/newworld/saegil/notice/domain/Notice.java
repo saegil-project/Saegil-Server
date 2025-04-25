@@ -47,9 +47,9 @@ public class Notice {
     private String webLink;
 
     public Notice(
-            final String title, 
-            final String content, 
-            final NoticeType noticeType, 
+            final String title,
+            final String content,
+            final NoticeType noticeType,
             final LocalDate date,
             final String webLink
     ) {
