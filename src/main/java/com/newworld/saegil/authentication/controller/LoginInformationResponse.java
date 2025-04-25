@@ -1,6 +1,7 @@
 package com.newworld.saegil.authentication.controller;
 
 import com.newworld.saegil.authentication.service.LoginResult;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record LoginInformationResponse(

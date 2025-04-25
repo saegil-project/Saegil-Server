@@ -1,12 +1,13 @@
 package com.newworld.saegil.llm.service;
 
+import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.newworld.saegil.llm.controller.ChatGptAudioUrlRequest;
 import com.newworld.saegil.llm.controller.ChatGptSttRequest;
 import com.newworld.saegil.llm.controller.ChatGptTextRequest;
 import com.newworld.saegil.llm.controller.SpeechToTextUrlRequest;
 import com.newworld.saegil.llm.controller.TextToSpeechRequest;
-import org.springframework.core.io.Resource;
-import org.springframework.web.multipart.MultipartFile;
 
 public interface LlmService {
 

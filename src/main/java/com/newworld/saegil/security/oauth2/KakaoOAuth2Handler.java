@@ -1,9 +1,7 @@
 package com.newworld.saegil.security.oauth2;
 
-import com.newworld.saegil.authentication.domain.OAuth2Handler;
-import com.newworld.saegil.authentication.domain.OAuth2Type;
-import com.newworld.saegil.authentication.domain.OAuth2UserInfo;
-import lombok.RequiredArgsConstructor;
+import java.util.Map;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,7 +13,11 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Map;
+import com.newworld.saegil.authentication.domain.OAuth2Handler;
+import com.newworld.saegil.authentication.domain.OAuth2Type;
+import com.newworld.saegil.authentication.domain.OAuth2UserInfo;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor

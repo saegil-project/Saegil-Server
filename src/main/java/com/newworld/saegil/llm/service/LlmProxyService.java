@@ -1,13 +1,7 @@
 package com.newworld.saegil.llm.service;
 
-import com.newworld.saegil.llm.config.ProxyProperties;
-import com.newworld.saegil.llm.controller.ChatGptAudioUrlRequest;
-import com.newworld.saegil.llm.controller.ChatGptSttRequest;
-import com.newworld.saegil.llm.controller.ChatGptTextRequest;
-import com.newworld.saegil.llm.controller.SpeechToTextUrlRequest;
-import com.newworld.saegil.llm.controller.TextToSpeechRequest;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +14,15 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import com.newworld.saegil.llm.config.ProxyProperties;
+import com.newworld.saegil.llm.controller.ChatGptAudioUrlRequest;
+import com.newworld.saegil.llm.controller.ChatGptSttRequest;
+import com.newworld.saegil.llm.controller.ChatGptTextRequest;
+import com.newworld.saegil.llm.controller.SpeechToTextUrlRequest;
+import com.newworld.saegil.llm.controller.TextToSpeechRequest;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service

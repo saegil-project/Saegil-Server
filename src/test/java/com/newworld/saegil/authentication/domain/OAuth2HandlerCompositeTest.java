@@ -1,11 +1,7 @@
 package com.newworld.saegil.authentication.domain;
 
 import com.newworld.saegil.security.oauth2.KakaoOAuth2Handler;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.Set;
 

@@ -1,12 +1,13 @@
 package com.newworld.saegil.notice.repository;
 
-import com.newworld.saegil.notice.domain.Notice;
-import com.newworld.saegil.notice.domain.NoticeType;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.newworld.saegil.notice.domain.Notice;
+import com.newworld.saegil.notice.domain.NoticeType;
 
 @Repository
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
