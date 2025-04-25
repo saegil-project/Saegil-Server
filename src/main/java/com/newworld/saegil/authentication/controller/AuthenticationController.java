@@ -114,7 +114,10 @@ public class AuthenticationController {
     public ResponseEntity<TokenRefreshResponse> refreshToken(
             @RequestBody @Valid final TokenRefreshRequest request
     ) {
-        final TokenRefreshResult result = authenticationService.refreshToken(LocalDateTime.now(), request.refreshToken());
+        final TokenRefreshResult result = authenticationService.refreshToken(
+                LocalDateTime.now(),
+                request.refreshToken()
+        );
         final TokenRefreshResponse response = TokenRefreshResponse.from(result);
 
         return ResponseEntity.ok(response);

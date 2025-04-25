@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
         JwtProperties.class,
         KakaoOAuth2Properties.class,
         ProxyProperties.class,
-        CorsProperties.class})
+        CorsProperties.class
+})
 public class PropertiesConfiguration {
 }
