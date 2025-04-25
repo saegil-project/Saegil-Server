@@ -71,6 +71,20 @@ public class AuthenticationService {
         });
     }
 
+    public LoginResult loginWithAccessToken(
+            final String oauth2TypeName,
+            final String oauth2AccessToken,
+            final LocalDateTime requestTime
+    ) {
+        final OAuth2Handler oauth2Handler = oauth2HandlerComposite.findHandler(oauth2TypeName);
+        final OAuth2UserInfo oauth2UserInfo = oauth2Handler.getUserInfo(oauth2AccessToken);
+        final User user = findOrPersistUser(oauth2UserInfo);
+        final PrivateClaims privateClaims = new PrivateClaims(user.getId());
+        final Token token = tokenProcessor.generateToken(requestTime, privateClaims.toMap());
+
+        return new LoginResult(user.getId(), token.accessToken(), token.refreshToken());
+    }
+
     public PrivateClaims getValidPrivateClaims(final TokenType tokenType, final String token) {
         final Claims claims = tokenProcessor.decode(tokenType, token)
                                             .orElseThrow(() -> new InvalidTokenException("유효한 토큰이 아닙니다."));
