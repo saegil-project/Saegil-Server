@@ -61,7 +61,8 @@ class AuthenticationServiceTest {
 
     @BeforeEach
     void setUp() {
-        given(oauth2HandlerComposite.findHandler(any())).willReturn(mockOAuth2Handler);
+        given(oauth2HandlerComposite.findHandler(any(String.class))).willReturn(mockOAuth2Handler);
+        given(oauth2HandlerComposite.findHandler(any(OAuth2Type.class))).willReturn(mockOAuth2Handler);
     }
 
     @Nested
