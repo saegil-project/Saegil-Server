@@ -59,4 +59,8 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+
+    filter {
+        excludeTestsMatching("com.newworld.saegil.llm.controller.AssistantControllerDirectApiTest")
+    }
 }

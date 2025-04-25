@@ -1,6 +1,5 @@
 package com.newworld.saegil.configuration;
 
-
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -32,7 +31,7 @@ public class SwaggerConfiguration {
     private Components components() {
         return new Components()
                 .addSecuritySchemes(SERVICE_SECURITY_SCHEME_NAME, serviceSecurityScheme())
-                .addSecuritySchemes(OAUTH_SECURITY_SCHEME_NAME,oauthSecurityScheme());
+                .addSecuritySchemes(OAUTH_SECURITY_SCHEME_NAME, oauthSecurityScheme());
     }
 
     private SecurityScheme serviceSecurityScheme() {

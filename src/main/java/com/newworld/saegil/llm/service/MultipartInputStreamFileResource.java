@@ -25,6 +25,6 @@ public class MultipartInputStreamFileResource extends InputStreamResource {
 
     @Override
     public long contentLength() {
-        return -1; // unknown
+        return -1;
     }
 }

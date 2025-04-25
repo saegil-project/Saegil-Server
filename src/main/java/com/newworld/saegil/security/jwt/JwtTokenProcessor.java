@@ -69,10 +69,10 @@ public class JwtTokenProcessor implements TokenProcessor {
         final String key = jwtProperties.findTokenKey(tokenType);
         try {
             final Claims claims = Jwts.parser()
-                                     .verifyWith(Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8)))
-                                     .build()
-                                     .parseSignedClaims(findPureToken(token))
-                                     .getPayload();
+                                      .verifyWith(Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8)))
+                                      .build()
+                                      .parseSignedClaims(findPureToken(token))
+                                      .getPayload();
 
             return Optional.of(claims);
         } catch (final JwtException ignored) {

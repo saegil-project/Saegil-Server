@@ -3,6 +3,7 @@ package com.newworld.saegil.notice.domain.crawler;
 import com.newworld.saegil.notice.domain.Notice;
 import com.newworld.saegil.notice.domain.NoticeCrawler;
 import com.newworld.saegil.notice.domain.NoticeType;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,15 +11,18 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class HanaGeneralCrawler implements NoticeCrawler {
+
+    private final NoticeCrawlerHelper noticeCrawlerHelper;
 
     @Override
     public Set<NoticeType> getSupportingNoticeType() {
@@ -73,7 +77,7 @@ public class HanaGeneralCrawler implements NoticeCrawler {
         return newNotices;
     }
 
-    private Notice parseToNotice(final Element element, final NoticeType noticeType) {
+    private Notice parseToNotice(final Element element, final NoticeType noticeType) throws IOException {
         final Element titleElement = element.selectFirst("td.tit a");
         if (titleElement == null) {
             return null;
@@ -82,31 +86,18 @@ public class HanaGeneralCrawler implements NoticeCrawler {
         final String onclick = titleElement.attr("onclick").trim();
         final String id = onclick.replaceAll(".*'detail',\\s*'(\\d+)',.*", "$1");
         final String webLink = noticeType.getDetailUrlPrefix() + id;
+        final String content = noticeCrawlerHelper.extractContentBody(webLink, "div.editor_view");
 
         final Elements tds = element.select("td");
         final String dateValue = (tds.size() > 5) ? tds.get(5).text() : null;
-        final LocalDate date = parseDate(dateValue, webLink);
+        final LocalDate date = noticeCrawlerHelper.parseDate(dateValue, webLink);
 
         return new Notice(
                 title,
-                "",
+                content,
                 noticeType,
                 date,
                 webLink
         );
-    }
-
-    private LocalDate parseDate(final String dateValue, final String webLink) {
-        if (dateValue == null) {
-            return null;
-        }
-
-        final String formatted = dateValue.replace(" ", "").substring(0, 10);
-        try {
-            return LocalDate.parse(formatted);
-        } catch (final DateTimeParseException e) {
-            log.warn("게시글 등록일 파싱에 실패했습니다. webLink = {}, dateValue = {}", webLink, dateValue);
-            return null;
-        }
     }
 }

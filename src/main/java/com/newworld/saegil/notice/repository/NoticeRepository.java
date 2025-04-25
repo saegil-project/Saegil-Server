@@ -13,13 +13,13 @@ import java.util.List;
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     @Query("""
-    SELECT n FROM Notice n
-    WHERE n.date = (
-        SELECT MAX(n2.date)
-        FROM Notice n2
-        WHERE n2.noticeType = :noticeType
-    ) AND n.noticeType = :noticeType
-    """)
+            SELECT n FROM Notice n
+            WHERE n.date = (
+                SELECT MAX(n2.date)
+                FROM Notice n2
+                WHERE n2.noticeType = :noticeType
+            ) AND n.noticeType = :noticeType
+            """)
     List<Notice> findAllLatestNoticeByType(final NoticeType noticeType);
 
     @Query("""
