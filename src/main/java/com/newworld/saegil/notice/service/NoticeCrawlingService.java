@@ -57,10 +57,12 @@ public class NoticeCrawlingService {
         final LocalDate lastDate = latestNotices.isEmpty() ? null : latestNotices.getFirst().getDate();
         final List<Notice> crawledNotices = crawler.crawl(noticeType, lastDate);
 
-        final List<Notice> newNotices = crawledNotices.stream()
-                                            .filter(newNotice -> latestNotices.stream()
-                                                                              .noneMatch(latestNotice -> latestNotice.hasSameTitle(newNotice))
-                                            ).toList();
+        final List<Notice> newNotices =
+                crawledNotices.stream()
+                              .filter(newNotice ->
+                                      latestNotices.stream()
+                                                   .noneMatch(latestNotice -> latestNotice.hasSameTitle(newNotice))
+                              ).toList();
         log.info("새로운 {} {} 개수: {}",
                 noticeType.getSource(), noticeType.getCategory(), newNotices.size()
         );

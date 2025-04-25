@@ -23,13 +23,13 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
     List<Notice> findAllLatestNoticeByType(final NoticeType noticeType);
 
     @Query("""
-        SELECT n FROM Notice n
-        WHERE (:query IS NULL OR LOWER(n.title) LIKE LOWER(CONCAT('%', :query, '%')))
-          AND (:sourceId IS NULL OR n.sourceId = :sourceId)
-          AND (:lastId IS NULL OR n.id < :lastId
-          )
-        ORDER BY n.id DESC
-        """)
+            SELECT n FROM Notice n
+            WHERE (:query IS NULL OR LOWER(n.title) LIKE LOWER(CONCAT('%', :query, '%')))
+              AND (:sourceId IS NULL OR n.sourceId = :sourceId)
+              AND (:lastId IS NULL OR n.id < :lastId
+              )
+            ORDER BY n.id DESC
+            """)
     List<Notice> findAllByCursor(
             final String query,
             final Long sourceId,
