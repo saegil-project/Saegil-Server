@@ -1,7 +1,6 @@
 package com.newworld.saegil.exception;
 
-import java.util.stream.Collectors;
-
+import io.swagger.v3.oas.annotations.Hidden;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import io.swagger.v3.oas.annotations.Hidden;
+import java.util.stream.Collectors;
 
 @Hidden
 @RestControllerAdvice
@@ -26,10 +25,9 @@ public class GlobalExceptionHandler {
     ) {
         logger.error(String.format(LOG_MESSAGE_FORMAT, ex.getClass().getSimpleName(), ex.getMessage()), ex);
 
+        final String message = ex.getMessage() == null ? "Internal Server Error" : ex.getMessage();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                             .body(new ExceptionResponse(
-                                     ex.getMessage() == null ? "Internal Server Error" : ex.getMessage()
-                             ));
+                             .body(new ExceptionResponse(message));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

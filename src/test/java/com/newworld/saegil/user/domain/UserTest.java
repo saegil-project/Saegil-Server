@@ -1,10 +1,14 @@
 package com.newworld.saegil.user.domain;
 
 import com.newworld.saegil.authentication.domain.OAuth2Type;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -26,7 +30,7 @@ class UserTest {
 
             @Test
             void 예외가_발생하지_않는다() {
-                Assertions.assertThatCode(() -> new User(validName, validProfileImageUrl, validOAuth2Id, validOAuth2Type))
+                assertThatCode(() -> new User(validName, validProfileImageUrl, validOAuth2Id, validOAuth2Type))
                         .doesNotThrowAnyException();
             }
         }

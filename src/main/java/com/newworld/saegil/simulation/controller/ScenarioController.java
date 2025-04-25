@@ -31,8 +31,8 @@ public class ScenarioController {
     public ResponseEntity<List<ReadScenarioResponse>> readAll() {
         final List<ScenarioDto> scenarioDtos = scenarioService.readAll();
         final List<ReadScenarioResponse> responses = scenarioDtos.stream()
-                .map(ReadScenarioResponse::from)
-                .toList();
+                                                                 .map(ReadScenarioResponse::from)
+                                                                 .toList();
 
         return ResponseEntity.ok(responses);
     }

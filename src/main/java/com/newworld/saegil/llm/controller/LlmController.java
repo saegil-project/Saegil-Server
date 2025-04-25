@@ -13,7 +13,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
@@ -36,8 +40,8 @@ public class LlmController {
         final Resource responseResource = llmService.textToSpeech(request);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"speech.mp3\"")
-                .body(responseResource);
+                             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"speech.mp3\"")
+                             .body(responseResource);
     }
 
     @Operation(
@@ -157,8 +161,8 @@ public class LlmController {
         log.info("Received STT-ChatGPT-TTS file upload request: {}", multipartFile.getOriginalFilename());
         Resource resource = llmService.receiveSttChatGptTtsResponseFromAudioFile(multipartFile);
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"response.mp3\"")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(resource);
+                             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"response.mp3\"")
+                             .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                             .body(resource);
     }
 }

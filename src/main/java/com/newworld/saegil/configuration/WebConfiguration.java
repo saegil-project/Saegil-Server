@@ -1,7 +1,5 @@
 package com.newworld.saegil.configuration;
 
-import java.util.List;
-
 import com.newworld.saegil.authentication.interceptor.LoginInterceptor;
 import com.newworld.saegil.authentication.resolver.AuthUserInfoArgumentResolver;
 import lombok.RequiredArgsConstructor;
@@ -48,8 +46,8 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         final String[] allowedHttpMethods = Arrays.stream(HttpMethod.values())
-                                     .map(HttpMethod::name)
-                                     .toArray(String[]::new);
+                                                  .map(HttpMethod::name)
+                                                  .toArray(String[]::new);
 
         registry.addMapping("/**")
                 .allowedOrigins(corsProperties.allowedOrigins())

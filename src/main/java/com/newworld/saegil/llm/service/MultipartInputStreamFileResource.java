@@ -1,12 +1,11 @@
 package com.newworld.saegil.llm.service;
 
-import java.io.IOException;
-
+import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.multipart.MultipartFile;
 
-import lombok.EqualsAndHashCode;
+import java.io.IOException;
 
 @EqualsAndHashCode(callSuper = true)
 public class MultipartInputStreamFileResource extends InputStreamResource {

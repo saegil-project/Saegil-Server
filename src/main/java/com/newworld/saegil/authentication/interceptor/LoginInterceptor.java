@@ -1,12 +1,7 @@
 package com.newworld.saegil.authentication.interceptor;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerInterceptor;
-
 import com.newworld.saegil.authentication.domain.TokenType;
 import com.newworld.saegil.authentication.service.AuthenticationService;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

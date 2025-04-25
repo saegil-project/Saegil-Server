@@ -1,10 +1,5 @@
 package com.newworld.saegil.authentication.service;
 
-import java.time.LocalDateTime;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.newworld.saegil.authentication.domain.BlacklistToken;
 import com.newworld.saegil.authentication.domain.InvalidTokenException;
 import com.newworld.saegil.authentication.domain.OAuth2Handler;
@@ -18,9 +13,12 @@ import com.newworld.saegil.authentication.domain.TokenType;
 import com.newworld.saegil.authentication.repository.BlacklistTokenRepository;
 import com.newworld.saegil.user.domain.User;
 import com.newworld.saegil.user.repository.UserRepository;
-
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @Transactional
