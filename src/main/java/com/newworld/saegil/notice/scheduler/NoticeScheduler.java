@@ -20,8 +20,8 @@ public class NoticeScheduler {
         noticeCrawlingService.fetchNewNotices();
     }
 
-    // 정각마다 실행
-    @Scheduled(cron = "0 0 * * * *")
+    // 매 시간 30분에 실행
+    @Scheduled(cron = "0 30 * * * *")
     public void periodicNoticeCheck() {
         noticeCrawlingService.fetchNewNotices();
     }
