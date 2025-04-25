@@ -1,6 +1,8 @@
 package com.newworld.saegil.notice.controller;
 
 import com.newworld.saegil.global.swagger.ApiResponseCode;
+import com.newworld.saegil.notice.service.NoticeService;
+import com.newworld.saegil.notice.service.ReadNoticesResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Notice", description = "공지사항 API")
 public class NoticeController {
+
+    private final NoticeService noticeService;
 
     @GetMapping("/sources")
     @Operation(
@@ -49,50 +52,15 @@ public class NoticeController {
             @Parameter(description = "기관명 필터 (ex. 남북하나재단, 통일부) (필수 x)", example = "남북하나재단")
             @RequestParam(required = false) final Long sourceId,
 
-            @Parameter(description = "페이지당 항목 개수 (필수 x)", example = "10")
-            @RequestParam(defaultValue = "10") final int size,
-
             @Parameter(description = "마지막으로 조회된 공지사항 ID (무한스크롤 방식) (첫 요청 = null)", example = "101")
-            @RequestParam(required = false) final Long lastId
+            @RequestParam(required = false) final Long lastId,
+
+            @Parameter(description = "페이지당 항목 개수 (필수 x)", example = "10")
+            @RequestParam(defaultValue = "10") final int size
     ) {
-        // TODO: 공지사항 목록 조회 기능 개발 후 삭제
-        List<ReadNoticesResponse.ReadNoticeItemResponse> dummyNotices = new ArrayList<>();
-        for (int i = 1; i <= 30; i++) {
-            dummyNotices.add(createDummyNoticeItem((long) i));
-        }
+        final ReadNoticesResult result = noticeService.readAll(query, sourceId, lastId, size);
+        final ReadNoticesResponse response = ReadNoticesResponse.from(result);
 
-        String sourceName = null;
-        if (sourceId != null) {
-            if (sourceId == 1L) {
-                sourceName = "남북하나재단";
-            } else if (sourceId == 2L) {
-                sourceName = "통일부";
-            }
-        }
-        final String source = sourceName;
-
-        List<ReadNoticesResponse.ReadNoticeItemResponse> filteredNotices =
-                dummyNotices.stream()
-                            .filter(notice -> query == null || notice.title().contains(query))
-                            .filter(notice -> source == null || notice.source().equals(source))
-                            .filter(notice -> lastId == null || notice.id() > lastId)
-                            .limit(size)
-                            .toList();
-
-        boolean hasNext = dummyNotices.size() > (lastId != null ? lastId + size : size);
-
-        return ResponseEntity.ok(new ReadNoticesResponse(filteredNotices, hasNext));
-    }
-
-    // TODO: 공지사항 목록 조회 기능 개발 후 삭제
-    private ReadNoticesResponse.ReadNoticeItemResponse createDummyNoticeItem(final Long id) {
-        return new ReadNoticesResponse.ReadNoticeItemResponse(
-                id,
-                "제목" + id,
-                "공지사항 내용" + id,
-                (id % 2 == 0) ? "남북하나재단" : "통일부",
-                LocalDate.of(2025, 3, 3).plusDays(id),
-                "https://www.naver.com"
-        );
+        return ResponseEntity.ok(response);
     }
 }
