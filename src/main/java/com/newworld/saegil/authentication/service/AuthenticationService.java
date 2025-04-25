@@ -4,7 +4,6 @@ import com.newworld.saegil.authentication.domain.BlacklistToken;
 import com.newworld.saegil.authentication.domain.InvalidTokenException;
 import com.newworld.saegil.authentication.domain.OAuth2Handler;
 import com.newworld.saegil.authentication.domain.OAuth2HandlerComposite;
-import com.newworld.saegil.authentication.domain.OAuth2Type;
 import com.newworld.saegil.authentication.domain.OAuth2UserInfo;
 import com.newworld.saegil.authentication.domain.PrivateClaims;
 import com.newworld.saegil.authentication.domain.Token;
@@ -31,31 +30,24 @@ public class AuthenticationService {
     private final BlacklistTokenRepository blacklistTokenRepository;
 
     public String getAuthCodeRequestUrl(final String oauth2TypeName) {
-        final OAuth2Type oauth2Type = OAuth2Type.from(oauth2TypeName);
-        final OAuth2Handler oauth2Handler = oauth2HandlerComposite.findHandler(oauth2Type);
+        final OAuth2Handler oauth2Handler = oauth2HandlerComposite.findHandler(oauth2TypeName);
 
         return oauth2Handler.provideAuthCodeRequestUrl();
     }
 
-    public LoginResult login(
+    public LoginResult loginWithAuthorizationCode(
             final String oauth2TypeName,
             final String authorizationCode,
             final LocalDateTime requestTime
     ) {
-        final OAuth2UserInfo oauth2UserInfo = fetchOAuth2UserInfo(oauth2TypeName, authorizationCode);
+        final OAuth2Handler oauth2Handler = oauth2HandlerComposite.findHandler(oauth2TypeName);
+        final String oauth2AccessToken = oauth2Handler.getOAuth2AccessToken(authorizationCode);
+        final OAuth2UserInfo oauth2UserInfo = oauth2Handler.getUserInfo(oauth2AccessToken);
         final User user = findOrPersistUser(oauth2UserInfo);
         final PrivateClaims privateClaims = new PrivateClaims(user.getId());
         final Token token = tokenProcessor.generateToken(requestTime, privateClaims.toMap());
 
         return new LoginResult(user.getId(), token.accessToken(), token.refreshToken());
-    }
-
-    private OAuth2UserInfo fetchOAuth2UserInfo(final String oauth2TypeName, final String authorizationCode) {
-        final OAuth2Type oauth2Type = OAuth2Type.from(oauth2TypeName);
-        final OAuth2Handler oauth2Handler = oauth2HandlerComposite.findHandler(oauth2Type);
-        final String oauth2AccessToken = oauth2Handler.getOAuth2AccessToken(authorizationCode);
-
-        return oauth2Handler.getUserInfo(oauth2AccessToken);
     }
 
     private User findOrPersistUser(final OAuth2UserInfo oauth2UserInfo) {
@@ -72,6 +64,20 @@ public class AuthenticationService {
 
             return userRepository.save(newUser);
         });
+    }
+
+    public LoginResult loginWithAccessToken(
+            final String oauth2TypeName,
+            final String oauth2AccessToken,
+            final LocalDateTime requestTime
+    ) {
+        final OAuth2Handler oauth2Handler = oauth2HandlerComposite.findHandler(oauth2TypeName);
+        final OAuth2UserInfo oauth2UserInfo = oauth2Handler.getUserInfo(oauth2AccessToken);
+        final User user = findOrPersistUser(oauth2UserInfo);
+        final PrivateClaims privateClaims = new PrivateClaims(user.getId());
+        final Token token = tokenProcessor.generateToken(requestTime, privateClaims.toMap());
+
+        return new LoginResult(user.getId(), token.accessToken(), token.refreshToken());
     }
 
     public PrivateClaims getValidPrivateClaims(final TokenType tokenType, final String token) {

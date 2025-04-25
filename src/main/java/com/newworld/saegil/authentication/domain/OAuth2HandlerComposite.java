@@ -19,6 +19,12 @@ public class OAuth2HandlerComposite {
         }
     }
 
+    public OAuth2Handler findHandler(final String oauth2TypeName) {
+        final OAuth2Type oauth2Type = OAuth2Type.from(oauth2TypeName);
+
+        return findHandler(oauth2Type);
+    }
+
     public OAuth2Handler findHandler(final OAuth2Type oauth2Type) {
         final OAuth2Handler handler = handlerMappings.get(oauth2Type);
         if (handler == null) {

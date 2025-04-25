@@ -57,20 +57,41 @@ public class AuthenticationController {
                 .build();
     }
 
+    @PostMapping("/login/{oauth2Type}/authorization-code")
+    @Operation(
+            summary = "OAuth 2.0 로그인 (Authorization Code 사용)",
+            description = "OAuth 2.0 Authorization code를 통해 로그인합니다."
+    )
+    @ApiResponse(responseCode = ApiResponseCode.OK, description = "로그인 성공")
+    public ResponseEntity<LoginInformationResponse> loginWithAuthorizationCode(
+            @Parameter(description = "OAuth 2.0 Type (대소문자 상관 없음)", example = "KAKAO")
+            @PathVariable final String oauth2Type,
+            @RequestBody @Valid final LoginWithAuthorizationCodeRequest request
+    ) {
+        final LoginResult loginResult = authenticationService.loginWithAuthorizationCode(
+                oauth2Type,
+                request.authorizationCode(),
+                LocalDateTime.now()
+        );
+        final LoginInformationResponse response = LoginInformationResponse.from(loginResult);
+
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/login/{oauth2Type}")
     @Operation(
-            summary = "OAuth 2.0 로그인",
-            description = "OAuth 2.0 Authorization code를 통해 로그인합니다."
+            summary = "OAuth 2.0 로그인 (Access Token 사용)",
+            description = "OAuth 2.0 Access Token을 통해 로그인합니다."
     )
     @ApiResponse(responseCode = ApiResponseCode.OK, description = "로그인 성공")
     public ResponseEntity<LoginInformationResponse> login(
             @Parameter(description = "OAuth 2.0 Type (대소문자 상관 없음)", example = "KAKAO")
             @PathVariable final String oauth2Type,
-            @RequestBody @Valid final LoginRequest request
+            @RequestBody @Valid final LoginWithAccessTokenRequest request
     ) {
-        final LoginResult loginResult = authenticationService.login(
+        final LoginResult loginResult = authenticationService.loginWithAccessToken(
                 oauth2Type,
-                request.authorizationCode(),
+                request.accessToken(),
                 LocalDateTime.now()
         );
         final LoginInformationResponse response = LoginInformationResponse.from(loginResult);
