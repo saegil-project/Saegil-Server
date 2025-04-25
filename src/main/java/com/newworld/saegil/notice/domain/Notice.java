@@ -1,7 +1,5 @@
 package com.newworld.saegil.notice.domain;
 
-import java.time.LocalDate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,6 +13,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -47,9 +47,9 @@ public class Notice {
     private String webLink;
 
     public Notice(
-            final String title, 
-            final String content, 
-            final NoticeType noticeType, 
+            final String title,
+            final String content,
+            final NoticeType noticeType,
             final LocalDate date,
             final String webLink
     ) {

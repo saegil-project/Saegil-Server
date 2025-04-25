@@ -1,10 +1,10 @@
 package com.newworld.saegil.authentication.domain;
 
+import io.jsonwebtoken.Claims;
+
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
-
-import io.jsonwebtoken.Claims;
 
 public interface TokenProcessor {
 

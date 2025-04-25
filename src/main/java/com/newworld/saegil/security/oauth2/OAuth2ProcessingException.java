@@ -1,8 +1,7 @@
 package com.newworld.saegil.security.oauth2;
 
-import org.springframework.http.HttpStatus;
-
 import com.newworld.saegil.exception.CustomException;
+import org.springframework.http.HttpStatus;
 
 public class OAuth2ProcessingException extends CustomException {
 

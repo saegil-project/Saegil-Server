@@ -1,7 +1,6 @@
 package com.newworld.saegil.user.controller;
 
 import com.newworld.saegil.user.service.UserDto;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record ReadUserResponse(
