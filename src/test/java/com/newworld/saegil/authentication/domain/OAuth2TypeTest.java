@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -31,16 +31,16 @@ class OAuth2TypeTest {
                 // when & then
                 SoftAssertions.assertSoftly(softAssertions -> {
                     softAssertions.assertThatCode(() -> OAuth2Type.from(upperCaseTypeName))
-                                  .doesNotThrowAnyException();
+                            .doesNotThrowAnyException();
 
                     softAssertions.assertThat(OAuth2Type.from(upperCaseTypeName))
-                                  .isEqualTo(expect);
+                            .isEqualTo(expect);
 
                     softAssertions.assertThatCode(() -> OAuth2Type.from(lowerCaseTypeName))
-                                  .doesNotThrowAnyException();
+                            .doesNotThrowAnyException();
 
                     softAssertions.assertThat(OAuth2Type.from(lowerCaseTypeName))
-                                  .isEqualTo(expect);
+                            .isEqualTo(expect);
                 });
             }
         }

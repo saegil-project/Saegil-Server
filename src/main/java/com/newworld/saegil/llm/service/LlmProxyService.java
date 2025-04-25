@@ -1,13 +1,7 @@
 package com.newworld.saegil.llm.service;
 
-import com.newworld.saegil.llm.config.ProxyProperties;
-import com.newworld.saegil.llm.controller.ChatGptAudioUrlRequest;
-import com.newworld.saegil.llm.controller.ChatGptSttRequest;
-import com.newworld.saegil.llm.controller.ChatGptTextRequest;
-import com.newworld.saegil.llm.controller.SpeechToTextUrlRequest;
-import com.newworld.saegil.llm.controller.TextToSpeechRequest;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +14,15 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import com.newworld.saegil.llm.config.ProxyProperties;
+import com.newworld.saegil.llm.controller.ChatGptAudioUrlRequest;
+import com.newworld.saegil.llm.controller.ChatGptSttRequest;
+import com.newworld.saegil.llm.controller.ChatGptTextRequest;
+import com.newworld.saegil.llm.controller.SpeechToTextUrlRequest;
+import com.newworld.saegil.llm.controller.TextToSpeechRequest;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -102,7 +104,7 @@ public class LlmProxyService implements LlmService {
     }
 
     @Override
-    public String receiveChatGptResponseFromText(ChatGptTextRequest request) {
+    public String receiveChatGptResponseFromText(final ChatGptTextRequest request) {
         log.info("Getting ChatGPT response from text: {}", request.text());
 
         final HttpHeaders requestHeader = new HttpHeaders();
@@ -121,7 +123,7 @@ public class LlmProxyService implements LlmService {
     }
 
     @Override
-    public String receiveChatGptResponseFromSttText(ChatGptSttRequest request) {
+    public String receiveChatGptResponseFromSttText(final ChatGptSttRequest request) {
         log.info("Getting ChatGPT response from STT text: {}", request.audioText());
 
         final HttpHeaders requestHeader = new HttpHeaders();
@@ -140,7 +142,7 @@ public class LlmProxyService implements LlmService {
     }
 
     @Override
-    public String receiveChatGptResponseFromAudioUrl(ChatGptAudioUrlRequest request) {
+    public String receiveChatGptResponseFromAudioUrl(final ChatGptAudioUrlRequest request) {
         log.info("Getting ChatGPT response from audio URL: {}", request.audioUrl());
 
         final HttpHeaders requestHeader = new HttpHeaders();
@@ -159,7 +161,7 @@ public class LlmProxyService implements LlmService {
     }
 
     @Override
-    public String receiveChatGptResponseFromAudioFile(MultipartFile multipartFile) {
+    public String receiveChatGptResponseFromAudioFile(final MultipartFile multipartFile) {
         log.info("Getting ChatGPT response from audio file: {}", multipartFile.getOriginalFilename());
 
         final HttpHeaders requestHeader = new HttpHeaders();
@@ -176,4 +178,24 @@ public class LlmProxyService implements LlmService {
 
         return responseEntity.getBody().response();
     }
+
+    @Override
+    public Resource receiveSttChatGptTtsResponseFromAudioFile(final MultipartFile multipartFile) {
+        log.info("Getting STT ChatGPT TTS response from audio file: {}", multipartFile.getOriginalFilename());
+
+        final HttpHeaders requestHeader = new HttpHeaders();
+        requestHeader.setContentType(MediaType.MULTIPART_FORM_DATA);
+        final MultiValueMap<String, Object> requestBody = requestBodyFromMultiPartFile(multipartFile);
+        final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
+
+        final ResponseEntity<Resource> responseEntity = restTemplate.exchange(
+                proxyProperties.getSttChatgptTtsFilePath(),
+                HttpMethod.POST,
+                requestEntity,
+                Resource.class
+        );
+
+        return responseEntity.getBody();
+    }
+
 }

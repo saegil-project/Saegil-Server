@@ -1,8 +1,8 @@
 package com.newworld.saegil.authentication.domain;
 
-import io.jsonwebtoken.Claims;
-
 import java.util.Map;
+
+import io.jsonwebtoken.Claims;
 
 public record PrivateClaims(Long userId) {
 

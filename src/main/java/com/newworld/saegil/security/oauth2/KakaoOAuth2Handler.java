@@ -1,9 +1,7 @@
 package com.newworld.saegil.security.oauth2;
 
-import com.newworld.saegil.authentication.domain.OAuth2Handler;
-import com.newworld.saegil.authentication.domain.OAuth2Type;
-import com.newworld.saegil.authentication.domain.OAuth2UserInfo;
-import lombok.RequiredArgsConstructor;
+import java.util.Map;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,7 +13,11 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Map;
+import com.newworld.saegil.authentication.domain.OAuth2Handler;
+import com.newworld.saegil.authentication.domain.OAuth2Type;
+import com.newworld.saegil.authentication.domain.OAuth2UserInfo;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -101,9 +103,9 @@ public class KakaoOAuth2Handler implements OAuth2Handler {
         final Map<String, Object> body = response.getBody();
         final String id = body.get("id").toString();
 
-        final Map<String, Object> properties = (Map<String, Object>) body.get("properties");
-        final String nickname = (String) properties.get("nickname");
-        final String profileImageUrl = (String) properties.get("profile_image");
+        final Map<String, Object> properties = (Map<String, Object>)body.get("properties");
+        final String nickname = (String)properties.get("nickname");
+        final String profileImageUrl = (String)properties.get("profile_image");
 
         return new OAuth2UserInfo(id, OAuth2Type.KAKAO, nickname, profileImageUrl);
     }

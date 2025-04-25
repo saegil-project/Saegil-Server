@@ -31,7 +31,7 @@ public class UniKoreaCrawler implements NoticeCrawler {
     @Override
     public List<Notice> crawl(final NoticeType noticeType, final LocalDate lastDate) {
         final long crawlStartTime = System.currentTimeMillis();
-        log.info ("{} {} 크롤링 시작", noticeType.getSource(), noticeType.getCategory());
+        log.info("{} {} 크롤링 시작", noticeType.getSource(), noticeType.getCategory());
         final List<Notice> newNotices = new ArrayList<>();
         int page = 1;
         boolean done = false;

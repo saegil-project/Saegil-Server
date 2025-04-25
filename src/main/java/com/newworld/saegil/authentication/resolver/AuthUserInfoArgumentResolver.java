@@ -1,12 +1,5 @@
 package com.newworld.saegil.authentication.resolver;
 
-import com.newworld.saegil.authentication.annotation.AuthUser;
-import com.newworld.saegil.authentication.domain.PrivateClaims;
-import com.newworld.saegil.authentication.domain.TokenProcessor;
-import com.newworld.saegil.authentication.domain.TokenType;
-import com.newworld.saegil.authentication.dto.AuthUserInfo;
-import io.jsonwebtoken.Claims;
-import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +8,15 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
+import com.newworld.saegil.authentication.annotation.AuthUser;
+import com.newworld.saegil.authentication.domain.PrivateClaims;
+import com.newworld.saegil.authentication.domain.TokenProcessor;
+import com.newworld.saegil.authentication.domain.TokenType;
+import com.newworld.saegil.authentication.dto.AuthUserInfo;
+
+import io.jsonwebtoken.Claims;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
