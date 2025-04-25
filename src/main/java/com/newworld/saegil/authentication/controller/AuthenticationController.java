@@ -57,18 +57,18 @@ public class AuthenticationController {
                 .build();
     }
 
-    @PostMapping("/login/{oauth2Type}")
+    @PostMapping("/login/{oauth2Type}/authorization-code")
     @Operation(
-            summary = "OAuth 2.0 로그인",
+            summary = "OAuth 2.0 로그인 (Authorization Code 사용)",
             description = "OAuth 2.0 Authorization code를 통해 로그인합니다."
     )
     @ApiResponse(responseCode = ApiResponseCode.OK, description = "로그인 성공")
-    public ResponseEntity<LoginInformationResponse> login(
+    public ResponseEntity<LoginInformationResponse> loginWithAuthorizationCode(
             @Parameter(description = "OAuth 2.0 Type (대소문자 상관 없음)", example = "KAKAO")
             @PathVariable final String oauth2Type,
-            @RequestBody @Valid final LoginRequest request
+            @RequestBody @Valid final LoginWithAuthorizationCodeRequest request
     ) {
-        final LoginResult loginResult = authenticationService.login(
+        final LoginResult loginResult = authenticationService.loginWithAuthorizationCode(
                 oauth2Type,
                 request.authorizationCode(),
                 LocalDateTime.now()

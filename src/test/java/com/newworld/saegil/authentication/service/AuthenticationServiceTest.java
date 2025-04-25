@@ -100,7 +100,7 @@ class AuthenticationServiceTest {
                 given(mockOAuth2Handler.getUserInfo(카카오_액세스_토큰)).willReturn(OAUTH2_회원_정보);
 
                 // when
-                final LoginResult result = authenticationService.login("KAKAO", 카카오_인증_코드, LocalDateTime.now());
+                final LoginResult result = authenticationService.loginWithAuthorizationCode("KAKAO", 카카오_인증_코드, LocalDateTime.now());
 
                 // then
                 SoftAssertions.assertSoftly(softAssertions -> {
@@ -123,7 +123,7 @@ class AuthenticationServiceTest {
                 final long userCountBeforeSignup = userRepository.count();
 
                 // when
-                final LoginResult result = authenticationService.login("KAKAO", 카카오_인증_코드, LocalDateTime.now());
+                final LoginResult result = authenticationService.loginWithAuthorizationCode("KAKAO", 카카오_인증_코드, LocalDateTime.now());
                 entityManager.flush();
                 entityManager.clear();
 

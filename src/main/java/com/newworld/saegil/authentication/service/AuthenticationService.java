@@ -37,7 +37,7 @@ public class AuthenticationService {
         return oauth2Handler.provideAuthCodeRequestUrl();
     }
 
-    public LoginResult login(
+    public LoginResult loginWithAuthorizationCode(
             final String oauth2TypeName,
             final String authorizationCode,
             final LocalDateTime requestTime
