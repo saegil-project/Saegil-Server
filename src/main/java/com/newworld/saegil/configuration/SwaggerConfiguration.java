@@ -39,7 +39,7 @@ public class SwaggerConfiguration {
                 .type(SecurityScheme.Type.HTTP)
                 .scheme("bearer")
                 .bearerFormat("JWT")
-                .description("서비스에서 발급한 Bearer Token");
+                .description("서비스에서 발급한 Bearer Access Token");
     }
 
     private SecurityScheme oauthSecurityScheme() {

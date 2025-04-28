@@ -107,6 +107,7 @@ public class AuthenticationController {
     )
     @ApiResponse(responseCode = ApiResponseCode.NO_CONTENT, description = "로그아웃 성공")
     public ResponseEntity<Void> logout(
+            @Parameter(description = "서비스 Access Token", example = "Bearer access-token-abcdefghijklmn")
             @RequestHeader(HttpHeaders.AUTHORIZATION) final String accessToken,
             @RequestBody @Valid final LogoutRequest request
     ) {
@@ -124,6 +125,7 @@ public class AuthenticationController {
     )
     @ApiResponse(responseCode = ApiResponseCode.OK, description = "Access Token 유효성 검사 성공")
     public ResponseEntity<ValidateTokenResponse> validateToken(
+            @Parameter(description = "서비스 Access Token", example = "Bearer access-token-abcdefghijklmn")
             @RequestHeader(HttpHeaders.AUTHORIZATION) final String accessToken
     ) {
         final boolean validated = authenticationService.isValidToken(TokenType.ACCESS, accessToken);
@@ -158,6 +160,7 @@ public class AuthenticationController {
     )
     @ApiResponse(responseCode = ApiResponseCode.NO_CONTENT, description = "회원 탈퇴 성공")
     public ResponseEntity<Void> withdrawal(
+            @Parameter(description = "서비스 Access Token", example = "Bearer access-token-abcdefghijklmn")
             @RequestHeader(HttpHeaders.AUTHORIZATION) final String accessToken,
             @RequestBody @Valid final WithdrawalRequest request
     ) {
