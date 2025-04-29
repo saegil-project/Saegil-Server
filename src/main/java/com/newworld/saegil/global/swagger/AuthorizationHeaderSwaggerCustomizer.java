@@ -22,13 +22,7 @@ public class AuthorizationHeaderSwaggerCustomizer implements OperationCustomizer
     public Operation customize(Operation operation, HandlerMethod handlerMethod) {
         ignoreSwaggerParameterAboutAuthorizationHeader(operation);
 
-        boolean isNeedAuthorizationHeader =
-                Arrays.stream(handlerMethod.getMethodParameters())
-                      .anyMatch(param ->
-                              hasAuthUserAnnotation(param) || hasRequestHeaderWithFieldNameAccessToken(param)
-                      );
-
-        if (isNeedAuthorizationHeader) {
+        if (isNeedAuthorizationHeader(handlerMethod) || hasSecurityRequirement(operation)) {
             operation.addParametersItem(customAuthHeaderParameter());
             operation.addSecurityItem(
                     new SecurityRequirement().addList(SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
@@ -55,6 +49,13 @@ public class AuthorizationHeaderSwaggerCustomizer implements OperationCustomizer
                 && (!"Authorization".equalsIgnoreCase(p.getName()));
     }
 
+    private boolean isNeedAuthorizationHeader(final HandlerMethod handlerMethod) {
+        return Arrays.stream(handlerMethod.getMethodParameters())
+                     .anyMatch(param ->
+                             hasAuthUserAnnotation(param) || hasRequestHeaderWithFieldNameAccessToken(param)
+                     );
+    }
+
     private boolean hasAuthUserAnnotation(final MethodParameter param) {
         return param.getParameterAnnotation(AuthUser.class) != null;
     }
@@ -63,6 +64,13 @@ public class AuthorizationHeaderSwaggerCustomizer implements OperationCustomizer
         return param.getParameterAnnotation(RequestHeader.class) != null
                 && "Authorization".equalsIgnoreCase(param.getParameterAnnotation(RequestHeader.class).name())
                 && "accessToken".equalsIgnoreCase(param.getParameter().getName());
+    }
+
+    private boolean hasSecurityRequirement(final Operation operation) {
+        return operation.getSecurity() != null
+                && operation.getSecurity().stream()
+                            .anyMatch(securityRequirement ->
+                                    securityRequirement.get(SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME) != null);
     }
 
     private Parameter customAuthHeaderParameter() {
