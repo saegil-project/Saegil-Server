@@ -75,8 +75,7 @@ class AuthenticationServiceTest {
         private static final OAuth2UserInfo OAUTH2_회원_정보 = new OAuth2UserInfo(
                 "1234567",
                 OAuth2Type.KAKAO,
-                "홍길동",
-                "http://example.com/profile.jpg"
+                "홍길동"
         );
 
         @Nested
@@ -89,7 +88,7 @@ class AuthenticationServiceTest {
                 final User 가입된_유저 = userRepository.save(
                         new User(
                                 OAUTH2_회원_정보.nickname(),
-                                OAUTH2_회원_정보.profileImageUrl(),
+                                "http://example.com/profile.jpg",
                                 OAUTH2_회원_정보.oauth2Id(),
                                 OAUTH2_회원_정보.oauth2Type()
                         )
