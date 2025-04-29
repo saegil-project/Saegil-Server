@@ -14,6 +14,7 @@ import com.newworld.saegil.user.domain.User;
 import com.newworld.saegil.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,9 @@ public class AuthenticationService {
     private final TokenProcessor tokenProcessor;
     private final UserRepository userRepository;
     private final BlacklistTokenRepository blacklistTokenRepository;
+
+    @Value("${user.default.profile-image-url}")
+    private String defaultProfileImageUrl;
 
     public String getAuthCodeRequestUrl(final String oauth2TypeName) {
         final OAuth2Handler oauth2Handler = oauth2HandlerComposite.findHandler(oauth2TypeName);
@@ -57,7 +61,7 @@ public class AuthenticationService {
         ).orElseGet(() -> {
             final User newUser = new User(
                     oauth2UserInfo.nickname(),
-                    oauth2UserInfo.profileImageUrl(),
+                    defaultProfileImageUrl,
                     oauth2UserInfo.oauth2Id(),
                     oauth2UserInfo.oauth2Type()
             );
