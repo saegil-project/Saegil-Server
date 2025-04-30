@@ -42,6 +42,9 @@ oauth2:
     client_secret: ${KAKAO_CLIENT_SECRET}
     redirect_uri: ${KAKAO_REDIRECT_URI}
     scope: ${KAKAO_SCOPE}
+user:
+  default:
+    profile-image-url: ${DEFAULT_PROFILE_IMAGE_URL}
 llm:
   proxy:
     llm-server-url: ${PROXY_LLM_SERVICE_URL:http://localhost:9090}
