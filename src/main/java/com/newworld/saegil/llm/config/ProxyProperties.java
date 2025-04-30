@@ -12,7 +12,6 @@ public record ProxyProperties(
     String chatgptFromAudioUrlPath,
     String chatgptFromAudioFilePath,
     String sttChatgptTtsFilePath,
-
     String assistantPath,
     String assistantFromAudioFilePath,
     String assistantAudioPath,
