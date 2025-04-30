@@ -7,7 +7,6 @@ import com.newworld.saegil.global.swagger.ApiResponseCode;
 import com.newworld.saegil.user.service.UserDto;
 import com.newworld.saegil.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,7 +32,6 @@ public class UserController {
     )
     @ApiResponse(responseCode = ApiResponseCode.OK, description = "유저 본인 정보 조회 성공")
     public ResponseEntity<ReadUserResponse> readUserInfo(
-            @Parameter(description = "Bearer {accessToken}", required = true)
             @AuthUser final AuthUserInfo authUserInfo
     ) {
         final UserDto userDto = userService.readById(authUserInfo.userId());

@@ -5,7 +5,6 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.OAuthFlow;
 import io.swagger.v3.oas.models.security.OAuthFlows;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
@@ -23,9 +22,7 @@ public class SwaggerConfiguration {
         return new OpenAPI()
                 .info(apiInfo)
                 .components(components())
-                .addServersItem(new Server().url("/"))
-                .addSecurityItem(new SecurityRequirement().addList(SERVICE_SECURITY_SCHEME_NAME))
-                .addSecurityItem(new SecurityRequirement().addList(OAUTH_SECURITY_SCHEME_NAME));
+                .addServersItem(new Server().url("/"));
     }
 
     private Components components() {
