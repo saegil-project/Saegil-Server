@@ -50,6 +50,11 @@ geocoding:
     client-id: ${NCP_CLIENT_ID:ncp-client-id}
     client-secret: ${NCP_CLIENT_SECRET:ncp-client-secret}
     api-uri: ${NAVER_GEOCODING_API_URI:naver-geocoding-api-uri}
+location-search:
+  naver:
+    client-id: ${NAVER_CLIENT_ID:naver-client-id}
+    client-secret: ${NAVER_CLIENT_SECRET:naver-client-secret}
+    api-uri: ${NAVER_LOCATION_SEARCH_API_URI:naver-location-search-api-uri}
 llm:
   proxy:
     llm-server-url: ${PROXY_LLM_SERVICE_URL:http://localhost:9090}
