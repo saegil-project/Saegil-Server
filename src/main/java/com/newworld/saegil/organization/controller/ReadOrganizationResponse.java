@@ -1,4 +1,4 @@
-package com.newworld.saegil.map.controller;
+package com.newworld.saegil.organization.controller;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
