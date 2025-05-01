@@ -17,7 +17,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -33,71 +32,6 @@ public class AssistantController {
 
     private final AssistantService assistantService;
     private final FileProperties fileProperties;
-
-    @Operation(
-            summary = "텍스트 쿼리에 대한 Assistant 응답 가져오기",
-            description = """
-                    텍스트 쿼리를 기반으로 OpenAI Assistant의 응답을 받습니다.\s
-                    `thread_id` 쿼리 파라미터를 포함하면 기존 대화 상태를 유지할 수 있습니다 (선택 사항).\s
-                    """,
-            security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
-    )
-    @PostMapping
-    public ResponseEntity<AssistantResponse> getAssistantResponse(
-            @Parameter(description = "텍스트 쿼리") @RequestBody final AssistantRequest request,
-            @Parameter(description = "기존 대화 스레드 ID (선택 사항)") @RequestParam(value = "thread_id", required = false) final String threadId
-    ) {
-        log.info("Received Assistant request: text='{}', threadId='{}'", request.text(), threadId);
-        final AssistantResponse response = assistantService.getAssistantResponse(request, threadId);
-        return ResponseEntity.ok(response);
-    }
-
-    @Operation(
-            summary = "MP3 파일로부터 Assistant 응답 받기",
-            description = """
-                    업로드된 MP3 파일에서 추출한 텍스트를 기반으로 OpenAI Assistant의 응답을 받습니다.\s
-                    `thread_id` 쿼리 파라미터를 포함하면 기존 대화 상태를 유지할 수 있습니다 (선택 사항).\s
-                    """,
-            security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
-    )
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AssistantResponse> getAssistantResponseFromFile(
-            @Parameter(description = "음성 파일 (MP3 등)") @RequestPart("file") final MultipartFile multipartFile,
-            @Parameter(description = "기존 대화 스레드 ID (선택 사항)") @RequestParam(value = "thread_id", required = false) final String threadId
-    ) {
-        log.info("Received Assistant file upload request: {}, threadId: {}",
-                multipartFile.getOriginalFilename(), threadId);
-        final AssistantResponse response = assistantService.getAssistantResponseFromAudioFile(multipartFile, threadId);
-        return ResponseEntity.ok(response);
-    }
-
-    @Operation(
-            summary = "텍스트 쿼리에 대한 Assistant 응답을 음성으로 가져오기",
-            description = """
-                    텍스트 쿼리를 기반으로 OpenAI Assistant의 응답을 받고 이를 음성으로 변환합니다.\s
-                    `thread_id` 쿼리 파라미터를 포함하면 기존 대화 상태를 유지할 수 있습니다 (선택 사항).\s
-                    `provider` 쿼리 파라미터로 음성 합성 엔진(openai, elevenlabs)을 지정할 수 있습니다.\s
-                    """,
-            security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
-    )
-    @PostMapping(value = "/audio", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<Resource> getAssistantAudioResponse(
-            @Parameter(description = "텍스트 쿼리")
-            @RequestBody final AssistantRequest request,
-
-            @Parameter(description = "기존 대화 스레드 ID (선택 사항)")
-            @RequestParam(value = "thread_id", required = false) final String threadId,
-
-            @Parameter(description = "음성 합성 엔진 (openai 또는 elevenlabs, 기본값: openai)")
-            @RequestParam(value = "provider", required = false, defaultValue = "OPENAI") final TtsProvider provider
-    ) {
-        log.info("Received Assistant audio request: text='{}', threadId='{}', provider: {}", request.text(), threadId, provider);
-        final Resource responseResource = assistantService.getAssistantAudioResponse(request, threadId, provider.name().toLowerCase());
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileProperties.resultFileName() + "\"")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(responseResource);
-    }
 
     @Operation(
             summary = "MP3 파일로부터 Assistant 응답을 음성으로 가져오기",

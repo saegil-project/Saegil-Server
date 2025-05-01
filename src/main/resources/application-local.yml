@@ -48,17 +48,6 @@ user:
 llm:
   proxy:
     llm-server-url: ${PROXY_LLM_SERVICE_URL:http://localhost:9090}
-    tts-path: ${llm.proxy.llm-server-url}/api/v1/text-to-speech
-    stt-path: ${llm.proxy.llm-server-url}/api/v1/speech-to-text/audio-url
-    stt-from-audio-file-path: ${llm.proxy.llm-server-url}/api/v1/speech-to-text/upload
-    chatgpt-from-text-path: ${llm.proxy.llm-server-url}/api/v1/chatgpt
-    chatgpt-from-stt-text-path: ${llm.proxy.llm-server-url}/api/v1/chatgpt/stt-text
-    chatgpt-from-audio-url-path: ${llm.proxy.llm-server-url}/api/v1/chatgpt/audio-url
-    chatgpt-from-audio-file-path: ${llm.proxy.llm-server-url}/api/v1/chatgpt/upload
-    stt-chatgpt-tts-file-path: ${llm.proxy.llm-server-url}/api/v1/stt-chatgpt-tts/upload
-    assistant-path: ${llm.proxy.llm-server-url}/api/v1/assistant
-    assistant-from-audio-file-path: ${llm.proxy.llm-server-url}/api/v1/assistant/upload
-    assistant-audio-path: ${llm.proxy.llm-server-url}/api/v1/assistant/audio
     assistant-audio-from-file-path: ${llm.proxy.llm-server-url}/api/v1/assistant/upload/audio
   file:
     result-file-name: assistant_response.mp3
