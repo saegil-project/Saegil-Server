@@ -1,4 +1,4 @@
-package com.newworld.saegil.map.controller;
+package com.newworld.saegil.organization.controller;
 
 import com.newworld.saegil.global.swagger.ApiResponseCode;
 import io.swagger.v3.oas.annotations.Operation;

@@ -37,14 +37,24 @@ token:
     refresh-expired-hours: 336  # 14일
 oauth2:
   kakao:
-    admin-key: ${KAKAO_ADMIN_KEY}
-    client_id: ${KAKAO_CLIENT_ID}
-    client_secret: ${KAKAO_CLIENT_SECRET}
-    redirect_uri: ${KAKAO_REDIRECT_URI}
-    scope: ${KAKAO_SCOPE}
+    admin-key: ${KAKAO_ADMIN_KEY:kakao-admin-key}
+    client_id: ${KAKAO_CLIENT_ID:kakao-client-id}
+    client_secret: ${KAKAO_CLIENT_SECRET:kakao-client-secret}
+    redirect_uri: ${KAKAO_REDIRECT_URI:kakao-redirect-uri}
+    scope: ${KAKAO_SCOPE:kakao-scope}
 user:
   default:
-    profile-image-url: ${DEFAULT_PROFILE_IMAGE_URL}
+    profile-image-url: ${DEFAULT_PROFILE_IMAGE_URL:http://localhost:8080/images/default_profile.png}
+geocoding:
+  naver:
+    client-id: ${NCP_CLIENT_ID:ncp-client-id}
+    client-secret: ${NCP_CLIENT_SECRET:ncp-client-secret}
+    api-uri: ${NAVER_GEOCODING_API_URI:naver-geocoding-api-uri}
+location-search:
+  naver:
+    client-id: ${NAVER_CLIENT_ID:naver-client-id}
+    client-secret: ${NAVER_CLIENT_SECRET:naver-client-secret}
+    api-uri: ${NAVER_LOCATION_SEARCH_API_URI:naver-location-search-api-uri}
 llm:
   proxy:
     llm-server-url: ${PROXY_LLM_SERVICE_URL:http://localhost:9090}
