@@ -1,5 +1,6 @@
 package com.newworld.saegil.location.naver;
 
+import com.newworld.saegil.location.Address;
 import com.newworld.saegil.location.Coordinates;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -16,12 +17,19 @@ class NaverLocalSearchHandlerTest {
     private NaverLocalSearchHandler naverLocationSearchHandler;
 
     @Test
-    void testGetCoordinates() throws Exception {
-        final String address = "숭실대학교 정보과학관";
-        final Coordinates actual = naverLocationSearchHandler.getCoordinates(address);
+    void testGetAddress() throws Exception {
+        // given
+        final String placeName = "숭실대학교 정보과학관";
+        final Address expected = new Address(
+                "서울특별시 동작구 사당로 50",
+                "서울특별시 동작구 상도동 509",
+                new Coordinates(37.4944897, 126.9597657)
+        );
 
-        assertThat(actual).isNotNull();
-        assertThat(actual.getLatitude()).isEqualTo(37.4944897);
-        assertThat(actual.getLongitude()).isEqualTo(126.9597657);
+        // when
+        final Address actual = naverLocationSearchHandler.getAddress(placeName);
+
+        // then
+        assertThat(actual).isEqualTo(expected);
     }
 }

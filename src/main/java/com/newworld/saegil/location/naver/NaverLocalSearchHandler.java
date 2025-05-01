@@ -1,5 +1,6 @@
 package com.newworld.saegil.location.naver;
 
+import com.newworld.saegil.location.Address;
 import com.newworld.saegil.location.Coordinates;
 import com.newworld.saegil.location.LocationSearchException;
 import com.newworld.saegil.location.LocalSearchHandler;
@@ -22,7 +23,7 @@ public class NaverLocalSearchHandler implements LocalSearchHandler {
     private final RestTemplate restTemplate;
 
     @Override
-    public Coordinates getCoordinates(String placeName) throws LocationSearchException {
+    public Address getAddress(String placeName) throws LocationSearchException {
         final String requestUri = UriComponentsBuilder.fromUriString(properties.apiUri())
                                                       .queryParam("query", placeName)
                                                       .queryParam("display", 1)
@@ -44,7 +45,7 @@ public class NaverLocalSearchHandler implements LocalSearchHandler {
 
         final NaverLocationSearchItem firstItem = extractFirstItem(responseBody);
 
-        return firstItem.toCoordinates();
+        return firstItem.toAddress();
     }
 
     private HttpEntity<Void> createRequestEntity() {
@@ -79,15 +80,16 @@ public class NaverLocalSearchHandler implements LocalSearchHandler {
             String mapy
     ) {
 
-        public Coordinates toCoordinates() throws LocationSearchException {
+        public Address toAddress() throws LocationSearchException {
             if (mapx == null || mapy == null) {
                 throw new LocationSearchException("Naver Location Search 응답에 좌표 정보가 없습니다.");
             }
 
             final double latitude = Double.parseDouble(mapy) / 10_000_000.0;
             final double longitude = Double.parseDouble(mapx) / 10_000_000.0;
+            final Coordinates coordinates = new Coordinates(latitude, longitude);
 
-            return new Coordinates(latitude, longitude);
+            return new Address(roadAddress, address, coordinates);
         }
     }
 }

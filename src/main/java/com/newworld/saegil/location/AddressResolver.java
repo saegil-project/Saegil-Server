@@ -8,12 +8,12 @@ import org.springframework.util.StringUtils;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class CoordinatesResolver {
+public class AddressResolver {
 
     private final GeocodingHandler geocodingHandler;
     private final LocalSearchHandler localSearchHandler;
 
-    public Coordinates resolve(String address, String placeName) {
+    public Address resolve(String address, String placeName) {
         if (StringUtils.hasText(address)) {
             return resolveByAddressOrElsePlaceName(address, placeName);
         }
@@ -26,9 +26,9 @@ public class CoordinatesResolver {
         throw new AddressResolveFailedException("주소와 장소명 모두 없음");
     }
 
-    private Coordinates resolveByAddressOrElsePlaceName(final String address, final String placeName) {
+    private Address resolveByAddressOrElsePlaceName(final String address, final String placeName) {
         try {
-            return geocodingHandler.getCoordinates(address);
+            return geocodingHandler.getAddress(address);
         } catch (GeocodingException e) {
             log.error("주소({})의 좌표를 찾을 수 없습니다: {}", address, e.getMessage());
 
@@ -40,9 +40,9 @@ public class CoordinatesResolver {
         }
     }
 
-    private Coordinates resolveByPlaceName(final String placeName) {
+    private Address resolveByPlaceName(final String placeName) {
         try {
-            return localSearchHandler.getCoordinates(placeName);
+            return localSearchHandler.getAddress(placeName);
         } catch (LocationSearchException e) {
             log.error("장소({})의 좌표를 찾을 수 없습니다: {}", placeName, e.getMessage());
 
