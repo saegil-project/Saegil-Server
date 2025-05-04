@@ -40,4 +40,11 @@ public class Message {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    public Message(final Simulation simulation, final boolean isFromUser, final String contents, final LocalDateTime createdAt) {
+        this.simulation = simulation;
+        this.isFromUser = isFromUser;
+        this.contents = contents;
+        this.createdAt = createdAt;
+    }
 }

@@ -43,4 +43,11 @@ public class Simulation {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    public Simulation(final Scenario scenario, final User user, final String threadId, final LocalDateTime createdAt) {
+        this.scenario = scenario;
+        this.user = user;
+        this.threadId = threadId;
+        this.createdAt = createdAt;
+    }
 }
