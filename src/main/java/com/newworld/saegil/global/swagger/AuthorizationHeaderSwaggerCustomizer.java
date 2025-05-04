@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 @Component
 public class AuthorizationHeaderSwaggerCustomizer implements OperationCustomizer {
 
+    public static final String AUTHORIZATION_HEADER_CUSTOM_PARAMETER_NAME = "Authorization-Header";
+
     @Override
     public Operation customize(Operation operation, HandlerMethod handlerMethod) {
         ignoreSwaggerParameterAboutAuthorizationHeader(operation);
@@ -77,7 +79,7 @@ public class AuthorizationHeaderSwaggerCustomizer implements OperationCustomizer
         return new Parameter()
                 .in("header")
                 .schema(new StringSchema())
-                .name("Authorization")
+                .name(AUTHORIZATION_HEADER_CUSTOM_PARAMETER_NAME)
                 .description("서비스 Access Token")
                 .required(true)
                 .example("Bearer access-token-abcdefghijklmn");
