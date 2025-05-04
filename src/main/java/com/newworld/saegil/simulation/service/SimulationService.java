@@ -1,6 +1,9 @@
 package com.newworld.saegil.simulation.service;
 
 import com.newworld.saegil.exception.UserNotFoundException;
+import com.newworld.saegil.simulation.domain.Message;
+import com.newworld.saegil.simulation.domain.Simulation;
+import com.newworld.saegil.simulation.repository.MessageRepository;
 import com.newworld.saegil.simulation.repository.SimulationRepository;
 import com.newworld.saegil.user.domain.User;
 import com.newworld.saegil.user.repository.UserRepository;
@@ -17,6 +20,7 @@ public class SimulationService {
 
     private final UserRepository userRepository;
     private final SimulationRepository simulationRepository;
+    private final MessageRepository messageRepository;
 
     public List<SimulationDto> readAllSimulationHistories(final Long userId) {
         final User user = userRepository.findById(userId)
@@ -26,5 +30,16 @@ public class SimulationService {
                                    .stream()
                                    .map(SimulationDto::from)
                                    .toList();
+    }
+
+    public ReadMessagesResult readAllMessagesBySimulationId(final Long simulationId) {
+        final Simulation simulation =
+                simulationRepository.findById(simulationId)
+                                    .orElseThrow(() ->
+                                            new SimulationNotFoundException("해당하는 시뮬레이션 기록을 찾을 수 없습니다.")
+                                    );
+        final List<Message> messages = messageRepository.findAllBySimulationId(simulation.getId());
+
+        return ReadMessagesResult.from(simulation, messages);
     }
 }
