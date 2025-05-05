@@ -42,9 +42,13 @@ public class Message {
     private LocalDateTime createdAt;
 
     public Message(final Simulation simulation, final boolean isFromUser, final String contents, final LocalDateTime createdAt) {
+        if (contents.length() > 16000) {
+            this.contents = contents.substring(0, 15990).concat("...");
+        } else {
+            this.contents = contents;
+        }
         this.simulation = simulation;
         this.isFromUser = isFromUser;
-        this.contents = contents;
         this.createdAt = createdAt;
     }
 }
