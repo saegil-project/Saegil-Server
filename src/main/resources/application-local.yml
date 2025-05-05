@@ -50,6 +50,13 @@ oauth2:
 user:
   default:
     profile-image-url: ${DEFAULT_PROFILE_IMAGE_URL:http://localhost:8080/images/default_profile.png}
+openapi:
+  public-data:
+    private-encoding-key: ${PUBLIC_DATA_PRIVATE_ENCODING_KEY:public-data-private-encoding-key}
+    private-decoding-key: ${PUBLIC_DATA_PRIVATE_DECODING_KEY:public-data-private-decoding-key}
+    national-social-welfare-facility:
+      api-uri: ${NATIONAL_SOCIAL_WELFARE_FACILITY_API_URI:national-social-welfare-facility-api-uri}
+
 geocoding:
   naver:
     client-id: ${NCP_CLIENT_ID:ncp-client-id}
