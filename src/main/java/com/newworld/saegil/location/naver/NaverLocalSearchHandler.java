@@ -1,6 +1,6 @@
 package com.newworld.saegil.location.naver;
 
-import com.newworld.saegil.location.Address;
+import com.newworld.saegil.location.LocationInfo;
 import com.newworld.saegil.location.Coordinates;
 import com.newworld.saegil.location.LocalSearchException;
 import com.newworld.saegil.location.LocalSearchHandler;
@@ -23,7 +23,7 @@ public class NaverLocalSearchHandler implements LocalSearchHandler {
     private final RestTemplate restTemplate;
 
     @Override
-    public Address getAddress(String placeName) throws LocalSearchException {
+    public LocationInfo getAddress(String placeName) throws LocalSearchException {
         final String requestUri = UriComponentsBuilder.fromUriString(properties.apiUri())
                                                       .queryParam("query", placeName)
                                                       .queryParam("display", 1)
@@ -80,7 +80,7 @@ public class NaverLocalSearchHandler implements LocalSearchHandler {
             String mapy
     ) {
 
-        public Address toAddress() throws LocalSearchException {
+        public LocationInfo toAddress() throws LocalSearchException {
             if (mapx == null || mapy == null) {
                 throw new LocalSearchException("Naver Location Search 응답에 좌표 정보가 없습니다.");
             }
@@ -89,7 +89,7 @@ public class NaverLocalSearchHandler implements LocalSearchHandler {
             final double longitude = Double.parseDouble(mapx) / 10_000_000.0;
             final Coordinates coordinates = new Coordinates(latitude, longitude);
 
-            return new Address(roadAddress, address, coordinates);
+            return new LocationInfo(roadAddress, address, coordinates);
         }
     }
 }

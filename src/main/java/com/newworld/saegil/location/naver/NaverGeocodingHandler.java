@@ -1,6 +1,6 @@
 package com.newworld.saegil.location.naver;
 
-import com.newworld.saegil.location.Address;
+import com.newworld.saegil.location.LocationInfo;
 import com.newworld.saegil.location.Coordinates;
 import com.newworld.saegil.location.GeocodingException;
 import com.newworld.saegil.location.GeocodingHandler;
@@ -23,7 +23,7 @@ public class NaverGeocodingHandler implements GeocodingHandler {
     private final RestTemplate restTemplate;
 
     @Override
-    public Address getAddress(String address) throws GeocodingException {
+    public LocationInfo getAddress(String address) throws GeocodingException {
         final String requestUri = UriComponentsBuilder.fromUriString(properties.apiUri())
                                                       .queryParam("query", address)
                                                       .build(false)
@@ -79,7 +79,7 @@ public class NaverGeocodingHandler implements GeocodingHandler {
         String y
     ) {
 
-        public Address toAddress() throws GeocodingException {
+        public LocationInfo toAddress() throws GeocodingException {
             if (x == null || y == null) {
                 throw new GeocodingException("Naver Geocoding 응답에 좌표 정보가 없습니다.");
             }
@@ -88,7 +88,7 @@ public class NaverGeocodingHandler implements GeocodingHandler {
             final double longitude = Double.parseDouble(x);
             final Coordinates coordinates = new Coordinates(latitude, longitude);
 
-            return new Address(roadAddress, jibunAddress, coordinates);
+            return new LocationInfo(roadAddress, jibunAddress, coordinates);
         }
     }
 }

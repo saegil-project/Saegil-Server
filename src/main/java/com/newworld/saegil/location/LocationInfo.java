@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class Address {
+public class LocationInfo {
 
     private final String roadAddress;
     private final String jibunAddress;
