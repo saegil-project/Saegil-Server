@@ -1,17 +1,8 @@
 package com.newworld.saegil.location;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-
-@RequiredArgsConstructor
-@Getter
-@EqualsAndHashCode
-@ToString
-public class LocationInfo {
-
-    private final String roadAddress;
-    private final String jibunAddress;
-    private final Coordinates coordinates;
+public record LocationInfo(
+        String roadAddress,
+        String jibunAddress,
+        Coordinates coordinates
+) {
 }
