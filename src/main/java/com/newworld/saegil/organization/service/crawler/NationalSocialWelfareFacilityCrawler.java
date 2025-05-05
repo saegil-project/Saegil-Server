@@ -2,6 +2,8 @@ package com.newworld.saegil.organization.service.crawler;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.newworld.saegil.global.BlankToNullDeserializer;
 import com.newworld.saegil.organization.domain.Facility;
 import com.newworld.saegil.organization.service.FacilityCrawler;
 import lombok.RequiredArgsConstructor;
@@ -83,6 +85,7 @@ public class NationalSocialWelfareFacilityCrawler implements FacilityCrawler {
     }
 
     record Body(
+            @JsonDeserialize(using = BlankToNullDeserializer.class)
             Items items,
             int numOfRows,
             int pageNo,
