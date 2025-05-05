@@ -35,7 +35,7 @@ public class Message {
     @Column(nullable = false)
     private boolean isFromUser;
 
-    @Column(nullable = false, length = 20_000) // TODO: 길이제한 몇으로 할까
+    @Column(nullable = false, length = 16000)
     private String contents;
 
     @Column(nullable = false)
