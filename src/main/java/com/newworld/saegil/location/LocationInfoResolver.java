@@ -1,19 +1,17 @@
 package com.newworld.saegil.location;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class LocationInfoResolver {
 
     private final GeocodingHandler geocodingHandler;
     private final LocalSearchHandler localSearchHandler;
 
-    public LocationInfo resolve(String address, String placeName) {
+    public LocationInfo resolve(String address, String placeName) throws LocationInfoResolveFailedException {
         if (StringUtils.hasText(address)) {
             return resolveByAddressOrElsePlaceName(address, placeName);
         }
@@ -22,16 +20,16 @@ public class LocationInfoResolver {
             return resolveByPlaceName(placeName);
         }
 
-        log.error("주소와 장소명 모두 없음");
         throw new LocationInfoResolveFailedException("주소와 장소명 모두 없음");
     }
 
-    private LocationInfo resolveByAddressOrElsePlaceName(final String address, final String placeName) {
+    private LocationInfo resolveByAddressOrElsePlaceName(
+            final String address,
+            final String placeName
+    ) throws LocationInfoResolveFailedException {
         try {
             return geocodingHandler.getAddress(address);
         } catch (GeocodingException e) {
-            log.error("주소({})의 좌표를 찾을 수 없습니다: {}", address, e.getMessage());
-
             if (StringUtils.hasText(placeName)) {
                 return resolveByPlaceName(placeName);
             }
@@ -40,13 +38,13 @@ public class LocationInfoResolver {
         }
     }
 
-    private LocationInfo resolveByPlaceName(final String placeName) {
+    private LocationInfo resolveByPlaceName(final String placeName) throws LocationInfoResolveFailedException {
         try {
             return localSearchHandler.getAddress(placeName);
         } catch (LocalSearchException e) {
-            log.error("장소({})의 좌표를 찾을 수 없습니다: {}", placeName, e.getMessage());
-
-            throw new LocationInfoResolveFailedException("장소(" + placeName + ")의 좌표를 찾을 수 없습니다: " + e.getMessage());
+            throw new LocationInfoResolveFailedException(
+                    "장소(" + placeName + ")의 좌표를 찾을 수 없습니다: " + e.getMessage()
+            );
         }
     }
 }
