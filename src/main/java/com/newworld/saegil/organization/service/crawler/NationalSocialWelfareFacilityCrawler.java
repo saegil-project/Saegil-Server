@@ -1,5 +1,7 @@
 package com.newworld.saegil.organization.service.crawler;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.newworld.saegil.organization.domain.Facility;
 import com.newworld.saegil.organization.service.FacilityCrawler;
 import lombok.RequiredArgsConstructor;
@@ -94,13 +96,28 @@ public class NationalSocialWelfareFacilityCrawler implements FacilityCrawler {
     }
 
     record Item(
+            @JsonSetter(nulls = Nulls.AS_EMPTY)
             String fcltCd, // 시설코드
+
+            @JsonSetter(nulls = Nulls.AS_EMPTY)
             String fcltNm, // 시설명
+
+            @JsonSetter(nulls = Nulls.AS_EMPTY)
             String fcltAddr, // 시설주소
+
+            @JsonSetter(nulls = Nulls.AS_EMPTY)
             String fcltDtl_1Addr, // 시설상세1주소
+
+            @JsonSetter(nulls = Nulls.AS_EMPTY)
             String fcltDtl_2Addr, // 시설상세2주소
+
+            @JsonSetter(nulls = Nulls.AS_EMPTY)
             String fcltTelno, // 시설전화번호
+
+            @JsonSetter(nulls = Nulls.AS_EMPTY)
             String cfbClCd, // 업종분류코드
+
+            @JsonSetter(nulls = Nulls.AS_EMPTY)
             String cfbNm // 업종명
     ) {
 
