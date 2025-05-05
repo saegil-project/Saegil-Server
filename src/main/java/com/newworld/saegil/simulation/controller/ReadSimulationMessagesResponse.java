@@ -14,8 +14,8 @@ public record ReadSimulationMessagesResponse(
     public static ReadSimulationMessagesResponse from(final ReadMessagesResult readMessagesResult) {
         final String scenarioName = readMessagesResult.simulation().scenario().name();
         final List<ReadMessageItemResponse> messages = readMessagesResult.messages().stream()
-                                                                      .map(ReadMessageItemResponse::from)
-                                                                      .toList();
+                                                                         .map(ReadMessageItemResponse::from)
+                                                                         .toList();
 
         return new ReadSimulationMessagesResponse(scenarioName, messages);
     }
