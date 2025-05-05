@@ -43,7 +43,7 @@ public class AddressResolver {
     private Address resolveByPlaceName(final String placeName) {
         try {
             return localSearchHandler.getAddress(placeName);
-        } catch (LocationSearchException e) {
+        } catch (LocalSearchException e) {
             log.error("장소({})의 좌표를 찾을 수 없습니다: {}", placeName, e.getMessage());
 
             throw new AddressResolveFailedException("장소(" + placeName + ")의 좌표를 찾을 수 없습니다: " + e.getMessage());
