@@ -23,7 +23,7 @@ public class NaverLocalSearchHandler implements LocalSearchHandler {
     private final RestTemplate restTemplate;
 
     @Override
-    public LocationInfo getAddress(String placeName) throws LocalSearchException {
+    public LocationInfo getLocationInfo(String placeName) throws LocalSearchException {
         final String requestUri = UriComponentsBuilder.fromUriString(properties.apiUri())
                                                       .queryParam("query", placeName)
                                                       .queryParam("display", 1)
@@ -45,7 +45,7 @@ public class NaverLocalSearchHandler implements LocalSearchHandler {
 
         final NaverLocationSearchItem firstItem = extractFirstItem(responseBody);
 
-        return firstItem.toAddress();
+        return firstItem.toLoginInfo();
     }
 
     private HttpEntity<Void> createRequestEntity() {
@@ -80,7 +80,7 @@ public class NaverLocalSearchHandler implements LocalSearchHandler {
             String mapy
     ) {
 
-        public LocationInfo toAddress() throws LocalSearchException {
+        public LocationInfo toLoginInfo() throws LocalSearchException {
             if (mapx == null || mapy == null) {
                 throw new LocalSearchException("Naver Location Search 응답에 좌표 정보가 없습니다.");
             }

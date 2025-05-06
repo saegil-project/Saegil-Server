@@ -2,5 +2,5 @@ package com.newworld.saegil.location;
 
 public interface LocalSearchHandler {
 
-    LocationInfo getAddress(String placeName) throws LocalSearchException;
+    LocationInfo getLocationInfo(String placeName) throws LocalSearchException;
 }

@@ -28,19 +28,21 @@ public class LocationInfoResolver {
             final String placeName
     ) throws LocationInfoResolveFailedException {
         try {
-            return geocodingHandler.getAddress(address);
+            return geocodingHandler.getLocationInfo(address);
         } catch (GeocodingException e) {
-            if (StringUtils.hasText(placeName)) {
-                return resolveByPlaceName(placeName);
+            if (!StringUtils.hasText(placeName)) {
+                throw new LocationInfoResolveFailedException(
+                        placeName + "(" + address + ")의 좌표를 찾을 수 없습니다: " + e.getMessage()
+                );
             }
 
-            throw new LocationInfoResolveFailedException("주소(" + address + ")의 좌표를 찾을 수 없습니다: " + e.getMessage());
+            return resolveByPlaceName(placeName);
         }
     }
 
     private LocationInfo resolveByPlaceName(final String placeName) throws LocationInfoResolveFailedException {
         try {
-            return localSearchHandler.getAddress(placeName);
+            return localSearchHandler.getLocationInfo(placeName);
         } catch (LocalSearchException e) {
             throw new LocationInfoResolveFailedException(
                     "장소(" + placeName + ")의 좌표를 찾을 수 없습니다: " + e.getMessage()

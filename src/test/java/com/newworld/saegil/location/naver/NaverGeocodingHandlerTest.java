@@ -27,7 +27,7 @@ class NaverGeocodingHandlerTest {
         );
 
         // when
-        final LocationInfo actual = naverGeocodingHandler.getAddress(address);
+        final LocationInfo actual = naverGeocodingHandler.getLocationInfo(address);
 
         // then
         assertThat(actual).isEqualTo(expected);

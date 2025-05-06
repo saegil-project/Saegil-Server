@@ -27,7 +27,7 @@ class NaverLocalSearchHandlerTest {
         );
 
         // when
-        final LocationInfo actual = naverLocationSearchHandler.getAddress(placeName);
+        final LocationInfo actual = naverLocationSearchHandler.getLocationInfo(placeName);
 
         // then
         assertThat(actual).isEqualTo(expected);
