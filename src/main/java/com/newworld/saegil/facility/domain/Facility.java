@@ -1,4 +1,4 @@
-package com.newworld.saegil.organization.domain;
+package com.newworld.saegil.facility.domain;
 
 import com.newworld.saegil.location.LocationInfo;
 import jakarta.persistence.Column;

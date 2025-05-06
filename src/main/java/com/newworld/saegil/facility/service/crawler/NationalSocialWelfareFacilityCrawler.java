@@ -1,12 +1,12 @@
-package com.newworld.saegil.organization.service.crawler;
+package com.newworld.saegil.facility.service.crawler;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.newworld.saegil.facility.domain.Facility;
+import com.newworld.saegil.facility.domain.FacilityInfoSource;
+import com.newworld.saegil.facility.service.FacilityCrawler;
 import com.newworld.saegil.global.BlankToNullDeserializer;
-import com.newworld.saegil.organization.domain.Facility;
-import com.newworld.saegil.organization.domain.FacilityInfoSource;
-import com.newworld.saegil.organization.service.FacilityCrawler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

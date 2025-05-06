@@ -1,7 +1,7 @@
-package com.newworld.saegil.organization.repository;
+package com.newworld.saegil.facility.repository;
 
-import com.newworld.saegil.organization.domain.Facility;
-import com.newworld.saegil.organization.domain.FacilityInfoSource;
+import com.newworld.saegil.facility.domain.Facility;
+import com.newworld.saegil.facility.domain.FacilityInfoSource;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

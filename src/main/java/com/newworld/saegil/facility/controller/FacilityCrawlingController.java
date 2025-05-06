@@ -1,6 +1,6 @@
-package com.newworld.saegil.organization.controller;
+package com.newworld.saegil.facility.controller;
 
-import com.newworld.saegil.organization.service.FacilityCrawlingService;
+import com.newworld.saegil.facility.service.FacilityCrawlingService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
