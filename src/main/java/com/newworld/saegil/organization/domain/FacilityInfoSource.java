@@ -1,0 +1,15 @@
+package com.newworld.saegil.organization.domain;
+
+public enum FacilityInfoSource {
+    PUBLIC_API_NATIONAL_SOCIAL_WELFARE_FACILITY("공공데이터포털 전국사회복지시설표준데이터");
+
+    private final String name;
+
+    FacilityInfoSource(final String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+}

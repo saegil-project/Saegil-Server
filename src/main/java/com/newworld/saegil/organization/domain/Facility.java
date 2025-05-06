@@ -25,6 +25,12 @@ public class Facility {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    private String facilityCode;
+
+    @Column(nullable = false)
+    private FacilityInfoSource infoSource;
+
     @Column(nullable = false)
     private String name;
 
@@ -44,6 +50,8 @@ public class Facility {
     private Double longitude;
 
     public Facility(
+            final String facilityCode,
+            final FacilityInfoSource infoSource,
             final String name,
             final String telephoneNumber,
             final String roadAddress,
@@ -52,6 +60,8 @@ public class Facility {
             final Double longitude
     ) {
         this.name = name.trim();
+        this.facilityCode = facilityCode.trim();
+        this.infoSource = infoSource;
         this.telephoneNumber = telephoneNumber.trim();
         this.roadAddress = roadAddress.trim();
         this.jibunAddress = jibunAddress.trim();
