@@ -63,7 +63,7 @@ public class AssistantController {
             produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
     )
     public ResponseEntity<Resource> getAssistantAudioResponseFromFile(
-            @Parameter(description = "음성 파일 (음성 등)")
+            @Parameter(description = "음성 파일")
             @RequestPart("file") final MultipartFile multipartFile,
 
             @Parameter(description = "기존 대화 스레드 ID (선택 사항)")
