@@ -1,6 +1,6 @@
 package com.newworld.saegil.location.naver;
 
-import com.newworld.saegil.location.Address;
+import com.newworld.saegil.location.LocationInfo;
 import com.newworld.saegil.location.Coordinates;
 import com.newworld.saegil.location.GeocodingException;
 import com.newworld.saegil.location.GeocodingHandler;
@@ -23,7 +23,7 @@ public class NaverGeocodingHandler implements GeocodingHandler {
     private final RestTemplate restTemplate;
 
     @Override
-    public Address getAddress(String address) throws GeocodingException {
+    public LocationInfo getLocationInfo(String address) throws GeocodingException {
         final String requestUri = UriComponentsBuilder.fromUriString(properties.apiUri())
                                                       .queryParam("query", address)
                                                       .build(false)
@@ -39,12 +39,12 @@ public class NaverGeocodingHandler implements GeocodingHandler {
         );
 
         if (!responseBody.getStatusCode().is2xxSuccessful()) {
-            throw new GeocodingException("Naver Geocoding 요청에 실패했습니다.");
+            throw new GeocodingException("Naver Geocoding 요청에 실패했습니다. (주소: " + address + ")");
         }
 
-        final AddressResponse firstAddress = extractFirstAddress(responseBody);
+        final AddressResponse firstAddress = extractFirstAddress(responseBody, address);
 
-        return firstAddress.toAddress();
+        return firstAddress.toLocationInfo();
     }
 
     private HttpEntity<Void> createRequestEntity() {
@@ -55,10 +55,13 @@ public class NaverGeocodingHandler implements GeocodingHandler {
         return new HttpEntity<>(requestHeaders);
     }
 
-    private AddressResponse extractFirstAddress(final ResponseEntity<NaverGeocodingResponse> responseBody) throws GeocodingException {
+    private AddressResponse extractFirstAddress(
+            final ResponseEntity<NaverGeocodingResponse> responseBody,
+            final String address
+    ) throws GeocodingException {
         final NaverGeocodingResponse response = responseBody.getBody();
         if (response == null || response.addresses == null || response.addresses.isEmpty()) {
-            throw new GeocodingException("Naver Geocoding에서 해당 장소를 찾을 수 없습니다.");
+            throw new GeocodingException("Naver Geocoding에서 해당 장소를 찾을 수 없습니다. (주소: " + address + ")");
         }
 
         return response.addresses.getFirst();
@@ -79,7 +82,7 @@ public class NaverGeocodingHandler implements GeocodingHandler {
         String y
     ) {
 
-        public Address toAddress() throws GeocodingException {
+        public LocationInfo toLocationInfo() throws GeocodingException {
             if (x == null || y == null) {
                 throw new GeocodingException("Naver Geocoding 응답에 좌표 정보가 없습니다.");
             }
@@ -88,7 +91,7 @@ public class NaverGeocodingHandler implements GeocodingHandler {
             final double longitude = Double.parseDouble(x);
             final Coordinates coordinates = new Coordinates(latitude, longitude);
 
-            return new Address(roadAddress, jibunAddress, coordinates);
+            return new LocationInfo(roadAddress, jibunAddress, coordinates);
         }
     }
 }
