@@ -1,5 +1,6 @@
 package com.newworld.saegil.organization.domain;
 
+import com.newworld.saegil.location.LocationInfo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,12 +43,26 @@ public class Facility {
     @Column
     private Double longitude;
 
-    public Facility(final String name, final String telephoneNumber, final String roadAddress, final String jibunAddress, final Double latitude, final Double longitude) {
-        this.name = name;
-        this.telephoneNumber = telephoneNumber;
-        this.roadAddress = roadAddress;
-        this.jibunAddress = jibunAddress;
+    public Facility(
+            final String name,
+            final String telephoneNumber,
+            final String roadAddress,
+            final String jibunAddress,
+            final Double latitude,
+            final Double longitude
+    ) {
+        this.name = name.trim();
+        this.telephoneNumber = telephoneNumber.trim();
+        this.roadAddress = roadAddress.trim();
+        this.jibunAddress = jibunAddress.trim();
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public void updateLocationInfo(final LocationInfo locationInfo) {
+        this.roadAddress = locationInfo.roadAddress();
+        this.jibunAddress = locationInfo.jibunAddress();
+        this.latitude = locationInfo.getLatitude();
+        this.longitude = locationInfo.getLongitude();
     }
 }

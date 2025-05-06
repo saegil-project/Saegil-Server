@@ -5,4 +5,12 @@ public record LocationInfo(
         String jibunAddress,
         Coordinates coordinates
 ) {
+
+    public Double getLatitude() {
+        return coordinates.latitude();
+    }
+
+    public Double getLongitude() {
+        return coordinates.longitude();
+    }
 }
