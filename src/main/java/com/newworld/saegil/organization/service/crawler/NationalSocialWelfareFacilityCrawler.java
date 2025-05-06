@@ -31,6 +31,11 @@ public class NationalSocialWelfareFacilityCrawler implements FacilityCrawler {
     private final RestTemplate restTemplate;
 
     @Override
+    public FacilityInfoSource getSupportingFacilityInfoSource() {
+        return FacilityInfoSource.PUBLIC_API_NATIONAL_SOCIAL_WELFARE_FACILITY;
+    }
+
+    @Override
     public List<Facility> crawl() {
         int page = 1;
         final List<Facility> totalFacilities = new ArrayList<>();
