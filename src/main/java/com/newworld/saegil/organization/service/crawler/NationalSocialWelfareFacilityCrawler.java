@@ -32,7 +32,7 @@ public class NationalSocialWelfareFacilityCrawler implements FacilityCrawler {
 
     @Override
     public FacilityInfoSource getSupportingFacilityInfoSource() {
-        return FacilityInfoSource.PUBLIC_API_NATIONAL_SOCIAL_WELFARE_FACILITY;
+        return FacilityInfoSource.PUBLIC_DATA_NATIONAL_SOCIAL_WELFARE_FACILITY;
     }
 
     @Override
@@ -135,7 +135,7 @@ public class NationalSocialWelfareFacilityCrawler implements FacilityCrawler {
 
             return new Facility(
                     fcltCd,
-                    FacilityInfoSource.PUBLIC_API_NATIONAL_SOCIAL_WELFARE_FACILITY,
+                    FacilityInfoSource.PUBLIC_DATA_NATIONAL_SOCIAL_WELFARE_FACILITY,
                     fcltNm,
                     fcltTelno,
                     address,
