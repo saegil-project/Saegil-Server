@@ -34,9 +34,9 @@ public class AssistantController {
     private final FileProperties fileProperties;
 
     @Operation(
-            summary = "MP3 파일로부터 Assistant 응답을 음성으로 가져오기",
+            summary = "음성 파일로부터 Assistant 응답을 음성으로 가져오기",
             description = """
-                    업로드된 MP3 파일에서 추출한 텍스트를 기반으로 OpenAI Assistant의 응답을 받고 이를 음성으로 변환합니다.\s
+                    업로드된 음성 파일에서 추출한 텍스트를 기반으로 OpenAI Assistant의 응답을 받고 이를 음성으로 변환합니다.\s
                     `thread_id` 쿼리 파라미터를 포함하면 기존 대화 상태를 유지할 수 있습니다 (선택 사항).\s
                     `provider` 쿼리 파라미터로 음성 합성 엔진(openai, elevenlabs)을 지정할 수 있습니다.\s
                     """,
@@ -44,7 +44,7 @@ public class AssistantController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "MP3 파일 생성 성공",
+                            description = "음성 파일 생성 성공",
                             content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE)
                     ),
                     @ApiResponse(
@@ -63,7 +63,7 @@ public class AssistantController {
             produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
     )
     public ResponseEntity<Resource> getAssistantAudioResponseFromFile(
-            @Parameter(description = "음성 파일 (MP3 등)")
+            @Parameter(description = "음성 파일 (음성 등)")
             @RequestPart("file") final MultipartFile multipartFile,
 
             @Parameter(description = "기존 대화 스레드 ID (선택 사항)")
