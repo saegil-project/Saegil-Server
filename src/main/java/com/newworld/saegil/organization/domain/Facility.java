@@ -12,6 +12,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -74,5 +75,13 @@ public class Facility {
         this.jibunAddress = locationInfo.jibunAddress();
         this.latitude = locationInfo.getLatitude();
         this.longitude = locationInfo.getLongitude();
+    }
+
+    public String getJibunOrRoadAddress() {
+        if (StringUtils.isBlank(roadAddress)) {
+            return jibunAddress;
+        }
+
+        return roadAddress;
     }
 }

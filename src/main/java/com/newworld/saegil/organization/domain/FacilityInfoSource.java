@@ -1,5 +1,8 @@
 package com.newworld.saegil.organization.domain;
 
+import lombok.Getter;
+
+@Getter
 public enum FacilityInfoSource {
     PUBLIC_API_NATIONAL_SOCIAL_WELFARE_FACILITY("공공데이터포털 전국사회복지시설표준데이터");
 
@@ -7,9 +10,5 @@ public enum FacilityInfoSource {
 
     FacilityInfoSource(final String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
     }
 }
