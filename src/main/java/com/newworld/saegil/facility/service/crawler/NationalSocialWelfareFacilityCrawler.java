@@ -136,9 +136,7 @@ public class NationalSocialWelfareFacilityCrawler implements FacilityCrawler {
                     fcltNm,
                     fcltTelno,
                     address,
-                    address,
-                    null,
-                    null
+                    address
             );
         }
     }

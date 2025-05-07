@@ -59,9 +59,7 @@ public class Facility {
             final String name,
             final String telephoneNumber,
             final String roadAddress,
-            final String jibunAddress,
-            final Double latitude,
-            final Double longitude
+            final String jibunAddress
     ) {
         this.name = name.trim();
         this.facilityCode = facilityCode.trim();
@@ -69,8 +67,8 @@ public class Facility {
         this.telephoneNumber = telephoneNumber.trim();
         this.roadAddress = roadAddress.trim();
         this.jibunAddress = jibunAddress.trim();
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.latitude = null;
+        this.longitude = null;
     }
 
     public void updateLocationInfo(final LocationInfo locationInfo) {
