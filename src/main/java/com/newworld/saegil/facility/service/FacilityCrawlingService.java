@@ -57,8 +57,10 @@ public class FacilityCrawlingService {
 
                 facility.updateLocationInfo(locationInfo);
             } catch (final LocationInfoResolveFailedException e) {
+                facility.markError(e);
                 log.error("시설({})의 위치 좌표를 찾을 수 없습니다: {}", facility.getName(), e.getMessage());
             } catch (final Exception e) {
+                facility.markError(e);
                 log.error("시설({})의 위치 좌표를 찾는 중 알 수 없는 오류가 발생했습니다: {}", facility.getName(), e.getMessage());
             }
         }
