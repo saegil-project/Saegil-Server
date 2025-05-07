@@ -1,6 +1,8 @@
 package com.newworld.saegil.llm.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.newworld.saegil.llm.config.ProxyProperties;
+import com.newworld.saegil.llm.model.AssistantResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
@@ -28,6 +30,7 @@ public class LlmProxyService implements AssistantService {
 
     private final RestTemplate restTemplate;
     private final ProxyProperties proxyProperties;
+    private final ObjectMapper objectMapper;
 
     @Override
     public Resource getAssistantAudioResponseFromAudioFile(
@@ -74,6 +77,53 @@ public class LlmProxyService implements AssistantService {
         } catch (final Exception e) {
             log.error("Assistant Audio API 오디오 파일 호출 중 에러 발생: {}", e.getMessage(), e);
             throw new RuntimeException("오디오 응답 생성 중 오류가 발생했습니다: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public AssistantResponse getAssistantResponseFromAudioFile(final MultipartFile multipartFile, final String threadId) {
+        log.info("Getting Assistant response from audio file: {}, threadId: {}",
+                multipartFile.getOriginalFilename(), threadId);
+
+        try {
+            final HttpHeaders requestHeader = new HttpHeaders();
+            requestHeader.setContentType(MediaType.MULTIPART_FORM_DATA);
+            final MultiValueMap<String, Object> requestBody = requestBodyFromMultiPartFile(multipartFile);
+
+            final String assistantUploadPath = proxyProperties.assistantUploadPath();
+
+            final String url = UriComponentsBuilder.fromUriString(assistantUploadPath)
+                    .queryParamIfPresent("thread_id", Optional.ofNullable(threadId).filter(s -> !s.isEmpty()))
+                    .build()
+                    .toUriString();
+
+            final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
+
+            // 응답을 String으로 먼저 받아서 로깅
+            final ResponseEntity<String> stringResponse = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    requestEntity,
+                    String.class
+            );
+
+            if (stringResponse.getStatusCode().is2xxSuccessful()) {
+                final String responseBody = Objects.requireNonNull(stringResponse.getBody(), "Assistant API 응답 본문이 null입니다.");
+                log.info("Raw response from LLM server: {}", responseBody);
+
+                // String 응답을 AssistantResponse로 변환
+                final AssistantResponse response = objectMapper.readValue(responseBody, AssistantResponse.class);
+                log.info("Converted Assistant response: {}", response);
+                log.info("Converted Assistant response thread_id: {}", response.getThreadId());
+                return response;
+            } else {
+                log.error("Assistant API call failed with status: {}", stringResponse.getStatusCode());
+                throw new RuntimeException("응답 생성 중 오류가 발생했습니다. 상태 코드: " + stringResponse.getStatusCode());
+            }
+
+        } catch (final Exception e) {
+            log.error("Assistant API 오디오 파일 호출 중 에러 발생: {}", e.getMessage(), e);
+            throw new RuntimeException("응답 생성 중 오류가 발생했습니다: " + e.getMessage(), e);
         }
     }
 
