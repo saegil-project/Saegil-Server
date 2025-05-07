@@ -64,13 +64,8 @@ public class AssistantController {
             produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
     )
     public ResponseEntity<Resource> getAssistantAudioResponseFromFile(
-            @Parameter(description = "음성 파일")
             @RequestPart("file") final MultipartFile multipartFile,
-
-            @Parameter(description = "기존 대화 스레드 ID (선택 사항)")
             @RequestParam(value = "thread_id", required = false) final String threadId,
-
-            @Parameter(description = "음성 합성 엔진 (openai 또는 elevenlabs, 기본값: openai)")
             @RequestParam(value = "provider", required = false, defaultValue = "OPENAI") final TtsProvider provider
     ) {
         log.info("Received Assistant audio file upload request: {}, threadId: {}, provider: {}",
@@ -111,10 +106,7 @@ public class AssistantController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<AssistantResponse> getAssistantResponseFromUpload(
-            @Parameter(description = "음성 파일")
             @RequestPart("file") final MultipartFile multipartFile,
-
-            @Parameter(description = "기존 대화 스레드 ID (선택 사항)")
             @RequestParam(value = "thread_id", required = false) final String threadId
     ) {
         log.info("Received Assistant audio file upload request: {}, threadId: {}",

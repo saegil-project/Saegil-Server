@@ -2,6 +2,7 @@ package com.newworld.saegil.llm.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.newworld.saegil.llm.config.ProxyProperties;
+import com.newworld.saegil.llm.config.TtsProvider;
 import com.newworld.saegil.llm.model.AssistantResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,13 +21,15 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class LlmProxyService implements AssistantService {
+public class LlmProxyService implements AssistantService, TextToSpeechService {
 
     private final RestTemplate restTemplate;
     private final ProxyProperties proxyProperties;
@@ -99,7 +102,6 @@ public class LlmProxyService implements AssistantService {
 
             final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
 
-            // 응답을 String으로 먼저 받아서 로깅
             final ResponseEntity<String> stringResponse = restTemplate.exchange(
                     url,
                     HttpMethod.POST,
@@ -111,7 +113,6 @@ public class LlmProxyService implements AssistantService {
                 final String responseBody = Objects.requireNonNull(stringResponse.getBody(), "Assistant API 응답 본문이 null입니다.");
                 log.info("Raw response from LLM server: {}", responseBody);
 
-                // String 응답을 AssistantResponse로 변환
                 final AssistantResponse response = objectMapper.readValue(responseBody, AssistantResponse.class);
                 log.info("Converted Assistant response: {}", response);
                 log.info("Converted Assistant response thread_id: {}", response.getThreadId());
@@ -139,5 +140,35 @@ public class LlmProxyService implements AssistantService {
         requestBody.add("file", inputStreamFileResource);
 
         return requestBody;
+    }
+
+    @Override
+    public Resource convertTextToSpeech(final String text, final TtsProvider provider) {
+        log.info("Sending TTS request to LLM server. Text: {}, Provider: {}", text, provider);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        final Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("text", text);
+
+        final UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(proxyProperties.textToSpeechPath())
+                .queryParam("provider", provider.name().toLowerCase());
+
+        final HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        try {
+            final ResponseEntity<Resource> response = restTemplate.exchange(
+                    builder.toUriString(),
+                    HttpMethod.POST,
+                    requestEntity,
+                    Resource.class
+            );
+            log.info("Received TTS response from LLM server.");
+            return response.getBody();
+        } catch (final Exception e) {
+            log.error("Error while calling LLM server for TTS: {}", e.getMessage());
+            throw new RuntimeException("Error while calling LLM server for TTS: " + e.getMessage(), e);
+        }
     }
 }

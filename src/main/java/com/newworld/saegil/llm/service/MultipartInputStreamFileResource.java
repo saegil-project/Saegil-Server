@@ -12,7 +12,7 @@ public class MultipartInputStreamFileResource extends InputStreamResource {
 
     private final String filename;
 
-    public MultipartInputStreamFileResource(MultipartFile multipartFile) throws IOException {
+    public MultipartInputStreamFileResource(final MultipartFile multipartFile) throws IOException {
         super(multipartFile.getInputStream());
         this.filename = multipartFile.getOriginalFilename();
     }

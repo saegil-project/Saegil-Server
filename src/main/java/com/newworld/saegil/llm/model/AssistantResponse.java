@@ -21,4 +21,4 @@ public class AssistantResponse {
 
     @JsonProperty("threadId")
     private String threadId;
-} 
+}
