@@ -71,6 +71,7 @@ llm:
   proxy:
     llm-server-url: ${PROXY_LLM_SERVICE_URL:http://localhost:9090}
     assistant-audio-from-file-path: ${llm.proxy.llm-server-url}/api/v1/assistant/upload/audio
+    assistant-upload-path: ${llm.proxy.llm-server-url}/api/v1/assistant/upload
   file:
     result-file-name: assistant_response.mp3
 logging:
