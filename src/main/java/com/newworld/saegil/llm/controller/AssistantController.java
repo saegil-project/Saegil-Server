@@ -3,6 +3,7 @@ package com.newworld.saegil.llm.controller;
 import com.newworld.saegil.configuration.SwaggerConfiguration;
 import com.newworld.saegil.llm.config.FileProperties;
 import com.newworld.saegil.llm.config.TtsProvider;
+import com.newworld.saegil.llm.model.AssistantResponse;
 import com.newworld.saegil.llm.service.AssistantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -79,5 +80,47 @@ public class AssistantController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileProperties.resultFileName() + "\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(responseResource);
+    }
+
+    @Operation(
+            summary = "음성 파일로부터 Assistant 응답 가져오기",
+            description = """
+                    업로드된 음성 파일에서 추출한 텍스트를 기반으로 OpenAI Assistant의 응답을 받습니다.\s
+                    `thread_id` 쿼리 파라미터를 포함하면 기존 대화 상태를 유지할 수 있습니다 (선택 사항).\s
+                    """,
+            security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Assistant 응답 성공",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "인증 실패 - 로그인이 필요한 기능입니다."
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "서버 내부 오류"
+                    )
+            }
+    )
+    @PostMapping(
+            value = "/upload",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<AssistantResponse> getAssistantResponseFromUpload(
+            @Parameter(description = "음성 파일")
+            @RequestPart("file") final MultipartFile multipartFile,
+
+            @Parameter(description = "기존 대화 스레드 ID (선택 사항)")
+            @RequestParam(value = "thread_id", required = false) final String threadId
+    ) {
+        log.info("Received Assistant audio file upload request: {}, threadId: {}",
+                multipartFile.getOriginalFilename(), threadId);
+        final AssistantResponse response = assistantService.getAssistantResponseFromAudioFile(multipartFile, threadId);
+        log.info("Sending Assistant response with thread_id: {}", response.getThreadId());
+        return ResponseEntity.ok(response);
     }
 }
