@@ -2,6 +2,7 @@ package com.newworld.saegil.llm.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.newworld.saegil.llm.config.ProxyProperties;
+import com.newworld.saegil.llm.config.TtsProvider;
 import com.newworld.saegil.llm.model.AssistantResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,13 +21,15 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class LlmProxyService implements AssistantService {
+public class LlmProxyService implements AssistantService, TextToSpeechService {
 
     private final RestTemplate restTemplate;
     private final ProxyProperties proxyProperties;
@@ -139,5 +142,35 @@ public class LlmProxyService implements AssistantService {
         requestBody.add("file", inputStreamFileResource);
 
         return requestBody;
+    }
+
+    @Override
+    public Resource convertTextToSpeech(String text, TtsProvider provider) {
+        log.info("Sending TTS request to LLM server. Text: {}, Provider: {}", text, provider);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("text", text);
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(proxyProperties.textToSpeechPath())
+                .queryParam("provider", provider.name().toLowerCase());
+
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        try {
+            ResponseEntity<Resource> response = restTemplate.exchange(
+                    builder.toUriString(),
+                    HttpMethod.POST,
+                    requestEntity,
+                    Resource.class
+            );
+            log.info("Received TTS response from LLM server.");
+            return response.getBody();
+        } catch (Exception e) {
+            log.error("Error while calling LLM server for TTS: {}", e.getMessage());
+            throw new RuntimeException("Error while calling LLM server for TTS: " + e.getMessage(), e);
+        }
     }
 }
