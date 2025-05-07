@@ -53,15 +53,16 @@ public class Facility {
     @Column
     private Double longitude;
 
+    @Column
+    private String errorMessage;
+
     public Facility(
             final String facilityCode,
             final FacilityInfoSource infoSource,
             final String name,
             final String telephoneNumber,
             final String roadAddress,
-            final String jibunAddress,
-            final Double latitude,
-            final Double longitude
+            final String jibunAddress
     ) {
         this.name = name.trim();
         this.facilityCode = facilityCode.trim();
@@ -69,8 +70,9 @@ public class Facility {
         this.telephoneNumber = telephoneNumber.trim();
         this.roadAddress = roadAddress.trim();
         this.jibunAddress = jibunAddress.trim();
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.latitude = null;
+        this.longitude = null;
+        this.errorMessage = null;
     }
 
     public void updateLocationInfo(final LocationInfo locationInfo) {
@@ -86,5 +88,19 @@ public class Facility {
         }
 
         return roadAddress;
+    }
+
+    public void markError(final Exception exception) {
+        if (exception == null) {
+            return;
+        }
+
+        final String exceptionMeesage = exception.getClass().getSimpleName() + ": " + exception.getMessage();
+
+        if (exceptionMeesage.length() > 250) {
+            this.errorMessage = exceptionMeesage.substring(0, 250) + "...";
+        } else {
+            this.errorMessage = exceptionMeesage;
+        }
     }
 }

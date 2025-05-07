@@ -57,7 +57,11 @@ public class FacilityCrawlingService {
 
                 facility.updateLocationInfo(locationInfo);
             } catch (final LocationInfoResolveFailedException e) {
+                facility.markError(e);
                 log.error("시설({})의 위치 좌표를 찾을 수 없습니다: {}", facility.getName(), e.getMessage());
+            } catch (final Exception e) {
+                facility.markError(e);
+                log.error("시설({})의 위치 좌표를 찾는 중 알 수 없는 오류가 발생했습니다: {}", facility.getName(), e.getMessage());
             }
         }
         final long locationInfoResolveEndTime = System.currentTimeMillis();
@@ -73,7 +77,7 @@ public class FacilityCrawlingService {
                 totalCrawledFacilities.size(), infoSource.getName(), crawlEndTime - crawlStartTime
         );
         log.info("{}개의 새로운 {} 좌표 찾기 소요 시간: {} ms",
-                newFacilitiesToSave, infoSource.getName(), locationInfoResolveEndTime - locationInfoResolveStartTime
+                newFacilitiesToSave.size(), infoSource.getName(), locationInfoResolveEndTime - locationInfoResolveStartTime
         );
         log.info("{}개의 새로운 {} 저장 소요 시간: {} ms",
                 newFacilitiesToSave.size(), infoSource.getName(), saveEndTime - saveStartTime

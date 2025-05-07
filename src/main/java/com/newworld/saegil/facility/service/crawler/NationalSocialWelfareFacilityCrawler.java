@@ -41,21 +41,18 @@ public class NationalSocialWelfareFacilityCrawler implements FacilityCrawler {
         final List<Facility> totalFacilities = new ArrayList<>();
         while (true) {
             final URI requestUri = createRequestUri(page);
-            try {
-                final NationalSocialWelfareFacilityResponse response =
-                        restTemplate.getForObject(requestUri, NationalSocialWelfareFacilityResponse.class);
-                if (response.isItemEmpty()) {
-                    break;
-                }
-
-                final List<Facility> facilities = response.getItems()
-                                                          .stream()
-                                                          .map(Item::toFacility)
-                                                          .toList();
-                totalFacilities.addAll(facilities);
-            } catch (Exception e) {
-                log.error("Error occurred while fetching page({}): {}", page, e.getMessage());
+            final NationalSocialWelfareFacilityResponse response =
+                    restTemplate.getForObject(requestUri, NationalSocialWelfareFacilityResponse.class);
+            if (response.isItemEmpty()) {
+                break;
             }
+
+            final List<Facility> facilities = response.getItems()
+                                                      .stream()
+                                                      .map(Item::toFacility)
+                                                      .toList();
+            totalFacilities.addAll(facilities);
+
             page++;
         }
 
@@ -139,9 +136,7 @@ public class NationalSocialWelfareFacilityCrawler implements FacilityCrawler {
                     fcltNm,
                     fcltTelno,
                     address,
-                    address,
-                    null,
-                    null
+                    address
             );
         }
     }
