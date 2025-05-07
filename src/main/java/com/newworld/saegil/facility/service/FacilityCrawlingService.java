@@ -73,7 +73,7 @@ public class FacilityCrawlingService {
                 totalCrawledFacilities.size(), infoSource.getName(), crawlEndTime - crawlStartTime
         );
         log.info("{}개의 새로운 {} 좌표 찾기 소요 시간: {} ms",
-                newFacilitiesToSave, infoSource.getName(), locationInfoResolveEndTime - locationInfoResolveStartTime
+                newFacilitiesToSave.size(), infoSource.getName(), locationInfoResolveEndTime - locationInfoResolveStartTime
         );
         log.info("{}개의 새로운 {} 저장 소요 시간: {} ms",
                 newFacilitiesToSave.size(), infoSource.getName(), saveEndTime - saveStartTime
