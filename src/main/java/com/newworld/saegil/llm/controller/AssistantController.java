@@ -64,7 +64,7 @@ public class AssistantController {
             produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
     )
     public ResponseEntity<Resource> getAssistantAudioResponseFromFile(
-            @RequestPart("file") final MultipartFile multipartFile,
+            @RequestParam("file") final MultipartFile multipartFile,
             @RequestParam(value = "thread_id", required = false) final String threadId,
             @RequestParam(value = "provider", required = false, defaultValue = "OPENAI") final TtsProvider provider
     ) {
@@ -106,7 +106,7 @@ public class AssistantController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<AssistantResponse> getAssistantResponseFromUpload(
-            @RequestPart("file") final MultipartFile multipartFile,
+            @RequestParam("file") final MultipartFile multipartFile,
             @RequestParam(value = "thread_id", required = false) final String threadId
     ) {
         log.info("Received Assistant audio file upload request: {}, threadId: {}",
