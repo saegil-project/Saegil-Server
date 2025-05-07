@@ -102,7 +102,6 @@ public class LlmProxyService implements AssistantService, TextToSpeechService {
 
             final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
 
-            // 응답을 String으로 먼저 받아서 로깅
             final ResponseEntity<String> stringResponse = restTemplate.exchange(
                     url,
                     HttpMethod.POST,
@@ -114,7 +113,6 @@ public class LlmProxyService implements AssistantService, TextToSpeechService {
                 final String responseBody = Objects.requireNonNull(stringResponse.getBody(), "Assistant API 응답 본문이 null입니다.");
                 log.info("Raw response from LLM server: {}", responseBody);
 
-                // String 응답을 AssistantResponse로 변환
                 final AssistantResponse response = objectMapper.readValue(responseBody, AssistantResponse.class);
                 log.info("Converted Assistant response: {}", response);
                 log.info("Converted Assistant response thread_id: {}", response.getThreadId());
@@ -145,22 +143,22 @@ public class LlmProxyService implements AssistantService, TextToSpeechService {
     }
 
     @Override
-    public Resource convertTextToSpeech(String text, TtsProvider provider) {
+    public Resource convertTextToSpeech(final String text, final TtsProvider provider) {
         log.info("Sending TTS request to LLM server. Text: {}, Provider: {}", text, provider);
 
-        HttpHeaders headers = new HttpHeaders();
+        final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        Map<String, String> requestBody = new HashMap<>();
+        final Map<String, String> requestBody = new HashMap<>();
         requestBody.put("text", text);
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(proxyProperties.textToSpeechPath())
+        final UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(proxyProperties.textToSpeechPath())
                 .queryParam("provider", provider.name().toLowerCase());
 
-        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
+        final HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
 
         try {
-            ResponseEntity<Resource> response = restTemplate.exchange(
+            final ResponseEntity<Resource> response = restTemplate.exchange(
                     builder.toUriString(),
                     HttpMethod.POST,
                     requestEntity,
@@ -168,7 +166,7 @@ public class LlmProxyService implements AssistantService, TextToSpeechService {
             );
             log.info("Received TTS response from LLM server.");
             return response.getBody();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error("Error while calling LLM server for TTS: {}", e.getMessage());
             throw new RuntimeException("Error while calling LLM server for TTS: " + e.getMessage(), e);
         }

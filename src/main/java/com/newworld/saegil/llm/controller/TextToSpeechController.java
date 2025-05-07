@@ -2,11 +2,9 @@ package com.newworld.saegil.llm.controller;
 
 import com.newworld.saegil.configuration.SwaggerConfiguration;
 import com.newworld.saegil.llm.config.FileProperties;
-import com.newworld.saegil.llm.config.TtsProvider;
 import com.newworld.saegil.llm.model.TextToSpeechRequest;
 import com.newworld.saegil.llm.service.TextToSpeechService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -17,13 +15,16 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/llm/tts")
 @RequiredArgsConstructor
-@Tag(name = "TTS API", description = "Text-to-Speech API 관련 기능")
+@Tag(name = "TTS API", description = "Text-to-Speech 관련 기능")
 public class TextToSpeechController {
 
     private final TextToSpeechService textToSpeechService;
@@ -31,17 +32,13 @@ public class TextToSpeechController {
 
     @Operation(
             summary = "텍스트를 음성으로 변환",
-            description = "제공된 텍스트를 음성 파일로 변환합니다. `provider` 쿼리 파라미터로 음성 합성 엔진(openai, elevenlabs)을 지정할 수 있습니다.",
+            description = "제공된 텍스트를 음성 파일로 변환합니다. `provider` 필드를 통해 음성 합성 엔진(openai, elevenlabs)을 선택할 수 있습니다.",
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME),
             responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "음성 파일 생성 성공",
                             content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-                    ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "잘못된 요청"
                     ),
                     @ApiResponse(
                             responseCode = "401",
@@ -53,17 +50,13 @@ public class TextToSpeechController {
                     )
             }
     )
-    @PostMapping(value = "/", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<Resource> convertTextToSpeech(
-            @Parameter(description = "음성으로 변환할 텍스트와 TTS 프로바이더 정보")
-            @RequestBody final TextToSpeechRequest request,
-            @Parameter(description = "음성 합성 엔진 (openai 또는 elevenlabs, 기본값: openai)")
-            @RequestParam(value = "provider", required = false, defaultValue = "OPENAI") final TtsProvider provider) {
-        log.info("Received TTS request. Text: {}, Provider: {}", request.getText(), provider);
-        Resource audioResource = textToSpeechService.convertTextToSpeech(request.getText(), provider);
+    @PostMapping(produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<Resource> convertTextToSpeech(@RequestBody final TextToSpeechRequest request) {
+        log.info("Received TTS request: {}, Provider: {}", request.getText(), request.getProvider());
+        final Resource audioResource = textToSpeechService.convertTextToSpeech(request.getText(), request.getProvider());
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("audio/mpeg"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileProperties.ttsResultFileName() + "\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(audioResource);
     }
 }
