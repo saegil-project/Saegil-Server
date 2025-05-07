@@ -51,3 +51,6 @@ copilot-instructions.md
 
 ### Junie ###
 .junie/
+
+### cursor ###
+*.mdc
