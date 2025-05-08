@@ -1,6 +1,7 @@
 package com.newworld.saegil.facility.controller;
 
 import com.newworld.saegil.facility.service.FacilityService;
+import com.newworld.saegil.facility.service.NearbyFacilityDto;
 import com.newworld.saegil.global.swagger.ApiResponseCode;
 import com.newworld.saegil.location.Coordinates;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/facilities")
+@RequestMapping("/api/v2/facilities")
 @RequiredArgsConstructor
 @Tag(name = "Facility", description = "시설 API")
 public class FacilityController {
@@ -41,11 +42,11 @@ public class FacilityController {
             @RequestParam final int radius
     ) {
         final Coordinates userCoordinates = new Coordinates(latitude, longitude);
-        final List<ReadFacilityResponse> nearbyFacilities = facilityService.readNearbyFacilities(userCoordinates, radius)
-                                                                           .stream()
-                                                                           .map(ReadFacilityResponse::from)
-                                                                           .toList();
+        final List<NearbyFacilityDto> result = facilityService.readNearbyFacilities(userCoordinates, radius);
+        final List<ReadFacilityResponse> response = result.stream()
+                                                          .map(ReadFacilityResponse::from)
+                                                          .toList();
 
-        return ResponseEntity.ok(nearbyFacilities);
+        return ResponseEntity.ok(response);
     }
 }
