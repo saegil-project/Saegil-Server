@@ -2,6 +2,7 @@ package com.newworld.saegil.facility.controller;
 
 import com.newworld.saegil.facility.service.FacilityService;
 import com.newworld.saegil.global.swagger.ApiResponseCode;
+import com.newworld.saegil.location.Coordinates;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -39,6 +40,12 @@ public class FacilityController {
             @Parameter(description = "검색 반경 (미터 단위, 예: 500 / 1000 / 5000)", example = "1000")
             @RequestParam final int radius
     ) {
-        return null;
+        final Coordinates userCoordinates = new Coordinates(latitude, longitude);
+        final List<ReadFacilityResponse> nearbyFacilities = facilityService.readNearbyFacilities(userCoordinates, radius)
+                                                                           .stream()
+                                                                           .map(ReadFacilityResponse::from)
+                                                                           .toList();
+
+        return ResponseEntity.ok(nearbyFacilities);
     }
 }

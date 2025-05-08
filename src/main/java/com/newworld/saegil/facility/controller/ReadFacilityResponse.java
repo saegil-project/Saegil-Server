@@ -1,6 +1,8 @@
 package com.newworld.saegil.facility.controller;
 
+import com.newworld.saegil.facility.service.NearbyFacilityDto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.apache.commons.lang3.StringUtils;
 
 public record ReadFacilityResponse(
 
@@ -25,4 +27,21 @@ public record ReadFacilityResponse(
         @Schema(description = "사용자 위치로부터의 거리 (미터)", example = "312.5")
         double distance
 ) {
+
+    public static ReadFacilityResponse from(final NearbyFacilityDto dto) {
+        String address = dto.roadAddress();
+        if (StringUtils.isBlank(dto.roadAddress())) {
+            address = dto.jibunAddress();
+        }
+
+        return new ReadFacilityResponse(
+                dto.id(),
+                dto.name(),
+                dto.latitude(),
+                dto.longitude(),
+                dto.telephoneNumber(),
+                address,
+                dto.distanceMeters()
+        );
+    }
 }
