@@ -1,6 +1,9 @@
-package com.newworld.saegil.organization.controller;
+package com.newworld.saegil.organization;
 
+import com.newworld.saegil.facility.service.FacilityService;
+import com.newworld.saegil.facility.service.NearbyFacilityDto;
 import com.newworld.saegil.global.swagger.ApiResponseCode;
+import com.newworld.saegil.location.Coordinates;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,6 +23,8 @@ import java.util.List;
 @Tag(name = "Organization", description = "기관 API")
 public class OrganizationController {
 
+    private final FacilityService facilityService;
+
     @GetMapping("/nearby")
     @Operation(
             summary = "근처 기관 조회",
@@ -36,30 +41,13 @@ public class OrganizationController {
             @Parameter(description = "검색 반경 (미터 단위, 예: 500 / 1000 / 5000)", example = "1000")
             @RequestParam final int radius
     ) {
-        // TODO: 근처 기관 목록 조회 기능 개발 후 삭제
-        List<ReadOrganizationResponse> dummyOrganizations = List.of(
-                new ReadOrganizationResponse(
-                        1L,
-                        "한빛종합사회복지관",
-                        37.5190344,
-                        126.8402373,
-                        "09:00 ~ 17:00",
-                        "02-2690-8762~4",
-                        "서울특별시 양천구 신월로11길 16 (신월동, 한빛종합사회복지관)",
-                        0.0
-                ),
-                new ReadOrganizationResponse(
-                        2L,
-                        "신정4동 주민센터",
-                        37.5245454,
-                        126.8558041,
-                        "09:00 ~ 17:00",
-                        "02-2690-8762~4",
-                        "서울특별시 양천구 오목로34길 5",
-                        1.5034108898263117
-                )
-        );
+        final Coordinates userCoordinates = new Coordinates(latitude, longitude);
+        final List<NearbyFacilityDto> result = facilityService.readNearbyFacilities(userCoordinates, radius);
+        final List<ReadOrganizationResponse> response = result.stream()
+                                                              .map(ReadOrganizationResponse::from)
+                                                              .toList();
 
-        return ResponseEntity.ok(dummyOrganizations);
+        return ResponseEntity.ok(response);
+
     }
 }
