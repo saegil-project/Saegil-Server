@@ -1,5 +1,6 @@
 package com.newworld.saegil.facility.domain;
 
+import com.newworld.saegil.location.Coordinates;
 import com.newworld.saegil.location.LocationInfo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -102,5 +103,9 @@ public class Facility {
         } else {
             this.errorMessage = exceptionMeesage;
         }
+    }
+
+    public Coordinates getCoordinates() {
+        return new Coordinates(latitude, longitude);
     }
 }
