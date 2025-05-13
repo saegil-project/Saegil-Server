@@ -34,11 +34,7 @@ out/
 /.nb-gradle/
 
 ### VS Code ###
-.vscode/
-
-### Copilot ###
-copilot-instructions.md
-.github/prompts/
+/.vscode/
 
 ### macOS ###
 .DS_Store
@@ -48,9 +44,3 @@ copilot-instructions.md
 
 ### MP3 Files ###
 *.mp3
-
-### Junie ###
-.junie/
-
-### cursor ###
-*.mdc
