@@ -6,7 +6,6 @@ import com.newworld.saegil.llm.config.TtsProvider;
 import com.newworld.saegil.llm.model.AssistantResponse;
 import com.newworld.saegil.llm.service.AssistantService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -63,18 +62,25 @@ public class AssistantController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
     )
-    public ResponseEntity<Resource> getAssistantAudioResponseFromFile(
+    public ResponseEntity<Resource> getAssistantAudioResponseFromUploadedAudioFile(
             @RequestPart("file") final MultipartFile multipartFile,
             @RequestParam(value = "thread_id", required = false) final String threadId,
             @RequestParam(value = "provider", required = false, defaultValue = "OPENAI") final TtsProvider provider
     ) {
         log.info("Received Assistant audio file upload request: {}, threadId: {}, provider: {}",
                 multipartFile.getOriginalFilename(), threadId, provider);
-        final Resource responseResource = assistantService.getAssistantAudioResponseFromAudioFile(multipartFile, threadId, provider.name().toLowerCase());
+        final Resource responseResource = assistantService.getAssistantAudioResponseFromAudioFile(
+                multipartFile,
+                threadId,
+                provider.name().toLowerCase()
+        );
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileProperties.resultFileName() + "\"")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(responseResource);
+                             .header(
+                                     HttpHeaders.CONTENT_DISPOSITION,
+                                     "attachment; filename=\"" + fileProperties.resultFileName() + "\""
+                             )
+                             .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                             .body(responseResource);
     }
 
     @Operation(
@@ -105,13 +111,15 @@ public class AssistantController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<AssistantResponse> getAssistantResponseFromUpload(
+    public ResponseEntity<AssistantResponse> getAssistantTextResponseFromUploadedAudioFile(
             @RequestPart("file") final MultipartFile multipartFile,
             @RequestParam(value = "thread_id", required = false) final String threadId
     ) {
-        log.info("Received Assistant audio file upload request: {}, threadId: {}",
-                multipartFile.getOriginalFilename(), threadId);
-        final AssistantResponse response = assistantService.getAssistantResponseFromAudioFile(multipartFile, threadId);
+        log.info(
+                "Received Assistant audio file upload request: {}, threadId: {}",
+                multipartFile.getOriginalFilename(), threadId
+        );
+        final AssistantResponse response = assistantService.getAssistantTextResponseFromAudioFile(multipartFile, threadId);
         log.info("Sending Assistant response with thread_id: {}", response.getThreadId());
         return ResponseEntity.ok(response);
     }

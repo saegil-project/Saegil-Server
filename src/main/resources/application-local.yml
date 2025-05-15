@@ -72,10 +72,10 @@ llm:
     llm-server-url: ${PROXY_LLM_SERVICE_URL:http://localhost:9090}
     assistant-audio-from-file-path: ${llm.proxy.llm-server-url}/api/v1/assistant/upload/audio
     assistant-upload-path: ${llm.proxy.llm-server-url}/api/v1/assistant/upload
-    text-to-speech-path: ${llm.proxy.llm-server-url}/api/v1/text-to-speech/ # Text-to-Speech 엔드포인트 경로 추가
+    text-to-speech-path: ${llm.proxy.llm-server-url}/api/v1/text-to-speech/
   file:
     result-file-name: assistant_response.mp3
-    tts-result-file-name: tts_response.mp3 # TTS 결과 파일 이름 추가
+    tts-result-file-name: tts_response.mp3
 logging:
   file:
     name:
