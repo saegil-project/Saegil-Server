@@ -41,24 +41,27 @@ public class LlmProxyService implements AssistantService, TextToSpeechService {
             final String threadId,
             final String provider
     ) {
-        log.info("Getting Assistant audio response from audio file: {}, threadId: {}, provider: {}",
-                multipartFile.getOriginalFilename(), threadId, provider);
+
+        log.info(
+                "음성 파일로부터 어시스턴트 오디오 응답을 가져옵니다: 파일명={}, 스레드 ID={}, 프로바이더={}",
+                multipartFile.getOriginalFilename(), threadId, provider
+        );
 
         try {
             final HttpHeaders requestHeader = new HttpHeaders();
             requestHeader.setContentType(MediaType.MULTIPART_FORM_DATA);
+
             final MultiValueMap<String, Object> requestBody = requestBodyFromMultiPartFile(multipartFile);
-
             final String assistantAudioFromFilePath = proxyProperties.assistantAudioFromFilePath();
-
             final String url = UriComponentsBuilder.fromUriString(assistantAudioFromFilePath)
-                    .queryParam("provider", provider != null ? provider : "openai")
-                    .queryParamIfPresent("thread_id", Optional.ofNullable(threadId).filter(s -> !s.isEmpty()))
-                    .build()
-                    .toUriString();
-
+                                                   .queryParam("provider", provider != null ? provider : "openai")
+                                                   .queryParamIfPresent(
+                                                           "thread_id",
+                                                           Optional.ofNullable(threadId).filter(s -> !s.isEmpty())
+                                                   )
+                                                   .build()
+                                                   .toUriString();
             final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
-
             final ResponseEntity<byte[]> responseEntity = restTemplate.exchange(
                     url,
                     HttpMethod.POST,
@@ -67,41 +70,43 @@ public class LlmProxyService implements AssistantService, TextToSpeechService {
             );
 
             if (responseEntity.getStatusCode().is2xxSuccessful()) {
-                final byte[] responseBody = Objects.requireNonNull(responseEntity.getBody(), "Assistant Audio (Audio File) API 응답 본문이 null입니다.");
+                final byte[] responseBody = Objects.requireNonNull(
+                        responseEntity.getBody(),
+                        "어시스턴트 오디오 (음성 파일) API 응답 본문이 null 입니다."
+                );
                 if (responseBody.length == 0) {
-                    log.warn("Assistant Audio (Audio File) API 응답 본문이 비어 있습니다.");
+                    log.warn("어시스턴트 오디오 (음성 파일) API 응답 본문이 비어 있습니다.");
                 }
                 return new ByteArrayResource(responseBody);
             } else {
-                log.error("Assistant Audio (Audio File) API call failed with status: {}", responseEntity.getStatusCode());
+                log.error("어시스턴트 오디오 (음성 파일) API 호출 실패: 상태 코드={}", responseEntity.getStatusCode());
                 throw new RuntimeException("오디오 응답 생성 중 오류가 발생했습니다. 상태 코드: " + responseEntity.getStatusCode());
             }
 
         } catch (final Exception e) {
-            log.error("Assistant Audio API 오디오 파일 호출 중 에러 발생: {}", e.getMessage(), e);
+            log.error("어시스턴트 오디오 API 음성 파일 호출 중 오류 발생: {}", e.getMessage(), e);
             throw new RuntimeException("오디오 응답 생성 중 오류가 발생했습니다: " + e.getMessage(), e);
         }
     }
 
     @Override
-    public AssistantResponse getAssistantResponseFromAudioFile(final MultipartFile multipartFile, final String threadId) {
-        log.info("Getting Assistant response from audio file: {}, threadId: {}",
-                multipartFile.getOriginalFilename(), threadId);
+    public AssistantResponse getAssistantTextResponseFromAudioFile(final MultipartFile multipartFile, final String threadId) {
+        log.info("음성 파일로부터 어시스턴트 텍스트 응답을 가져옵니다: 파일명={}, 스레드 ID={}", multipartFile.getOriginalFilename(), threadId);
 
         try {
             final HttpHeaders requestHeader = new HttpHeaders();
             requestHeader.setContentType(MediaType.MULTIPART_FORM_DATA);
+
             final MultiValueMap<String, Object> requestBody = requestBodyFromMultiPartFile(multipartFile);
-
             final String assistantUploadPath = proxyProperties.assistantUploadPath();
-
             final String url = UriComponentsBuilder.fromUriString(assistantUploadPath)
-                    .queryParamIfPresent("thread_id", Optional.ofNullable(threadId).filter(s -> !s.isEmpty()))
-                    .build()
-                    .toUriString();
-
+                                                   .queryParamIfPresent(
+                                                           "thread_id",
+                                                           Optional.ofNullable(threadId).filter(s -> !s.isEmpty())
+                                                   )
+                                                   .build()
+                                                   .toUriString();
             final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
-
             final ResponseEntity<String> stringResponse = restTemplate.exchange(
                     url,
                     HttpMethod.POST,
@@ -110,20 +115,24 @@ public class LlmProxyService implements AssistantService, TextToSpeechService {
             );
 
             if (stringResponse.getStatusCode().is2xxSuccessful()) {
-                final String responseBody = Objects.requireNonNull(stringResponse.getBody(), "Assistant API 응답 본문이 null입니다.");
-                log.info("Raw response from LLM server: {}", responseBody);
+                final String responseBody = Objects.requireNonNull(
+                        stringResponse.getBody(),
+                        "Assistant API 응답 본문이 null 입니다."
+                );
+                log.info("LLM 서버로부터 받은 원시 응답: {}", responseBody);
 
                 final AssistantResponse response = objectMapper.readValue(responseBody, AssistantResponse.class);
-                log.info("Converted Assistant response: {}", response);
-                log.info("Converted Assistant response thread_id: {}", response.getThreadId());
+                log.info("어시스턴트에 요청한 질문: {}", response.getQuestion());
+                log.info("변환된 어시스턴트 응답: {}", response.getResponse());
+                log.info("변환된 어시스턴트 응답 스레드 ID: {}", response.getThreadId());
                 return response;
             } else {
-                log.error("Assistant API call failed with status: {}", stringResponse.getStatusCode());
+                log.error("어시스턴트 API 호출 실패: 상태 코드={}", stringResponse.getStatusCode());
                 throw new RuntimeException("응답 생성 중 오류가 발생했습니다. 상태 코드: " + stringResponse.getStatusCode());
             }
 
         } catch (final Exception e) {
-            log.error("Assistant API 오디오 파일 호출 중 에러 발생: {}", e.getMessage(), e);
+            log.error("어시스턴트 API 음성 파일 호출 중 오류 발생: {}", e.getMessage(), e);
             throw new RuntimeException("응답 생성 중 오류가 발생했습니다: " + e.getMessage(), e);
         }
     }
@@ -144,7 +153,7 @@ public class LlmProxyService implements AssistantService, TextToSpeechService {
 
     @Override
     public Resource convertTextToSpeech(final String text, final TtsProvider provider) {
-        log.info("Sending TTS request to LLM server. Text: {}, Provider: {}", text, provider);
+        log.info("LLM 서버에 TTS 요청을 전송합니다. 텍스트: {}, 프로바이더: {}", text, provider);
 
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -152,9 +161,8 @@ public class LlmProxyService implements AssistantService, TextToSpeechService {
         final Map<String, String> requestBody = new HashMap<>();
         requestBody.put("text", text);
 
-        final UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(proxyProperties.textToSpeechPath())
-                .queryParam("provider", provider.name().toLowerCase());
-
+        final UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(proxyProperties.textToSpeechPath())
+                                                                 .queryParam("provider", provider.name().toLowerCase());
         final HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
 
         try {
@@ -164,11 +172,11 @@ public class LlmProxyService implements AssistantService, TextToSpeechService {
                     requestEntity,
                     Resource.class
             );
-            log.info("Received TTS response from LLM server.");
+            log.info("LLM 서버로부터 TTS 응답을 수신했습니다.");
             return response.getBody();
         } catch (final Exception e) {
-            log.error("Error while calling LLM server for TTS: {}", e.getMessage());
-            throw new RuntimeException("Error while calling LLM server for TTS: " + e.getMessage(), e);
+            log.error("TTS를 위해 LLM 서버 호출 중 오류 발생: {}", e.getMessage());
+            throw new RuntimeException("TTS를 위해 LLM 서버 호출 중 오류 발생: " + e.getMessage(), e);
         }
     }
 }

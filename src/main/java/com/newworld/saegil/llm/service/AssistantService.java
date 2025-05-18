@@ -6,6 +6,5 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface AssistantService {
     Resource getAssistantAudioResponseFromAudioFile(final MultipartFile multipartFile, final String threadId, final String provider);
-    
-    AssistantResponse getAssistantResponseFromAudioFile(final MultipartFile multipartFile, final String threadId);
+    AssistantResponse getAssistantTextResponseFromAudioFile(final MultipartFile multipartFile, final String threadId);
 }

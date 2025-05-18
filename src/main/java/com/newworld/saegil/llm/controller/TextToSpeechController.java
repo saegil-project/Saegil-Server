@@ -55,8 +55,11 @@ public class TextToSpeechController {
         log.info("Received TTS request: {}, Provider: {}", request.getText(), request.getProvider());
         final Resource audioResource = textToSpeechService.convertTextToSpeech(request.getText(), request.getProvider());
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileProperties.ttsResultFileName() + "\"")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(audioResource);
+                             .header(
+                                     HttpHeaders.CONTENT_DISPOSITION,
+                                     "attachment; filename=\"" + fileProperties.ttsResultFileName() + "\""
+                             )
+                             .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                             .body(audioResource);
     }
 }
