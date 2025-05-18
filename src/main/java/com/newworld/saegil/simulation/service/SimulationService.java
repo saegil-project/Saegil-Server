@@ -76,7 +76,7 @@ public class SimulationService {
                                                     .orElseThrow(() ->
                                                             new ScenarioNotFoundException("시나리오가 존재하지 않습니다.")
                                                     );
-        final Simulation newSimulation = new Simulation(scenario, user, threadId, LocalDateTime.now());
+        final Simulation newSimulation = new Simulation(scenario, user.getId(), threadId, LocalDateTime.now());
 
         return simulationRepository.save(newSimulation);
     }
