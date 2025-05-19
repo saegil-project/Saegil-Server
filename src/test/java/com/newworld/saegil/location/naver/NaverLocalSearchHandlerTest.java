@@ -1,7 +1,7 @@
 package com.newworld.saegil.location.naver;
 
-import com.newworld.saegil.location.LocationInfo;
 import com.newworld.saegil.location.Coordinates;
+import com.newworld.saegil.location.LocationInfo;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

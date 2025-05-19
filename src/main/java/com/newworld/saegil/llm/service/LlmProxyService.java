@@ -7,7 +7,6 @@ import com.newworld.saegil.llm.model.AssistantResponse;
 import com.newworld.saegil.simulation.service.SimulationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
