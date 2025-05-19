@@ -14,10 +14,10 @@ import lombok.ToString;
 @ToString
 public class AssistantResponse {
     @JsonProperty("question")
-    private String question;
+    private String userQuestion;
 
     @JsonProperty("response")
-    private String response;
+    private String assistantAnswer;
 
     @JsonProperty("threadId")
     private String threadId;
