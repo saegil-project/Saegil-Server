@@ -15,7 +15,7 @@ public record SimulationDto(
         return new SimulationDto(
                 simulation.getId(),
                 ScenarioDto.from(simulation.getScenario()),
-                simulation.getUser().getId(),
+                simulation.getUserId(),
                 simulation.getCreatedAt()
         );
     }

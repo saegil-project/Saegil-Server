@@ -1,6 +1,5 @@
 package com.newworld.saegil.simulation.domain;
 
-import com.newworld.saegil.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -35,9 +34,8 @@ public class Simulation {
     @JoinColumn(name = "scenario_id", nullable = false, foreignKey = @ForeignKey(name = "fk_simulation_scenario"))
     private Scenario scenario;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_simulation_user"))
-    private User user;
+    @Column(nullable = false)
+    private Long userId;
 
     @Column(nullable = false)
     private String threadId;
@@ -45,9 +43,9 @@ public class Simulation {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    public Simulation(final Scenario scenario, final User user, final String threadId, final LocalDateTime createdAt) {
+    public Simulation(final Scenario scenario, Long userId, final String threadId, final LocalDateTime createdAt) {
         this.scenario = scenario;
-        this.user = user;
+        this.userId = userId;
         this.threadId = threadId;
         this.createdAt = createdAt;
     }
