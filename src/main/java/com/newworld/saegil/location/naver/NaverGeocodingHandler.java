@@ -1,9 +1,9 @@
 package com.newworld.saegil.location.naver;
 
-import com.newworld.saegil.location.LocationInfo;
 import com.newworld.saegil.location.Coordinates;
 import com.newworld.saegil.location.GeocodingException;
 import com.newworld.saegil.location.GeocodingHandler;
+import com.newworld.saegil.location.LocationInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

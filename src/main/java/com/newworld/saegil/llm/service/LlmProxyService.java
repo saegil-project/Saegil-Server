@@ -3,10 +3,9 @@ package com.newworld.saegil.llm.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.newworld.saegil.llm.config.ProxyProperties;
 import com.newworld.saegil.llm.config.TtsProvider;
-import com.newworld.saegil.llm.model.AssistantResponse;
+import com.newworld.saegil.simulation.service.SimulationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -34,60 +33,7 @@ public class LlmProxyService implements AssistantService, TextToSpeechService {
     private final RestTemplate restTemplate;
     private final ProxyProperties proxyProperties;
     private final ObjectMapper objectMapper;
-
-    @Override
-    public Resource getAssistantAudioResponseFromAudioFile(
-            final MultipartFile multipartFile,
-            final String threadId,
-            final String provider
-    ) {
-
-        log.info(
-                "음성 파일로부터 어시스턴트 오디오 응답을 가져옵니다: 파일명={}, 스레드 ID={}, 프로바이더={}",
-                multipartFile.getOriginalFilename(), threadId, provider
-        );
-
-        try {
-            final HttpHeaders requestHeader = new HttpHeaders();
-            requestHeader.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-            final MultiValueMap<String, Object> requestBody = requestBodyFromMultiPartFile(multipartFile);
-            final String assistantAudioFromFilePath = proxyProperties.assistantAudioFromFilePath();
-            final String url = UriComponentsBuilder.fromUriString(assistantAudioFromFilePath)
-                                                   .queryParam("provider", provider != null ? provider : "openai")
-                                                   .queryParamIfPresent(
-                                                           "thread_id",
-                                                           Optional.ofNullable(threadId).filter(s -> !s.isEmpty())
-                                                   )
-                                                   .build()
-                                                   .toUriString();
-            final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
-            final ResponseEntity<byte[]> responseEntity = restTemplate.exchange(
-                    url,
-                    HttpMethod.POST,
-                    requestEntity,
-                    byte[].class
-            );
-
-            if (responseEntity.getStatusCode().is2xxSuccessful()) {
-                final byte[] responseBody = Objects.requireNonNull(
-                        responseEntity.getBody(),
-                        "어시스턴트 오디오 (음성 파일) API 응답 본문이 null 입니다."
-                );
-                if (responseBody.length == 0) {
-                    log.warn("어시스턴트 오디오 (음성 파일) API 응답 본문이 비어 있습니다.");
-                }
-                return new ByteArrayResource(responseBody);
-            } else {
-                log.error("어시스턴트 오디오 (음성 파일) API 호출 실패: 상태 코드={}", responseEntity.getStatusCode());
-                throw new RuntimeException("오디오 응답 생성 중 오류가 발생했습니다. 상태 코드: " + responseEntity.getStatusCode());
-            }
-
-        } catch (final Exception e) {
-            log.error("어시스턴트 오디오 API 음성 파일 호출 중 오류 발생: {}", e.getMessage(), e);
-            throw new RuntimeException("오디오 응답 생성 중 오류가 발생했습니다: " + e.getMessage(), e);
-        }
-    }
+    private final SimulationService simulationService;
 
     @Override
     public AssistantResponse getAssistantTextResponseFromAudioFile(final MultipartFile multipartFile, final String threadId) {
@@ -122,9 +68,77 @@ public class LlmProxyService implements AssistantService, TextToSpeechService {
                 log.info("LLM 서버로부터 받은 원시 응답: {}", responseBody);
 
                 final AssistantResponse response = objectMapper.readValue(responseBody, AssistantResponse.class);
-                log.info("어시스턴트에 요청한 질문: {}", response.getQuestion());
-                log.info("변환된 어시스턴트 응답: {}", response.getResponse());
-                log.info("변환된 어시스턴트 응답 스레드 ID: {}", response.getThreadId());
+
+                String receivedThreadId = response.threadId();
+                String userQuestion = response.userQuestion();
+                String assistantAnswer = response.assistantAnswer();
+
+                log.info("변환된 어시스턴트 응답 스레드 ID: {}", receivedThreadId);
+                log.info("어시스턴트에 요청한 질문: {}", userQuestion);
+                log.info("변환된 어시스턴트 응답: {}", assistantAnswer);
+
+                return response;
+            } else {
+                log.error("어시스턴트 API 호출 실패: 상태 코드={}", stringResponse.getStatusCode());
+                throw new RuntimeException("응답 생성 중 오류가 발생했습니다. 상태 코드: " + stringResponse.getStatusCode());
+            }
+
+        } catch (final Exception e) {
+            log.error("어시스턴트 API 음성 파일 호출 중 오류 발생: {}", e.getMessage(), e);
+            throw new RuntimeException("응답 생성 중 오류가 발생했습니다: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public AssistantResponse getAssistantTextResponseFromAudioFile(
+            final MultipartFile multipartFile,
+            final String threadId,
+            final Long scenarioId,
+            final Long userId
+    ) {
+        log.info("음성 파일로부터 어시스턴트 텍스트 응답을 가져옵니다: 파일명={}, 스레드 ID={}, 시나리오 ID={}, 사용자 ID={}",
+                multipartFile.getOriginalFilename(), threadId, scenarioId, userId);
+
+        try {
+            final HttpHeaders requestHeader = new HttpHeaders();
+            requestHeader.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+            final MultiValueMap<String, Object> requestBody = requestBodyFromMultiPartFile(multipartFile);
+            final String assistantUploadPath = proxyProperties.assistantUploadPath();
+            final String url = UriComponentsBuilder.fromUriString(assistantUploadPath)
+                                                   .queryParamIfPresent(
+                                                           "thread_id",
+                                                           Optional.ofNullable(threadId).filter(s -> !s.isEmpty())
+                                                   )
+                                                   .build()
+                                                   .toUriString();
+            final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
+            final ResponseEntity<String> stringResponse = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    requestEntity,
+                    String.class
+            );
+
+            if (stringResponse.getStatusCode().is2xxSuccessful()) {
+                final String responseBody = Objects.requireNonNull(
+                        stringResponse.getBody(),
+                        "Assistant API 응답 본문이 null 입니다."
+                );
+                log.info("LLM 서버로부터 받은 원시 응답: {}", responseBody);
+
+                final AssistantResponse response = objectMapper.readValue(responseBody, AssistantResponse.class);
+
+                String receivedThreadId = response.threadId();
+                String userQuestion = response.userQuestion();
+                String assistantAnswer = response.assistantAnswer();
+
+                log.info("변환된 어시스턴트 응답 스레드 ID: {}", receivedThreadId);
+                log.info("어시스턴트에 요청한 질문: {}", userQuestion);
+                log.info("변환된 어시스턴트 응답: {}", assistantAnswer);
+
+                simulationService.createMessageCycle(receivedThreadId, scenarioId, userId, userQuestion, assistantAnswer);
+
                 return response;
             } else {
                 log.error("어시스턴트 API 호출 실패: 상태 코드={}", stringResponse.getStatusCode());
