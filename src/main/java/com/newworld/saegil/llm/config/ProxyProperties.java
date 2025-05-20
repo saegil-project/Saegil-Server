@@ -4,8 +4,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "llm.proxy")
 public record ProxyProperties(
-    String assistantAudioFromFilePath,
-    String assistantUploadPath,
-    String textToSpeechPath
+        String assistantAudioFromFilePath,
+        String assistantUploadPath,
+        String textToSpeechPath
 ) {
 }
