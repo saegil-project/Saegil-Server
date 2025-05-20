@@ -69,7 +69,7 @@ public class AssistantController {
                 multipartFile.getOriginalFilename(), threadId
         );
         final AssistantResponse response = assistantService.getAssistantTextResponseFromAudioFile(multipartFile, threadId);
-        log.info("Sending Assistant response with thread_id: {}", response.getThreadId());
+        log.info("Sending Assistant response with thread_id: {}", response.threadId());
         return ResponseEntity.ok(response);
     }
 
@@ -120,7 +120,7 @@ public class AssistantController {
                 scenarioId,
                 authUserInfo.userId()
         );
-        log.info("Sending Assistant response with thread_id: {}", response.getThreadId());
+        log.info("Sending Assistant response with thread_id: {}", response.threadId());
         return ResponseEntity.ok(response);
     }
 }

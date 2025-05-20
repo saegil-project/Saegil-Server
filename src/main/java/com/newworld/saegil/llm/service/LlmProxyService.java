@@ -69,9 +69,9 @@ public class LlmProxyService implements AssistantService, TextToSpeechService {
 
                 final AssistantResponse response = objectMapper.readValue(responseBody, AssistantResponse.class);
 
-                String receivedThreadId = response.getThreadId();
-                String userQuestion = response.getUserQuestion();
-                String assistantAnswer = response.getAssistantAnswer();
+                String receivedThreadId = response.threadId();
+                String userQuestion = response.userQuestion();
+                String assistantAnswer = response.assistantAnswer();
 
                 log.info("변환된 어시스턴트 응답 스레드 ID: {}", receivedThreadId);
                 log.info("어시스턴트에 요청한 질문: {}", userQuestion);
@@ -129,9 +129,9 @@ public class LlmProxyService implements AssistantService, TextToSpeechService {
 
                 final AssistantResponse response = objectMapper.readValue(responseBody, AssistantResponse.class);
 
-                String receivedThreadId = response.getThreadId();
-                String userQuestion = response.getUserQuestion();
-                String assistantAnswer = response.getAssistantAnswer();
+                String receivedThreadId = response.threadId();
+                String userQuestion = response.userQuestion();
+                String assistantAnswer = response.assistantAnswer();
 
                 log.info("변환된 어시스턴트 응답 스레드 ID: {}", receivedThreadId);
                 log.info("어시스턴트에 요청한 질문: {}", userQuestion);
