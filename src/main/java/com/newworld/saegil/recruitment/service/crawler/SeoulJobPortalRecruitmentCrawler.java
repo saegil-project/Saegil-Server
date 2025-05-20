@@ -33,6 +33,11 @@ public class SeoulJobPortalRecruitmentCrawler implements RecruitmentCrawler {
     private final RestTemplate restTemplate;
 
     @Override
+    public RecruitmentInfoSource getSupportingRecruitmentInfoSource() {
+        return RecruitmentInfoSource.SEOUL_DATA_SEOUL_JOB_PORTAL;
+    }
+
+    @Override
     public List<Recruitment> crawl(final LocalDate requestDate) {
         int startIndex = 1;
         int endIndex = 500;

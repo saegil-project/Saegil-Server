@@ -1,5 +1,6 @@
 package com.newworld.saegil.recruitment.domain;
 
+import com.newworld.saegil.location.LocationInfo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -70,13 +71,35 @@ public class Recruitment {
     ) {
         this.recruitmentCode = recruitmentCode;
         this.infoSource = infoSource;
-        this.name = name;
+        this.name = name.trim();
         this.recruitmentStartDate = recruitmentStartDate;
         this.recruitmentEndDate = recruitmentEndDate;
-        this.weeklyWorkdays = weeklyWorkdays;
-        this.workTime = workTime;
-        this.pay = pay;
+        this.weeklyWorkdays = weeklyWorkdays.trim();
+        this.workTime = workTime.trim();
+        this.pay = pay.trim();
         this.webLink = webLink;
-        this.roadAddress = roadAddress;
+        this.roadAddress = roadAddress.trim();
+    }
+
+    public void updateLocationInfo(final LocationInfo locationInfo) {
+        this.roadAddress = locationInfo.roadAddress();
+        this.jibunAddress = locationInfo.jibunAddress();
+        this.latitude = locationInfo.getLatitude();
+        this.longitude = locationInfo.getLongitude();
+    }
+
+
+    public void markError(final Exception exception) {
+        if (exception == null) {
+            return;
+        }
+
+        final String exceptionMeesage = exception.getClass().getSimpleName() + ": " + exception.getMessage();
+
+        if (exceptionMeesage.length() > 250) {
+            this.errorMessage = exceptionMeesage.substring(0, 250) + "...";
+        } else {
+            this.errorMessage = exceptionMeesage;
+        }
     }
 }
