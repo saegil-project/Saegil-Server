@@ -55,4 +55,28 @@ public class Recruitment {
     private Double longitude;
 
     private String errorMessage;
+
+    public Recruitment(
+            final String recruitmentCode,
+            final RecruitmentInfoSource infoSource,
+            final String name,
+            final LocalDateTime recruitmentStartDate,
+            final LocalDateTime recruitmentEndDate,
+            final String weeklyWorkdays,
+            final String workTime,
+            final String pay,
+            final String webLink,
+            final String roadAddress
+    ) {
+        this.recruitmentCode = recruitmentCode;
+        this.infoSource = infoSource;
+        this.name = name;
+        this.recruitmentStartDate = recruitmentStartDate;
+        this.recruitmentEndDate = recruitmentEndDate;
+        this.weeklyWorkdays = weeklyWorkdays;
+        this.workTime = workTime;
+        this.pay = pay;
+        this.webLink = webLink;
+        this.roadAddress = roadAddress;
+    }
 }
