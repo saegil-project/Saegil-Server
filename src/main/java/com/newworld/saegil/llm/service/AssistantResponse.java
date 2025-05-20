@@ -1,4 +1,4 @@
-package com.newworld.saegil.llm.model;
+package com.newworld.saegil.llm.service;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

@@ -2,7 +2,6 @@ package com.newworld.saegil.llm.controller;
 
 import com.newworld.saegil.configuration.SwaggerConfiguration;
 import com.newworld.saegil.llm.config.FileProperties;
-import com.newworld.saegil.llm.model.TextToSpeechRequest;
 import com.newworld.saegil.llm.service.TextToSpeechService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -52,8 +51,8 @@ public class TextToSpeechController {
     )
     @PostMapping(produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<Resource> convertTextToSpeech(@RequestBody final TextToSpeechRequest request) {
-        log.info("Received TTS request: {}, Provider: {}", request.getText(), request.getProvider());
-        final Resource audioResource = textToSpeechService.convertTextToSpeech(request.getText(), request.getProvider());
+        log.info("TTS 요청 수신: {}, 제공자: {}", request.text(), request.provider());
+        final Resource audioResource = textToSpeechService.convertTextToSpeech(request.text(), request.provider());
         return ResponseEntity.ok()
                              .header(
                                      HttpHeaders.CONTENT_DISPOSITION,

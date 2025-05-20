@@ -3,7 +3,7 @@ package com.newworld.saegil.llm.controller;
 import com.newworld.saegil.authentication.annotation.AuthUser;
 import com.newworld.saegil.authentication.dto.AuthUserInfo;
 import com.newworld.saegil.configuration.SwaggerConfiguration;
-import com.newworld.saegil.llm.model.AssistantResponse;
+import com.newworld.saegil.llm.service.AssistantResponse;
 import com.newworld.saegil.llm.service.AssistantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -61,6 +61,7 @@ public class AssistantController {
     )
     public ResponseEntity<AssistantResponse> getAssistantTextResponseFromUploadedAudioFile(
             @RequestPart("file") final MultipartFile multipartFile,
+            @Parameter(description = "스레드 ID", example = "th_123123")
             @RequestParam(value = "thread_id", required = false) final String threadId
     ) {
         log.info(
@@ -103,9 +104,10 @@ public class AssistantController {
     )
     public ResponseEntity<AssistantResponse> getAssistantTextResponseFromUploadedAudioFile(
             @RequestPart("file") final MultipartFile multipartFile,
+            @Parameter(description = "스레드 ID", example = "th_123123")
             @RequestParam(value = "thread_id", required = false) final String threadId,
             @Parameter(description = "시뮬레이션 시나리오 ID", example = "1")
-            @RequestParam(value = "scenario_id", required = true) final Long scenarioId,
+            @RequestParam(value = "scenario_id") final Long scenarioId,
             @AuthUser final AuthUserInfo authUserInfo
     ) {
         log.info(
