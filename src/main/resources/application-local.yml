@@ -56,6 +56,8 @@ openapi:
     private-decoding-key: ${PUBLIC_DATA_PRIVATE_DECODING_KEY:public-data-private-decoding-key}
     national-social-welfare-facility:
       api-uri: ${NATIONAL_SOCIAL_WELFARE_FACILITY_API_URI:national-social-welfare-facility-api-uri}
+  seoul-data:
+    service-key: ${SEOUL_DATA_SERVICE_KEY:seoul-data-service-key}
 
 geocoding:
   naver:
