@@ -1,6 +1,6 @@
 package com.newworld.saegil.location.naver;
 
-import com.newworld.saegil.location.Coordinates;
+import com.newworld.saegil.location.GeoPoint;
 import com.newworld.saegil.location.LocalSearchException;
 import com.newworld.saegil.location.LocalSearchHandler;
 import com.newworld.saegil.location.LocationInfo;
@@ -87,9 +87,9 @@ public class NaverLocalSearchHandler implements LocalSearchHandler {
 
             final double latitude = Double.parseDouble(mapy) / 10_000_000.0;
             final double longitude = Double.parseDouble(mapx) / 10_000_000.0;
-            final Coordinates coordinates = new Coordinates(latitude, longitude);
+            final GeoPoint geoPoint = new GeoPoint(latitude, longitude);
 
-            return new LocationInfo(roadAddress, address, coordinates);
+            return new LocationInfo(roadAddress, address, geoPoint);
         }
     }
 }

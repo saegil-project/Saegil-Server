@@ -25,8 +25,8 @@ public class GeoUtilsTest {
             @Test
             void 오차범위가_1퍼센트_미만이다() {
                 // given
-                final Coordinates seoul = new Coordinates(37.5665, 126.9780);  // 서울
-                final Coordinates busan = new Coordinates(35.1796, 129.0756);  // 부산
+                final GeoPoint seoul = new GeoPoint(37.5665, 126.9780);  // 서울
+                final GeoPoint busan = new GeoPoint(35.1796, 129.0756);  // 부산
 
                 final double expect = 325000; // 325km
 
@@ -46,7 +46,7 @@ public class GeoUtilsTest {
             @Test
             void 거리는_0이다() {
                 // given
-                final Coordinates seoul = new Coordinates(37.5665, 126.9780);  // 서울
+                final GeoPoint seoul = new GeoPoint(37.5665, 126.9780);  // 서울
 
                 final double expect = 0;
 
@@ -65,14 +65,14 @@ public class GeoUtilsTest {
 
         @Nested
         @DisplayName("위도와 경도, 반지름이 주어지면")
-        class Context_with_coordinates_and_radius {
+        class Context_with_geo_point_and_radius {
 
             @Test
             void BoundingBox를_계산한다() {
                 // given
                 final double centerLatitude = 37.5665; // 서울
                 final double centerLongitude = 126.9780; // 서울
-                final Coordinates center = new Coordinates(centerLatitude, centerLongitude); // 서울
+                final GeoPoint center = new GeoPoint(centerLatitude, centerLongitude); // 서울
                 double radius = 1000; // 1km
 
                 final double tolerance = 0.01; // 허용 오차 1%
@@ -81,10 +81,10 @@ public class GeoUtilsTest {
                 GeoBoundingBox box = GeoUtils.calculateBoundingBox(center.latitude(), center.longitude(), radius);
 
                 // then
-                final Coordinates east = new Coordinates(center.latitude(), box.maxLongitude());
-                final Coordinates west = new Coordinates(center.latitude(), box.minLongitude());
-                final Coordinates south = new Coordinates(box.minLatitude(), center.longitude());
-                final Coordinates north = new Coordinates(box.maxLatitude(), center.longitude());
+                final GeoPoint east = new GeoPoint(center.latitude(), box.maxLongitude());
+                final GeoPoint west = new GeoPoint(center.latitude(), box.minLongitude());
+                final GeoPoint south = new GeoPoint(box.minLatitude(), center.longitude());
+                final GeoPoint north = new GeoPoint(box.maxLatitude(), center.longitude());
 
                 SoftAssertions.assertSoftly(softAssertions -> {
                     softAssertions.assertThat(GeoUtils.calculateDistanceMeters(center, east)).isCloseTo(radius, within(tolerance));

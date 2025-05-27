@@ -1,6 +1,6 @@
 package com.newworld.saegil.location.naver;
 
-import com.newworld.saegil.location.Coordinates;
+import com.newworld.saegil.location.GeoPoint;
 import com.newworld.saegil.location.GeocodingException;
 import com.newworld.saegil.location.GeocodingHandler;
 import com.newworld.saegil.location.LocationInfo;
@@ -89,9 +89,9 @@ public class NaverGeocodingHandler implements GeocodingHandler {
 
             final double latitude = Double.parseDouble(y);
             final double longitude = Double.parseDouble(x);
-            final Coordinates coordinates = new Coordinates(latitude, longitude);
+            final GeoPoint geoPoint = new GeoPoint(latitude, longitude);
 
-            return new LocationInfo(roadAddress, jibunAddress, coordinates);
+            return new LocationInfo(roadAddress, jibunAddress, geoPoint);
         }
     }
 }
