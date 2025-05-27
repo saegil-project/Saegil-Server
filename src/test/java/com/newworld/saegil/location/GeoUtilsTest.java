@@ -16,11 +16,11 @@ public class GeoUtilsTest {
 
     @Nested
     @DisplayName("두 위/경도 좌표 사이의 거리 계산")
-    class CalculateDistanceMeters {
+    class Describe_calculateDistanceMeters {
 
         @Nested
         @DisplayName("서로 다른 위치라면")
-        class DifferentLocations {
+        class Context_different_locations {
 
             @Test
             void 오차범위가_1퍼센트_미만이다() {
@@ -41,7 +41,7 @@ public class GeoUtilsTest {
 
         @Nested
         @DisplayName("같은 위치라면")
-        class SameLocation {
+        class Context_same_location {
 
             @Test
             void 거리는_0이다() {
@@ -61,7 +61,7 @@ public class GeoUtilsTest {
 
     @Nested
     @DisplayName("중심 위치 좌표와 반지름으로 위/경도 BoundingBox 계산")
-    class CalculateBoundingBox {
+    class Describe_calculateBoundingBox {
 
         @Nested
         @DisplayName("위도와 경도, 반지름이 주어지면")
