@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.within;
+import static org.assertj.core.api.Assertions.withinPercentage;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -31,11 +31,10 @@ public class GeoUtilsTest {
                 final double expect = 325000; // 325km
 
                 // when
-                double actual = GeoUtils.calculateDistanceMeters(seoul, busan);
+                final double actual = GeoUtils.calculateDistanceMeters(seoul, busan);
 
                 // then
-                final double tolerance = 0.01;  // 허용 오차 1%
-                assertThat(actual).isBetween(expect * (1 - tolerance), expect * (1 + tolerance));
+                assertThat(actual).isCloseTo(expect, withinPercentage(1.0));
             }
         }
 
@@ -73,12 +72,10 @@ public class GeoUtilsTest {
                 final double centerLatitude = 37.5665; // 서울
                 final double centerLongitude = 126.9780; // 서울
                 final GeoPoint center = new GeoPoint(centerLatitude, centerLongitude); // 서울
-                double radius = 1000; // 1km
-
-                final double tolerance = 0.01; // 허용 오차 1%
+                final double radius = 1000; // 1km
 
                 // when
-                GeoBoundingBox box = GeoUtils.calculateBoundingBox(center.latitude(), center.longitude(), radius);
+                final GeoBoundingBox box = GeoUtils.calculateBoundingBox(center.latitude(), center.longitude(), radius);
 
                 // then
                 final GeoPoint east = new GeoPoint(center.latitude(), box.maxLongitude());
@@ -87,10 +84,10 @@ public class GeoUtilsTest {
                 final GeoPoint north = new GeoPoint(box.maxLatitude(), center.longitude());
 
                 SoftAssertions.assertSoftly(softAssertions -> {
-                    softAssertions.assertThat(GeoUtils.calculateDistanceMeters(center, east)).isCloseTo(radius, within(tolerance));
-                    softAssertions.assertThat(GeoUtils.calculateDistanceMeters(center, west)).isCloseTo(radius, within(tolerance));
-                    softAssertions.assertThat(GeoUtils.calculateDistanceMeters(center, south)).isCloseTo(radius, within(tolerance));
-                    softAssertions.assertThat(GeoUtils.calculateDistanceMeters(center, north)).isCloseTo(radius, within(tolerance));
+                    softAssertions.assertThat(GeoUtils.calculateDistanceMeters(center, east)).isCloseTo(radius,  withinPercentage(1.0));
+                    softAssertions.assertThat(GeoUtils.calculateDistanceMeters(center, west)).isCloseTo(radius,  withinPercentage(1.0));
+                    softAssertions.assertThat(GeoUtils.calculateDistanceMeters(center, south)).isCloseTo(radius,  withinPercentage(1.0));
+                    softAssertions.assertThat(GeoUtils.calculateDistanceMeters(center, north)).isCloseTo(radius,  withinPercentage(1.0));
                 });
             }
         }
