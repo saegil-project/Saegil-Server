@@ -32,4 +32,20 @@ public class GeoUtils {
         final double sinX = Math.sin(x);
         return sinX * sinX;
     }
+
+    public static GeoBoundingBox calculateBoundingBox(double latitude, double longitude, double radiusMeters) {
+        final double radLatitude = Math.toRadians(latitude);
+
+        final double angularRadius = radiusMeters / EARTH_RADIUS_METERS;
+
+        final double dLat = Math.toDegrees(angularRadius);
+        final double dLon = Math.toDegrees(angularRadius / Math.cos(radLatitude));
+        double minLatitude = latitude - dLat;
+        double maxLat = latitude + dLat;
+
+        double minLon = longitude - dLon;
+        double maxLon = longitude + dLon;
+
+        return new GeoBoundingBox(minLatitude, maxLat, minLon, maxLon);
+    }
 }
