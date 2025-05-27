@@ -3,7 +3,7 @@ package com.newworld.saegil.facility.controller;
 import com.newworld.saegil.facility.service.FacilityService;
 import com.newworld.saegil.facility.service.NearbyFacilityDto;
 import com.newworld.saegil.global.swagger.ApiResponseCode;
-import com.newworld.saegil.location.Coordinates;
+import com.newworld.saegil.location.GeoPoint;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -41,8 +41,8 @@ public class FacilityController {
             @Parameter(description = "검색 반경 (미터 단위, 예: 500 / 1000 / 5000)", example = "1000")
             @RequestParam final int radius
     ) {
-        final Coordinates userCoordinates = new Coordinates(latitude, longitude);
-        final List<NearbyFacilityDto> result = facilityService.readNearbyFacilities(userCoordinates, radius);
+        final GeoPoint userGeoPoint = new GeoPoint(latitude, longitude);
+        final List<NearbyFacilityDto> result = facilityService.readNearbyFacilities(userGeoPoint, radius);
         final List<ReadFacilityResponse> response = result.stream()
                                                           .map(ReadFacilityResponse::from)
                                                           .toList();
