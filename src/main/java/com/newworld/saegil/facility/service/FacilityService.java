@@ -1,7 +1,6 @@
 package com.newworld.saegil.facility.service;
 
 import com.newworld.saegil.facility.domain.Facility;
-import com.newworld.saegil.facility.repository.FacilityAndDistance;
 import com.newworld.saegil.facility.repository.FacilityRepository;
 import com.newworld.saegil.location.GeoBoundingBox;
 import com.newworld.saegil.location.GeoPoint;
@@ -31,16 +30,10 @@ public class FacilityService {
         final List<Facility> facilitiesInBoundingBox = facilityRepository.findAllInBoundingBox(geoBoundingBox);
 
         return facilitiesInBoundingBox.stream()
-                               .map(facility -> mapWithDistance(facility, baseGeoPoint))
-                               .filter(facilityAndDistance -> facilityAndDistance.distance() <= radius)
-                               .map(FacilityAndDistance::toNearbyFacilityDto)
-                               .toList();
-    }
-
-    private FacilityAndDistance mapWithDistance(final Facility facility, final GeoPoint baseGeoPoint) {
-        return new FacilityAndDistance(
-                facility,
-                GeoUtils.calculateDistanceMeters(baseGeoPoint, facility.getGeoPoint())
-        );
+                                      .map(facility -> NearbyFacilityDto.from(
+                                              facility,
+                                              GeoUtils.calculateDistanceMeters(baseGeoPoint, facility.getGeoPoint())
+                                      )).filter(facilityDto -> facilityDto.distanceMeters() <= radius)
+                                      .toList();
     }
 }
