@@ -118,7 +118,7 @@ public class NationalSocialWelfareFacilityCrawler implements FacilityCrawler {
             String fcltDtl_2Addr, // 시설상세2주소
 
             @JsonSetter(nulls = Nulls.AS_EMPTY)
-            String fcltTelno, // 시설전화번호
+            String fcltTelNo, // 시설전화번호
 
             @JsonSetter(nulls = Nulls.AS_EMPTY)
             String cfbClCd, // 업종분류코드
@@ -134,7 +134,7 @@ public class NationalSocialWelfareFacilityCrawler implements FacilityCrawler {
                     fcltCd,
                     FacilityInfoSource.PUBLIC_DATA_NATIONAL_SOCIAL_WELFARE_FACILITY,
                     fcltNm,
-                    fcltTelno,
+                    fcltTelNo,
                     address,
                     address
             );
