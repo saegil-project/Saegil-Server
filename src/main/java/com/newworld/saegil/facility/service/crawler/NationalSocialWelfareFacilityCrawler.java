@@ -134,6 +134,7 @@ public class NationalSocialWelfareFacilityCrawler implements FacilityCrawler {
                     fcltCd,
                     FacilityInfoSource.PUBLIC_DATA_NATIONAL_SOCIAL_WELFARE_FACILITY,
                     fcltNm,
+                    cfbNm,
                     fcltTelNo,
                     address,
                     address

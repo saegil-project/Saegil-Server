@@ -39,6 +39,9 @@ public class Facility {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String businessName;
+
     @Column
     private String telephoneNumber;
 
@@ -61,13 +64,15 @@ public class Facility {
             final String facilityCode,
             final FacilityInfoSource infoSource,
             final String name,
+            final String businessName,
             final String telephoneNumber,
             final String roadAddress,
             final String jibunAddress
     ) {
-        this.name = name.trim();
         this.facilityCode = facilityCode.trim();
         this.infoSource = infoSource;
+        this.name = name.trim();
+        this.businessName = businessName.trim();
         this.telephoneNumber = telephoneNumber.trim();
         this.roadAddress = roadAddress.trim();
         this.jibunAddress = jibunAddress.trim();
