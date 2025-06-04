@@ -1,6 +1,6 @@
 package com.newworld.saegil.location.naver;
 
-import com.newworld.saegil.location.Coordinates;
+import com.newworld.saegil.location.GeoPoint;
 import com.newworld.saegil.location.LocationInfo;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ class NaverLocalSearchHandlerTest {
         final LocationInfo expected = new LocationInfo(
                 "서울특별시 동작구 사당로 50",
                 "서울특별시 동작구 상도동 509",
-                new Coordinates(37.4944897, 126.9597657)
+                new GeoPoint(37.4944897, 126.9597657)
         );
 
         // when

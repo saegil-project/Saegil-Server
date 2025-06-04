@@ -3,14 +3,14 @@ package com.newworld.saegil.location;
 public record LocationInfo(
         String roadAddress,
         String jibunAddress,
-        Coordinates coordinates
+        GeoPoint geoPoint
 ) {
 
     public Double getLatitude() {
-        return coordinates.latitude();
+        return geoPoint.latitude();
     }
 
     public Double getLongitude() {
-        return coordinates.longitude();
+        return geoPoint.longitude();
     }
 }

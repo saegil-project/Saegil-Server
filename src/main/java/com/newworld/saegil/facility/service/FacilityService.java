@@ -1,8 +1,10 @@
 package com.newworld.saegil.facility.service;
 
-import com.newworld.saegil.facility.repository.FacilityAndDistance;
+import com.newworld.saegil.facility.domain.Facility;
 import com.newworld.saegil.facility.repository.FacilityRepository;
-import com.newworld.saegil.location.Coordinates;
+import com.newworld.saegil.location.GeoBoundingBox;
+import com.newworld.saegil.location.GeoPoint;
+import com.newworld.saegil.location.GeoUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,17 +19,21 @@ public class FacilityService {
     private final FacilityRepository facilityRepository;
 
     public List<NearbyFacilityDto> readNearbyFacilities(
-            final Coordinates baseCoordinates,
+            final GeoPoint baseGeoPoint,
             final int radius
     ) {
-        final List<FacilityAndDistance> nearbyFacilities = facilityRepository.findNearbyFacilities(
-                baseCoordinates.latitude(),
-                baseCoordinates.longitude(),
+        final GeoBoundingBox geoBoundingBox = GeoUtils.calculateBoundingBox(
+                baseGeoPoint.latitude(),
+                baseGeoPoint.longitude(),
                 radius
         );
+        final List<Facility> facilitiesInBoundingBox = facilityRepository.findAllInBoundingBox(geoBoundingBox);
 
-        return nearbyFacilities.stream()
-                               .map(FacilityAndDistance::toNearbyFacilityDto)
-                               .toList();
+        return facilitiesInBoundingBox.stream()
+                                      .map(facility -> NearbyFacilityDto.from(
+                                              facility,
+                                              GeoUtils.calculateDistanceMeters(baseGeoPoint, facility.getGeoPoint())
+                                      )).filter(facilityDto -> facilityDto.distanceMeters() <= radius)
+                                      .toList();
     }
 }

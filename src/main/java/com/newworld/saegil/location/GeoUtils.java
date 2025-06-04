@@ -10,13 +10,13 @@ public class GeoUtils {
     private static final int EARTH_RADIUS_METERS = 6371000;
 
     public static double calculateDistanceMeters(
-            final Coordinates coordinates1,
-            final Coordinates coordinates2
+            final GeoPoint geoPoint1,
+            final GeoPoint geoPoint2
     ) {
-        final double radLatitude1 = Math.toRadians(coordinates1.latitude());
-        final double radLatitude2 = Math.toRadians(coordinates2.latitude());
-        final double radLongitude1 = Math.toRadians(coordinates1.longitude());
-        final double radLongitude2 = Math.toRadians(coordinates2.longitude());
+        final double radLatitude1 = Math.toRadians(geoPoint1.latitude());
+        final double radLatitude2 = Math.toRadians(geoPoint2.latitude());
+        final double radLongitude1 = Math.toRadians(geoPoint1.longitude());
+        final double radLongitude2 = Math.toRadians(geoPoint2.longitude());
 
         final double dLat = radLatitude2 - radLatitude1;
         final double dLon = radLongitude2 - radLongitude1;
@@ -31,5 +31,21 @@ public class GeoUtils {
     private static double sin2(double x) {
         final double sinX = Math.sin(x);
         return sinX * sinX;
+    }
+
+    public static GeoBoundingBox calculateBoundingBox(double latitude, double longitude, double radiusMeters) {
+        final double radLatitude = Math.toRadians(latitude);
+
+        final double angularRadius = radiusMeters / EARTH_RADIUS_METERS;
+
+        final double dLat = Math.toDegrees(angularRadius);
+        final double dLon = Math.toDegrees(angularRadius / Math.cos(radLatitude));
+        double minLatitude = latitude - dLat;
+        double maxLat = latitude + dLat;
+
+        double minLon = longitude - dLon;
+        double maxLon = longitude + dLon;
+
+        return new GeoBoundingBox(minLatitude, maxLat, minLon, maxLon);
     }
 }

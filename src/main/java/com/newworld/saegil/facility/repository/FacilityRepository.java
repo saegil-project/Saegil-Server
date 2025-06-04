@@ -2,6 +2,7 @@ package com.newworld.saegil.facility.repository;
 
 import com.newworld.saegil.facility.domain.Facility;
 import com.newworld.saegil.facility.domain.FacilityInfoSource;
+import com.newworld.saegil.location.GeoBoundingBox;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,28 +16,11 @@ public interface FacilityRepository extends JpaRepository<Facility, Long> {
     Set<String> findAllFacilityCodeByInfoSource(@Param("infoSource") final FacilityInfoSource infoSource);
 
     @Query("""
-            SELECT new com.newworld.saegil.facility.repository.FacilityAndDistance(f,
-                   (6371000 * acos(
-                       cos(radians(:latitude)) * cos(radians(f.latitude)) *
-                       cos(radians(f.longitude) - radians(:longitude)) +
-                       sin(radians(:latitude)) * sin(radians(f.latitude))
-                   ))) AS distance
+            SELECT f
             FROM Facility f
             WHERE f.latitude IS NOT NULL AND f.longitude IS NOT NULL
-              AND (6371000 * acos(
-                       cos(radians(:latitude)) * cos(radians(f.latitude)) *
-                       cos(radians(f.longitude) - radians(:longitude)) +
-                       sin(radians(:latitude)) * sin(radians(f.latitude))
-                   )) <= :radius
-            ORDER BY (6371000 * acos(
-                                        cos(radians(:latitude)) * cos(radians(f.latitude)) *
-                                        cos(radians(f.longitude) - radians(:longitude)) +
-                                        sin(radians(:latitude)) * sin(radians(f.latitude))
-                                    )) ASC
+              AND f.latitude BETWEEN :#{#geoBoundingBox.minLatitude} AND :#{#geoBoundingBox.maxLatitude}
+              AND f.longitude BETWEEN :#{#geoBoundingBox.minLongitude} AND :#{#geoBoundingBox.maxLongitude}
             """)
-    List<FacilityAndDistance> findNearbyFacilities(
-            @Param("latitude") double latitude,
-            @Param("longitude") double longitude,
-            @Param("radius") double radius
-    );
+    List<Facility> findAllInBoundingBox(GeoBoundingBox geoBoundingBox);
 }
