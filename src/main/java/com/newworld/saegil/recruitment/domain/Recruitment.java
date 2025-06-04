@@ -1,5 +1,6 @@
 package com.newworld.saegil.recruitment.domain;
 
+import com.newworld.saegil.location.GeoPoint;
 import com.newworld.saegil.location.LocationInfo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -101,5 +102,9 @@ public class Recruitment {
         } else {
             this.errorMessage = exceptionMeesage;
         }
+    }
+
+    public GeoPoint getGeoPoint() {
+        return new GeoPoint(latitude, longitude);
     }
 }
