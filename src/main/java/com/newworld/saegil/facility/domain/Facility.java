@@ -25,6 +25,8 @@ import org.apache.commons.lang3.StringUtils;
 @Table(name = "facility")
 public class Facility {
 
+    private static final double NO_LOCATION_COORDINATE = 9999.0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -52,10 +54,10 @@ public class Facility {
     @Column
     private String jibunAddress;
 
-    @Column
+    @Column(nullable = false)
     private Double latitude;
 
-    @Column
+    @Column(nullable = false)
     private Double longitude;
 
     @Column
@@ -77,8 +79,8 @@ public class Facility {
         this.telephoneNumber = telephoneNumber.trim();
         this.roadAddress = roadAddress.trim();
         this.jibunAddress = jibunAddress.trim();
-        this.latitude = null;
-        this.longitude = null;
+        this.latitude = NO_LOCATION_COORDINATE;
+        this.longitude = NO_LOCATION_COORDINATE;
         this.errorMessage = null;
     }
 

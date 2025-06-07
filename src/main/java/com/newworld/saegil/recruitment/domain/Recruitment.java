@@ -26,6 +26,8 @@ import java.time.LocalDateTime;
 @Table(name = "recruitment")
 public class Recruitment {
 
+    private static final double NO_LOCATION_COORDINATE = 9999.0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -58,8 +60,10 @@ public class Recruitment {
 
     private String jibunAddress;
 
+    @Column(nullable = false)
     private Double latitude;
 
+    @Column(nullable = false)
     private Double longitude;
 
     private String errorMessage;
@@ -88,6 +92,8 @@ public class Recruitment {
         this.pay = pay.trim();
         this.webLink = webLink;
         this.roadAddress = roadAddress.trim();
+        this.latitude = NO_LOCATION_COORDINATE;
+        this.longitude = NO_LOCATION_COORDINATE;
     }
 
     public void updateLocationInfo(final LocationInfo locationInfo) {

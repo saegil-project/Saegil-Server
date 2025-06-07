@@ -14,7 +14,6 @@ public interface RecruitmentRepository extends JpaRepository<Recruitment, Long> 
             SELECT r
             FROM Recruitment r
             WHERE NOT (r.recruitmentEndDate < :targetDateTime)
-              AND r.latitude IS NOT NULL AND r.longitude IS NOT NULL
               AND r.latitude BETWEEN :#{#geoBoundingBox.minLatitude} AND :#{#geoBoundingBox.maxLatitude}
               AND r.longitude BETWEEN :#{#geoBoundingBox.minLongitude} AND :#{#geoBoundingBox.maxLongitude}
             """)
