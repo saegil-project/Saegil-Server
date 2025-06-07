@@ -34,6 +34,7 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .excludePathPatterns("/swagger-ui/**")
                 .excludePathPatterns("/index.html")
                 .excludePathPatterns("/test-llm-proxy.html")
+                .excludePathPatterns("/api/v1/recruitments/**")
                 .excludePathPatterns("/api/v2/facilities/**")
                 .excludePathPatterns("/api/v1/organizations/**")
                 .excludePathPatterns("/api/v1/notices/**")
