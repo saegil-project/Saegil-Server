@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 public record NearbyRecruitmentDto(
         Long id,
         String name,
+        String companyName,
         LocalDateTime recruitmentStartDate,
         LocalDateTime recruitmentEndDate,
         String weeklyWorkdays,
@@ -23,6 +24,7 @@ public record NearbyRecruitmentDto(
         return new NearbyRecruitmentDto(
                 recruitment.getId(),
                 recruitment.getName(),
+                recruitment.getCompanyName(),
                 recruitment.getRecruitmentStartDate(),
                 recruitment.getRecruitmentEndDate(),
                 recruitment.getWeeklyWorkdays(),
