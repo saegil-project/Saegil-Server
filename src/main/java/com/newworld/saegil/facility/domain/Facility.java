@@ -39,8 +39,9 @@ public class Facility {
     @Column(nullable = false)
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String businessName;
+    private BusinessName businessName;
 
     @Column
     private String telephoneNumber;
@@ -64,7 +65,7 @@ public class Facility {
             final String facilityCode,
             final FacilityInfoSource infoSource,
             final String name,
-            final String businessName,
+            final BusinessName businessName,
             final String telephoneNumber,
             final String roadAddress,
             final String jibunAddress
@@ -72,7 +73,7 @@ public class Facility {
         this.facilityCode = facilityCode.trim();
         this.infoSource = infoSource;
         this.name = name.trim();
-        this.businessName = businessName.trim();
+        this.businessName = businessName;
         this.telephoneNumber = telephoneNumber.trim();
         this.roadAddress = roadAddress.trim();
         this.jibunAddress = jibunAddress.trim();
