@@ -4,6 +4,8 @@ import com.newworld.saegil.location.GeoPoint;
 import com.newworld.saegil.location.LocationInfo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,11 +32,15 @@ public class Recruitment {
 
     private String recruitmentCode;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RecruitmentInfoSource infoSource;
 
     @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private String companyName;
 
     private LocalDateTime recruitmentStartDate;
 
@@ -62,6 +68,7 @@ public class Recruitment {
             final String recruitmentCode,
             final RecruitmentInfoSource infoSource,
             final String name,
+            final String companyName,
             final LocalDateTime recruitmentStartDate,
             final LocalDateTime recruitmentEndDate,
             final String weeklyWorkdays,
@@ -73,6 +80,7 @@ public class Recruitment {
         this.recruitmentCode = recruitmentCode;
         this.infoSource = infoSource;
         this.name = name.trim();
+        this.companyName = companyName.trim();
         this.recruitmentStartDate = recruitmentStartDate;
         this.recruitmentEndDate = recruitmentEndDate;
         this.weeklyWorkdays = weeklyWorkdays.trim();
