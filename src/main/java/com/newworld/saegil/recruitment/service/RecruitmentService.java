@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -20,14 +21,16 @@ public class RecruitmentService {
 
     public List<NearbyRecruitmentDto> readNearbyRecruitments(
             final GeoPoint baseGeoPoint,
-            final int radius
+            final int radius,
+            final LocalDateTime targetDateTime
     ) {
         final GeoBoundingBox geoBoundingBox = GeoUtils.calculateBoundingBox(
                 baseGeoPoint.latitude(),
                 baseGeoPoint.longitude(),
                 radius
         );
-        final List<Recruitment> recruitmentsInBoundingBox = recruitmentRepository.findAllInBoundingBox(geoBoundingBox);
+        final List<Recruitment> recruitmentsInBoundingBox =
+                recruitmentRepository.findAllActiveInBoundingBox(geoBoundingBox, targetDateTime);
 
         return recruitmentsInBoundingBox.stream()
                                         .map(recruitment -> NearbyRecruitmentDto.from(

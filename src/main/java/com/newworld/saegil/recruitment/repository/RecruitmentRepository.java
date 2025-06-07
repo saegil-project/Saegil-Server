@@ -5,6 +5,7 @@ import com.newworld.saegil.recruitment.domain.Recruitment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RecruitmentRepository extends JpaRepository<Recruitment, Long> {
@@ -12,9 +13,10 @@ public interface RecruitmentRepository extends JpaRepository<Recruitment, Long> 
     @Query("""
             SELECT r
             FROM Recruitment r
-            WHERE r.latitude IS NOT NULL AND r.longitude IS NOT NULL
+            WHERE NOT (r.recruitmentEndDate < :targetDateTime)
+              AND r.latitude IS NOT NULL AND r.longitude IS NOT NULL
               AND r.latitude BETWEEN :#{#geoBoundingBox.minLatitude} AND :#{#geoBoundingBox.maxLatitude}
               AND r.longitude BETWEEN :#{#geoBoundingBox.minLongitude} AND :#{#geoBoundingBox.maxLongitude}
             """)
-    List<Recruitment> findAllInBoundingBox(final GeoBoundingBox geoBoundingBox);
+    List<Recruitment> findAllActiveInBoundingBox(final GeoBoundingBox geoBoundingBox, final LocalDateTime targetDateTime);
 }
