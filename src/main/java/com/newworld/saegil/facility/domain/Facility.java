@@ -113,4 +113,12 @@ public class Facility {
     public GeoPoint getGeoPoint() {
         return new GeoPoint(latitude, longitude);
     }
+
+    public boolean hasFullName() {
+        return StringUtils.isNotBlank(name) && !isNameMasked();
+    }
+
+    private boolean isNameMasked() {
+        return name.startsWith("*") || name.endsWith("*") || name.contains("**");
+    }
 }

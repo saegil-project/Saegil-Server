@@ -41,6 +41,7 @@ public class FacilityCrawlingService {
         log.info("전체 {} 크롤링된 개수: {}", infoSource.getName(), totalCrawledFacilities.size());
         final List<Facility> newFacilitiesToSave =
                 totalCrawledFacilities.stream()
+                                      .filter(Facility::hasFullName)
                                       .filter(facility -> !facilityCodes.contains(facility.getFacilityCode()))
                                       .toList();
 
