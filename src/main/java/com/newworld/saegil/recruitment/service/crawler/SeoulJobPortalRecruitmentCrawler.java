@@ -120,6 +120,7 @@ public class SeoulJobPortalRecruitmentCrawler implements RecruitmentCrawler {
                     jobRegistNumber,
                     RecruitmentInfoSource.SEOUL_DATA_SEOUL_JOB_PORTAL,
                     title,
+                    companyName,
                     LocalDate.parse(jobRegisterDate).atStartOfDay(),
                     parseReceptionCloseDate(receptionCloseDate),
                     weeklyWorkdays,

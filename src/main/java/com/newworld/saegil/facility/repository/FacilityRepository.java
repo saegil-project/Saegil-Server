@@ -22,5 +22,5 @@ public interface FacilityRepository extends JpaRepository<Facility, Long> {
               AND f.latitude BETWEEN :#{#geoBoundingBox.minLatitude} AND :#{#geoBoundingBox.maxLatitude}
               AND f.longitude BETWEEN :#{#geoBoundingBox.minLongitude} AND :#{#geoBoundingBox.maxLongitude}
             """)
-    List<Facility> findAllInBoundingBox(GeoBoundingBox geoBoundingBox);
+    List<Facility> findAllInBoundingBox(final GeoBoundingBox geoBoundingBox);
 }
