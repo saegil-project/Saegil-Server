@@ -1,5 +1,6 @@
 package com.newworld.saegil.facility.controller;
 
+import com.newworld.saegil.facility.domain.BusinessName;
 import com.newworld.saegil.facility.service.NearbyFacilityDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +12,9 @@ public record ReadFacilityResponse(
 
         @Schema(description = "시설명", example = "한빛종합사회복지관")
         String name,
+
+        @Schema(description = "업종명", example = "CHILDREN_WELFARE")
+        BusinessName businessName,
 
         @Schema(description = "위도", example = "37.5190344")
         double latitude,
@@ -37,6 +41,7 @@ public record ReadFacilityResponse(
         return new ReadFacilityResponse(
                 dto.id(),
                 dto.name(),
+                dto.businessName(),
                 dto.latitude(),
                 dto.longitude(),
                 dto.telephoneNumber(),

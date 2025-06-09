@@ -39,6 +39,10 @@ public class Facility {
     @Column(nullable = false)
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private BusinessName businessName;
+
     @Column
     private String telephoneNumber;
 
@@ -61,13 +65,15 @@ public class Facility {
             final String facilityCode,
             final FacilityInfoSource infoSource,
             final String name,
+            final BusinessName businessName,
             final String telephoneNumber,
             final String roadAddress,
             final String jibunAddress
     ) {
-        this.name = name.trim();
         this.facilityCode = facilityCode.trim();
         this.infoSource = infoSource;
+        this.name = name.trim();
+        this.businessName = businessName;
         this.telephoneNumber = telephoneNumber.trim();
         this.roadAddress = roadAddress.trim();
         this.jibunAddress = jibunAddress.trim();
@@ -107,5 +113,13 @@ public class Facility {
 
     public GeoPoint getGeoPoint() {
         return new GeoPoint(latitude, longitude);
+    }
+
+    public boolean hasFullName() {
+        return StringUtils.isNotBlank(name) && !isNameMasked();
+    }
+
+    private boolean isNameMasked() {
+        return name.startsWith("*") || name.endsWith("*") || name.contains("**");
     }
 }

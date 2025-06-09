@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v2/facilities")
+@RequestMapping("/api/v1/facilities")
 @RequiredArgsConstructor
 @Tag(name = "Facility", description = "시설 API")
 public class FacilityController {

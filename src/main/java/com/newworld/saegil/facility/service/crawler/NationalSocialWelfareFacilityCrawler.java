@@ -3,8 +3,10 @@ package com.newworld.saegil.facility.service.crawler;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.newworld.saegil.facility.domain.BusinessName;
 import com.newworld.saegil.facility.domain.Facility;
 import com.newworld.saegil.facility.domain.FacilityInfoSource;
+import com.newworld.saegil.facility.service.FacilityBusinessNameClassifier;
 import com.newworld.saegil.facility.service.FacilityCrawler;
 import com.newworld.saegil.global.BlankToNullDeserializer;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +51,12 @@ public class NationalSocialWelfareFacilityCrawler implements FacilityCrawler {
 
             final List<Facility> facilities = response.getItems()
                                                       .stream()
-                                                      .map(Item::toFacility)
+                                                      .map(item -> item.toFacility(
+                                                              FacilityBusinessNameClassifier.classify(
+                                                                      item.cfbNm,
+                                                                      item.fcltNm
+                                                              )
+                                                      ))
                                                       .toList();
             totalFacilities.addAll(facilities);
 
@@ -118,7 +125,7 @@ public class NationalSocialWelfareFacilityCrawler implements FacilityCrawler {
             String fcltDtl_2Addr, // 시설상세2주소
 
             @JsonSetter(nulls = Nulls.AS_EMPTY)
-            String fcltTelno, // 시설전화번호
+            String fcltTelNo, // 시설전화번호
 
             @JsonSetter(nulls = Nulls.AS_EMPTY)
             String cfbClCd, // 업종분류코드
@@ -127,14 +134,15 @@ public class NationalSocialWelfareFacilityCrawler implements FacilityCrawler {
             String cfbNm // 업종명
     ) {
 
-        public Facility toFacility() {
+        public Facility toFacility(final BusinessName businessName) {
             final String address = fcltAddr + " " + fcltDtl_1Addr + " " + fcltDtl_2Addr;
 
             return new Facility(
                     fcltCd,
                     FacilityInfoSource.PUBLIC_DATA_NATIONAL_SOCIAL_WELFARE_FACILITY,
                     fcltNm,
-                    fcltTelno,
+                    businessName,
+                    fcltTelNo,
                     address,
                     address
             );
