@@ -116,6 +116,8 @@ public class SeoulJobPortalRecruitmentCrawler implements RecruitmentCrawler {
     ) {
 
         public Recruitment toRecruitment() {
+            final String webLink = "https://job.seoul.go.kr/www/job_offer_info/JobOfferInfo.do?method=selectJobOfferInfo&gradeSearch=" + jobRegistNumber;
+
             return new Recruitment(
                     jobRegistNumber,
                     RecruitmentInfoSource.SEOUL_DATA_SEOUL_JOB_PORTAL,
@@ -126,7 +128,7 @@ public class SeoulJobPortalRecruitmentCrawler implements RecruitmentCrawler {
                     weeklyWorkdays,
                     workTime,
                     wage,
-                    "",
+                    webLink,
                     workplaceAddress
             );
         }
