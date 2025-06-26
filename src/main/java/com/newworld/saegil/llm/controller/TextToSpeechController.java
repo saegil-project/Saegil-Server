@@ -2,7 +2,7 @@ package com.newworld.saegil.llm.controller;
 
 import com.newworld.saegil.configuration.SwaggerConfiguration;
 import com.newworld.saegil.llm.config.FileProperties;
-import com.newworld.saegil.llm.service.TextToSpeechService;
+import com.newworld.saegil.llm.service.TextToSpeech;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "TTS API", description = "Text-to-Speech 관련 기능")
 public class TextToSpeechController {
 
-    private final TextToSpeechService textToSpeechService;
+    private final TextToSpeech textToSpeech;
     private final FileProperties fileProperties;
 
     @Operation(
@@ -52,7 +52,7 @@ public class TextToSpeechController {
     @PostMapping(produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<Resource> convertTextToSpeech(@RequestBody final TextToSpeechRequest request) {
         log.info("TTS 요청 수신: {}, 제공자: {}", request.text(), request.provider());
-        final Resource audioResource = textToSpeechService.convertTextToSpeech(request.text(), request.provider());
+        final Resource audioResource = textToSpeech.convertTextToSpeech(request.text(), request.provider());
         return ResponseEntity.ok()
                              .header(
                                      HttpHeaders.CONTENT_DISPOSITION,

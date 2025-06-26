@@ -4,7 +4,7 @@ import com.newworld.saegil.authentication.annotation.AuthUser;
 import com.newworld.saegil.authentication.dto.AuthUserInfo;
 import com.newworld.saegil.configuration.SwaggerConfiguration;
 import com.newworld.saegil.llm.service.AssistantResponse;
-import com.newworld.saegil.llm.service.AssistantService;
+import com.newworld.saegil.llm.service.Assistant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "Assistant API", description = "OpenAI Assistant API 관련 기능")
 public class AssistantController {
 
-    private final AssistantService assistantService;
+    private final Assistant assistant;
 
     @Operation(
             summary = "음성 파일로부터 Assistant 응답 가져오기 (V1)",
@@ -68,7 +68,7 @@ public class AssistantController {
                 "Received Assistant audio file upload request: {}, threadId: {}",
                 multipartFile.getOriginalFilename(), threadId
         );
-        final AssistantResponse response = assistantService.getAssistantTextResponseFromAudioFile(multipartFile, threadId);
+        final AssistantResponse response = assistant.getAssistantTextResponseFromAudioFile(multipartFile, threadId);
         log.info("Sending Assistant response with thread_id: {}", response.threadId());
         return ResponseEntity.ok(response);
     }
@@ -114,7 +114,7 @@ public class AssistantController {
                 "Received Assistant audio file upload request (V2): {}, threadId: {}, scenarioId: {}, userId: {}",
                 multipartFile.getOriginalFilename(), threadId, scenarioId, authUserInfo.userId()
         );
-        final AssistantResponse response = assistantService.getAssistantTextResponseFromAudioFile(
+        final AssistantResponse response = assistant.getAssistantTextResponseFromAudioFile(
                 multipartFile,
                 threadId,
                 scenarioId,
