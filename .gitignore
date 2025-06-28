@@ -39,8 +39,5 @@ out/
 ### macOS ###
 .DS_Store
 
-### SDKMAN ###
-.sdkmanrc
-
 ### MP3 Files ###
 *.mp3
