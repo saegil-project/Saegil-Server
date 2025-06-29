@@ -32,8 +32,8 @@ spring:
   ai:
     openai:
       api-key: ${OPENAI_API_KEY}
-      organization-id: org-iAW8vWboKhYHBWGC6i4I8XiU
-      project-id: proj_99hhVJrzVol0aRHeGiZU5Vva
+      organization-id: ${SAEGIL_OPENAI_ORGANIZATION_ID}
+      project-id: ${SAEGIL_OPENAI_PROJECT_ID}
       audio:
         speech:
           options:
