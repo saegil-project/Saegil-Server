@@ -4,6 +4,7 @@ import com.newworld.saegil.llm.config.ProxyProperties;
 import com.newworld.saegil.llm.config.TtsProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.openai.OpenAiAudioSpeechModel;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +25,7 @@ public class TextToSpeechService implements TextToSpeech {
 
     private final RestTemplate restTemplate;
     private final ProxyProperties proxyProperties;
+    private final OpenAiAudioSpeechModel openAiAudioSpeechModel;
 
     @Override
     public Resource convertTextToSpeech(final String text, final TtsProvider provider) {
@@ -52,6 +54,11 @@ public class TextToSpeechService implements TextToSpeech {
             log.error("TTS를 위해 LLM 서버 호출 중 오류 발생: {}", e.getMessage());
             throw new RuntimeException("TTS를 위해 LLM 서버 호출 중 오류 발생: " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    public byte[] convertTextToSpeechV2(final String text) {
+        return openAiAudioSpeechModel.call(text);
     }
 
 }

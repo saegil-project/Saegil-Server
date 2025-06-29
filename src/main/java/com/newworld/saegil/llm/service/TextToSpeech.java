@@ -7,4 +7,6 @@ public interface TextToSpeech {
 
     Resource convertTextToSpeech(final String text, final TtsProvider provider);
 
+    byte[] convertTextToSpeechV2(final String text);
+
 } 

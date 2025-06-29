@@ -41,3 +41,6 @@ out/
 
 ### MP3 Files ###
 *.mp3
+
+### Claude Code Setting ###
+.claude

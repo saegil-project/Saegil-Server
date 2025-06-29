@@ -29,6 +29,18 @@ spring:
       enabled: true
       max-file-size: 10MB
       max-request-size: 10MB
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      organization-id: org-iAW8vWboKhYHBWGC6i4I8XiU
+      project-id: proj_99hhVJrzVol0aRHeGiZU5Vva
+      audio:
+        speech:
+          options:
+            model: tts-1
+            voice: alloy
+            response-format: mp3
+            speed: 1.0
 server:
   port: 8080
 springdoc:
