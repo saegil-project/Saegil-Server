@@ -56,9 +56,6 @@ dependencies {
     // Jsoup 의존성 추가
     implementation("org.jsoup:jsoup:1.19.1")
 
-    // OpenAI Java SDK
-    implementation("com.openai:openai-java:2.11.0")
-
     // OpenAI with Spring AI
     implementation("org.springframework.ai:spring-ai-starter-model-openai")
 }

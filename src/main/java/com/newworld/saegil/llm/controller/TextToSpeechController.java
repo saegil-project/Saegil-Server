@@ -2,7 +2,7 @@ package com.newworld.saegil.llm.controller;
 
 import com.newworld.saegil.configuration.SwaggerConfiguration;
 import com.newworld.saegil.llm.config.FileProperties;
-import com.newworld.saegil.llm.service.TextToSpeech;
+import com.newworld.saegil.llm.service.TextToSpeechService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "TTS API", description = "Text-to-Speech 관련 기능")
 public class TextToSpeechController {
 
-    private final TextToSpeech textToSpeech;
+    private final TextToSpeechService textToSpeechService;
     private final FileProperties fileProperties;
 
     @Operation(
@@ -52,7 +52,7 @@ public class TextToSpeechController {
     @PostMapping(value = "/v1/llm/tts", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<Resource> convertTextToSpeech(@RequestBody final TextToSpeechRequest request) {
         log.info("TTS 요청 수신: {}, 제공자: {}", request.text(), request.provider());
-        final Resource audioResource = textToSpeech.convertTextToSpeech(request.text(), request.provider());
+        final Resource audioResource = textToSpeechService.convertTextToSpeech(request.text(), request.provider());
         return ResponseEntity.ok()
                              .header(
                                      HttpHeaders.CONTENT_DISPOSITION,
@@ -65,7 +65,7 @@ public class TextToSpeechController {
             summary = "텍스트를 음성으로 변환 V2",
             description = """
                         요청한 텍스트를 Spring AI의 OpenAI SDK를 활용하여 음성으로 변환합니다.
-                        2025년 6월 29일 Spring AI 1.0.0 기준으로 TTS는 OpenAI 밖에 지원을 하지 않습니다.     
+                        2025년 6월 29일 Spring AI 1.0.0 기준으로 TTS는 OpenAI 밖에 지원을 하지 않습니다.
                     """,
             security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME),
             responses = {
@@ -87,7 +87,7 @@ public class TextToSpeechController {
     @PostMapping(value = "/v2/llm/tts", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<byte[]> convertTextToSpeechV2(@RequestBody final String requestText) {
         log.info("TTS V2 요청 수신: {}", requestText);
-        final byte[] audioData = textToSpeech.convertTextToSpeechV2(requestText);
+        final byte[] audioData = textToSpeechService.convertTextToSpeechV2(requestText);
 
         return ResponseEntity.ok()
                              .header(
