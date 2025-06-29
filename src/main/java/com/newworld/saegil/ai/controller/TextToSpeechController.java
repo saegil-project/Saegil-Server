@@ -1,8 +1,8 @@
-package com.newworld.saegil.llm.controller;
+package com.newworld.saegil.ai.controller;
 
 import com.newworld.saegil.configuration.SwaggerConfiguration;
-import com.newworld.saegil.llm.config.FileProperties;
-import com.newworld.saegil.llm.service.TextToSpeechService;
+import com.newworld.saegil.ai.config.FileProperties;
+import com.newworld.saegil.ai.service.TextToSpeechService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

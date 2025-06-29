@@ -1,7 +1,7 @@
-package com.newworld.saegil.llm.service;
+package com.newworld.saegil.ai.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.newworld.saegil.llm.config.ProxyProperties;
+import com.newworld.saegil.ai.config.ProxyProperties;
 import com.newworld.saegil.simulation.service.SimulationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

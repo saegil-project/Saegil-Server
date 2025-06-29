@@ -1,4 +1,4 @@
-package com.newworld.saegil.llm.service;
+package com.newworld.saegil.ai.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
-package com.newworld.saegil.llm.service;
+package com.newworld.saegil.ai.service;
 
-import com.newworld.saegil.llm.config.TtsProvider;
+import com.newworld.saegil.ai.config.TtsProvider;
 import org.springframework.core.io.Resource;
 
 public interface TextToSpeech {

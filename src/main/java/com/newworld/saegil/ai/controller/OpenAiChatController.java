@@ -1,6 +1,6 @@
-package com.newworld.saegil.llm.controller;
+package com.newworld.saegil.ai.controller;
 
-import com.newworld.saegil.llm.service.OpenAiChatService;
+import com.newworld.saegil.ai.service.OpenAiChatService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

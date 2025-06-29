@@ -1,4 +1,4 @@
-package com.newworld.saegil.llm.config;
+package com.newworld.saegil.ai.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

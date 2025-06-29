@@ -1,10 +1,10 @@
-package com.newworld.saegil.llm.controller;
+package com.newworld.saegil.ai.controller;
 
 import com.newworld.saegil.authentication.annotation.AuthUser;
 import com.newworld.saegil.authentication.dto.AuthUserInfo;
 import com.newworld.saegil.configuration.SwaggerConfiguration;
-import com.newworld.saegil.llm.service.AssistantResponse;
-import com.newworld.saegil.llm.service.AssistantService;
+import com.newworld.saegil.ai.service.AssistantResponse;
+import com.newworld.saegil.ai.service.AssistantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
