@@ -39,8 +39,5 @@ out/
 ### macOS ###
 .DS_Store
 
-### MP3 Files ###
-*.mp3
-
 ### Claude Code Setting ###
 .claude
