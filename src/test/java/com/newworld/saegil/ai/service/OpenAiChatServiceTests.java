@@ -32,15 +32,15 @@ public class OpenAiChatServiceTests {
 
     private MockMultipartFile createSampleAudioFile() throws IOException {
         final ClassPathResource resource = new ClassPathResource("com/newworld/saegil/ai/service/SampleQuestion.mp3");
-        final InputStream inputStream = resource.getInputStream();
-        final byte[] audioData = inputStream.readAllBytes();
-        inputStream.close();
-        
-        return new MockMultipartFile(
-            "audioFile",
-            "SampleQuestion.mp3",
-            "audio/mp3",
-            audioData
-        );
+        try (InputStream inputStream = resource.getInputStream()) {
+            final byte[] audioData = inputStream.readAllBytes();
+            
+            return new MockMultipartFile(
+                "audioFile",
+                "SampleQuestion.mp3",
+                "audio/mp3",
+                audioData
+            );
+        }
     }
 }
