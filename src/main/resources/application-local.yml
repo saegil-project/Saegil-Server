@@ -82,3 +82,8 @@ logging:
   file:
     name:
     path:
+file:
+  upload:
+    path: ${FILE_LOCAL_UPLOAD_PATH:/Users/kwon-yejin/Downloads/}
+  web:
+    path: ${FILE_GET_API_PATH:http://localhost:8080/files/}
