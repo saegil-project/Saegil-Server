@@ -6,6 +6,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,6 +21,10 @@ public class FileService {
     private static final String FILE_PROTOCOL_PREFIX = "file:";
 
     private final FileProcessor fileProcessor;
+
+    public String upload(final MultipartFile multipartFile) {
+        return fileProcessor.upload(multipartFile);
+    }
 
     public FileDto read(final String storeName) throws IOException {
         final String storePath = fileProcessor.getFileStorePath(storeName);
