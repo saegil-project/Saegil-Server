@@ -1,10 +1,10 @@
-package com.newworld.saegil.llm.controller;
+package com.newworld.saegil.ai.controller;
 
 import com.newworld.saegil.authentication.annotation.AuthUser;
 import com.newworld.saegil.authentication.dto.AuthUserInfo;
 import com.newworld.saegil.configuration.SwaggerConfiguration;
-import com.newworld.saegil.llm.service.AssistantResponse;
-import com.newworld.saegil.llm.service.AssistantService;
+import com.newworld.saegil.ai.service.AssistantResponse;
+import com.newworld.saegil.ai.service.AssistantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -65,11 +65,11 @@ public class AssistantController {
             @RequestParam(value = "thread_id", required = false) final String threadId
     ) {
         log.info(
-                "Received Assistant audio file upload request: {}, threadId: {}",
+                "Assistant 음성 파일 업로드 요청 수신: {}, threadId: {}",
                 multipartFile.getOriginalFilename(), threadId
         );
         final AssistantResponse response = assistantService.getAssistantTextResponseFromAudioFile(multipartFile, threadId);
-        log.info("Sending Assistant response with thread_id: {}", response.threadId());
+        log.info("Assistant 응답 전송 완료 - thread_id: {}", response.threadId());
         return ResponseEntity.ok(response);
     }
 
@@ -111,7 +111,7 @@ public class AssistantController {
             @AuthUser final AuthUserInfo authUserInfo
     ) {
         log.info(
-                "Received Assistant audio file upload request (V2): {}, threadId: {}, scenarioId: {}, userId: {}",
+                "Assistant 음성 파일 업로드 요청 수신 (V2): {}, threadId: {}, scenarioId: {}, userId: {}",
                 multipartFile.getOriginalFilename(), threadId, scenarioId, authUserInfo.userId()
         );
         final AssistantResponse response = assistantService.getAssistantTextResponseFromAudioFile(
@@ -120,7 +120,7 @@ public class AssistantController {
                 scenarioId,
                 authUserInfo.userId()
         );
-        log.info("Sending Assistant response with thread_id: {}", response.threadId());
+        log.info("Assistant 응답 전송 완료 - thread_id: {}", response.threadId());
         return ResponseEntity.ok(response);
     }
 }

@@ -1,8 +1,9 @@
-package com.newworld.saegil.llm.service;
+package com.newworld.saegil.ai.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public interface AssistantService {
+public interface Assistant {
+
     AssistantResponse getAssistantTextResponseFromAudioFile(
             MultipartFile multipartFile,
             String threadId
@@ -14,4 +15,5 @@ public interface AssistantService {
             Long scenarioId,
             Long userId
     );
-}
+
+} 

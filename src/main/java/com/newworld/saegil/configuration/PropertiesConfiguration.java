@@ -1,7 +1,7 @@
 package com.newworld.saegil.configuration;
 
-import com.newworld.saegil.llm.config.FileProperties;
-import com.newworld.saegil.llm.config.ProxyProperties;
+import com.newworld.saegil.ai.config.FileProperties;
+import com.newworld.saegil.ai.config.ProxyProperties;
 import com.newworld.saegil.location.naver.NaverGeocodingProperties;
 import com.newworld.saegil.location.naver.NaverLocationSearchProperties;
 import com.newworld.saegil.security.jwt.JwtProperties;

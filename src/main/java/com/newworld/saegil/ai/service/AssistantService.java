@@ -1,12 +1,10 @@
-package com.newworld.saegil.llm.service;
+package com.newworld.saegil.ai.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.newworld.saegil.llm.config.ProxyProperties;
-import com.newworld.saegil.llm.config.TtsProvider;
+import com.newworld.saegil.ai.config.ProxyProperties;
 import com.newworld.saegil.simulation.service.SimulationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -20,15 +18,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class LlmProxyService implements AssistantService, TextToSpeechService {
+public class AssistantService implements Assistant {
 
     private final RestTemplate restTemplate;
     private final ProxyProperties proxyProperties;
@@ -165,32 +161,4 @@ public class LlmProxyService implements AssistantService, TextToSpeechService {
         return requestBody;
     }
 
-    @Override
-    public Resource convertTextToSpeech(final String text, final TtsProvider provider) {
-        log.info("LLM 서버에 TTS 요청을 전송합니다. 텍스트: {}, 프로바이더: {}", text, provider);
-
-        final HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        final Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("text", text);
-
-        final UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(proxyProperties.textToSpeechPath())
-                                                                 .queryParam("provider", provider.name().toLowerCase());
-        final HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
-
-        try {
-            final ResponseEntity<Resource> response = restTemplate.exchange(
-                    builder.toUriString(),
-                    HttpMethod.POST,
-                    requestEntity,
-                    Resource.class
-            );
-            log.info("LLM 서버로부터 TTS 응답을 수신했습니다.");
-            return response.getBody();
-        } catch (final Exception e) {
-            log.error("TTS를 위해 LLM 서버 호출 중 오류 발생: {}", e.getMessage());
-            throw new RuntimeException("TTS를 위해 LLM 서버 호출 중 오류 발생: " + e.getMessage(), e);
-        }
-    }
 }
