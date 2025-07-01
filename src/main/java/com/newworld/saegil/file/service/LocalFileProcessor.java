@@ -39,7 +39,9 @@ public class LocalFileProcessor implements FileProcessor {
 
     private void upload(final MultipartFile multipartFile, final String uploadPath) {
         try {
-            multipartFile.transferTo(new File(uploadPath));
+            final File file = new File(uploadPath);
+            file.getParentFile().mkdirs();
+            multipartFile.transferTo(file);
         } catch (IOException ex) {
             throw new StoreFailureException("파일 저장에 실패했습니다.");
         }
