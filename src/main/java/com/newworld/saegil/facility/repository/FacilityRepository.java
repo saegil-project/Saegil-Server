@@ -18,8 +18,7 @@ public interface FacilityRepository extends JpaRepository<Facility, Long> {
     @Query("""
             SELECT f
             FROM Facility f
-            WHERE f.latitude IS NOT NULL AND f.longitude IS NOT NULL
-              AND f.latitude BETWEEN :#{#geoBoundingBox.minLatitude} AND :#{#geoBoundingBox.maxLatitude}
+            WHERE f.latitude BETWEEN :#{#geoBoundingBox.minLatitude} AND :#{#geoBoundingBox.maxLatitude}
               AND f.longitude BETWEEN :#{#geoBoundingBox.minLongitude} AND :#{#geoBoundingBox.maxLongitude}
             """)
     List<Facility> findAllInBoundingBox(final GeoBoundingBox geoBoundingBox);
