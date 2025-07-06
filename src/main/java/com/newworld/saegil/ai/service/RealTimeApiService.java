@@ -17,7 +17,7 @@ import java.util.Map;
 public class RealTimeApiService implements RealTimeApi {
 
     @Value("${spring.ai.openai.api-key}")
-    private String openaiApiKey;
+    private final String openaiApiKey;
     
     private final RestTemplate restTemplate;
 

@@ -25,7 +25,7 @@ public class OpenAiChatService implements OpenAiChat {
     private final ChatModel chatModel;
 
     @Override
-    public byte[] getOpenAiResponse(MultipartFile multipartFile) throws Exception {
+    public byte[] getOpenAiResponse(final MultipartFile multipartFile) throws Exception {
         if (multipartFile == null || multipartFile.isEmpty()) {
             throw new IllegalArgumentException("음성 파일이 제공되지 않았습니다.");
         }
