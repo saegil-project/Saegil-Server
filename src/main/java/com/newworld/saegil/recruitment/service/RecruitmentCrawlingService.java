@@ -4,7 +4,9 @@ import com.newworld.saegil.location.LocationInfo;
 import com.newworld.saegil.location.LocationInfoResolveFailedException;
 import com.newworld.saegil.location.LocationInfoResolver;
 import com.newworld.saegil.recruitment.domain.Recruitment;
+import com.newworld.saegil.recruitment.domain.RecruitmentCrawlingLog;
 import com.newworld.saegil.recruitment.domain.RecruitmentInfoSource;
+import com.newworld.saegil.recruitment.repository.RecruitmentCrawlingLogRepository;
 import com.newworld.saegil.recruitment.repository.RecruitmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ public class RecruitmentCrawlingService {
     private final Set<RecruitmentCrawler> crawlers;
     private final LocationInfoResolver locationInfoResolver;
     private final RecruitmentRepository recruitmentRepository;
+    private final RecruitmentCrawlingLogRepository recruitmentCrawlingLogRepository;
 
     public void fetchRecruitments(final LocalDate date) {
         for (final RecruitmentCrawler crawler : crawlers) {
@@ -31,6 +34,9 @@ public class RecruitmentCrawlingService {
 
     private void fetch(final RecruitmentCrawler crawler, final LocalDate date) {
         final RecruitmentInfoSource infoSource = crawler.getSupportingRecruitmentInfoSource();
+        if (recruitmentCrawlingLogRepository.existsByInfoSourceAndCrawlingDate(infoSource, date)) {
+            return;
+        }
         log.info("전체 {} 크롤링 시작", infoSource.getName());
         final long crawlStartTime = System.currentTimeMillis();
         final List<Recruitment> totalCrawledRecruitments = crawler.crawl(date);
@@ -63,6 +69,7 @@ public class RecruitmentCrawlingService {
         log.info("{}개의 새로운 채용정보 저장 시작", totalCrawledRecruitments.size());
         final long saveStartTime = System.currentTimeMillis();
         recruitmentRepository.saveAll(totalCrawledRecruitments);
+        recruitmentCrawlingLogRepository.save(new RecruitmentCrawlingLog(infoSource, date));
         final long saveEndTime = System.currentTimeMillis();
         log.info("{}개의 새로운 채용정보 저장 완료", totalCrawledRecruitments.size());
 

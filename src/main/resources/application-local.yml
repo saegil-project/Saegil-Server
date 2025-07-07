@@ -25,6 +25,8 @@ spring:
   task:
     notice_scheduler:
       enabled: false
+    recruitment_scheduler:
+        enabled: false
   cors:
     allowed-origins:
       - http://localhost:8080
@@ -98,3 +100,8 @@ logging:
   file:
     name:
     path:
+file:
+  upload:
+    path: ${FILE_LOCAL_UPLOAD_PATH}
+  web:
+    path: ${FILE_GET_API_PATH:http://localhost:8080/files/}
