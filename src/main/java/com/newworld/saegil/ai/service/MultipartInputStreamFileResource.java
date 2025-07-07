@@ -1,4 +1,4 @@
-package com.newworld.saegil.llm.service;
+package com.newworld.saegil.ai.service;
 
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;

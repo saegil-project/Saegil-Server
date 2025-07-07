@@ -18,9 +18,9 @@ java {
 
 repositories {
     mavenCentral()
-    maven { url = uri("https://repo.spring.io/milestone") }
-    maven { url = uri("https://repo.spring.io/snapshot") }
 }
+
+extra["springAiVersion"] = "1.0.0"
 
 dependencies {
     // Spring Boot Starters
@@ -29,7 +29,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
     // Swagger / OpenAPI for WebFlux
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 
     // Lombok for boilerplate code reduction
     compileOnly("org.projectlombok:lombok")
@@ -55,12 +55,17 @@ dependencies {
 
     // Jsoup 의존성 추가
     implementation("org.jsoup:jsoup:1.19.1")
+
+    // OpenAI with Spring AI
+    implementation("org.springframework.ai:spring-ai-starter-model-openai")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.ai:spring-ai-bom:${property("springAiVersion")}")
+    }
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
-
-    filter {
-        excludeTestsMatching("com.newworld.saegil.llm.controller.AssistantControllerDirectApiTest")
-    }
 }
