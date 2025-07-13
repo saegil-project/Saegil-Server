@@ -5,6 +5,7 @@ import com.newworld.saegil.authentication.dto.AuthUserInfo;
 import com.newworld.saegil.configuration.SwaggerConfiguration;
 import com.newworld.saegil.global.swagger.ApiResponseCode;
 import com.newworld.saegil.news.domain.NewsCategory;
+import com.newworld.saegil.news.service.NewsDto;
 import com.newworld.saegil.news.service.NewsQuizDto;
 import com.newworld.saegil.news.service.NewsService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,9 +20,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -78,6 +81,28 @@ public class NewsController {
         final List<ReadNewsCategoryResponse> responses = userInterests.stream()
                                                                       .map(ReadNewsCategoryResponse::from)
                                                                       .toList();
+
+        return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping
+    @Operation(
+            summary = "사용자 관심사에 해당하는 뉴스 목록 조회",
+            description = "사용자 관심사에 해당하는 뉴스 목록을 조회합니다.",
+            security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
+    )
+    @ApiResponse(responseCode = ApiResponseCode.OK, description = "사용자 관심 뉴스 목록 조회 성공")
+    public ResponseEntity<List<ReadNewsResponse>> readNews(
+            @AuthUser final AuthUserInfo authUserInfo,
+
+            @Parameter(description = "조회할 뉴스 개수 (기본값 5)", example = "5")
+            @RequestParam(required = false, defaultValue = "5") final int size
+    ) {
+        final LocalDate date = LocalDate.now();
+        final List<NewsDto> result = newsService.readUserInterestNews(authUserInfo.userId(), date, size);
+        final List<ReadNewsResponse> responses = result.stream()
+                                                       .map(ReadNewsResponse::from)
+                                                       .toList();
 
         return ResponseEntity.ok(responses);
     }
