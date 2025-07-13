@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @Transactional
@@ -68,10 +69,12 @@ public class NewsService {
     }
 
     public NewsQuizDto readQuizByNewsId(final long newsId) {
-        final NewsQuiz newsQuiz = newsQuizRepository.findByNewsId(newsId)
-                                                    .orElseThrow(() -> new NewsQuizNotFoundException(
-                                                            "해당 뉴스에 대한 퀴즈가 존재하지 않습니다."
-                                                    ));
+        final List<NewsQuiz> newsQuizzes = newsQuizRepository.findAllByNewsId(newsId);
+        if (newsQuizzes.isEmpty()) {
+            throw new NewsQuizNotFoundException("해당 뉴스에 대한 퀴즈가 존재하지 않습니다.");
+        }
+
+        final NewsQuiz newsQuiz = newsQuizzes.get(ThreadLocalRandom.current().nextInt(newsQuizzes.size()));
 
         return NewsQuizDto.from(newsQuiz);
     }
