@@ -40,6 +40,7 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .excludePathPatterns("/api/v1/organizations/**")
                 .excludePathPatterns("/api/v1/notices/**")
                 .excludePathPatterns("/api/v1/scenarios/**")
+                .excludePathPatterns("/api/v1/news/categories")
                 .excludePathPatterns("/api/v1/oauth2/**");
     }
 
