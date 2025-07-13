@@ -81,6 +81,7 @@ public class AuthenticationService {
         final OAuth2UserInfo oauth2UserInfo = oauth2Handler.getUserInfo(oauth2AccessToken);
         final User user = findOrPersistUser(oauth2UserInfo);
         user.upsertDeviceToken(deviceToken);
+        userRepository.save(user);
 
         final PrivateClaims privateClaims = new PrivateClaims(user.getId());
         final Token token = tokenProcessor.generateToken(requestTime, privateClaims.toMap());
