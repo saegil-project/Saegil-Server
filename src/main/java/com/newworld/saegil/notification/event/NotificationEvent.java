@@ -3,6 +3,7 @@ package com.newworld.saegil.notification.event;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ public class NotificationEvent extends ApplicationEvent {
         final String body,
         final List<Long> userIds
     ) {
-        this(source, title, body, userIds, null);
+        this(source, title, body, userIds, Collections.emptyMap());
     }
 
     public NotificationEvent(
@@ -53,6 +54,6 @@ public class NotificationEvent extends ApplicationEvent {
         final String body,
         final Long userId
     ) {
-        this(source, title, body, List.of(userId), null);
+        this(source, title, body, List.of(userId), Collections.emptyMap());
     }
 } 
