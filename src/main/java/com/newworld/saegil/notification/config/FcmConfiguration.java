@@ -3,6 +3,7 @@ package com.newworld.saegil.notification.config;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.AndroidConfig;
 import com.google.firebase.messaging.FirebaseMessaging;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -36,5 +37,12 @@ public class FcmConfiguration {
             FirebaseApp.initializeApp(options);
         }
         return FirebaseApp.getInstance();
+    }
+
+    @Bean
+    public AndroidConfig highPriorityAndroidConfig() {
+        return AndroidConfig.builder()
+                            .setPriority(AndroidConfig.Priority.HIGH)
+                            .build();
     }
 } 
