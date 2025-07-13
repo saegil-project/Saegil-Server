@@ -27,14 +27,13 @@ public class FcmConfiguration {
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
         if (FirebaseApp.getApps().isEmpty()) {
-            ClassPathResource resource = new ClassPathResource(fcmProperties.getServiceAccountJsonPath());
-            InputStream serviceAccount = resource.getInputStream();
-
-            FirebaseOptions options = FirebaseOptions.builder()
-                                                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                                                     .build();
-
-            FirebaseApp.initializeApp(options);
+            final ClassPathResource resource = new ClassPathResource(fcmProperties.getServiceAccountJsonPath());
+            try (InputStream serviceAccount = resource.getInputStream()) {
+                final FirebaseOptions options = FirebaseOptions.builder()
+                                                               .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                                                               .build();
+                FirebaseApp.initializeApp(options);
+            }
         }
         return FirebaseApp.getInstance();
     }
