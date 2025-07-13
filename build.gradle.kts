@@ -58,6 +58,9 @@ dependencies {
 
     // OpenAI with Spring AI
     implementation("org.springframework.ai:spring-ai-starter-model-openai")
+    
+    // Firebase Admin SDK for FCM
+    implementation("com.google.firebase:firebase-admin:9.2.0")
 }
 
 dependencyManagement {
