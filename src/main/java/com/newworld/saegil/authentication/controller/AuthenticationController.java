@@ -92,6 +92,7 @@ public class AuthenticationController {
         final LoginResult loginResult = authenticationService.loginWithAccessToken(
                 oauth2Type,
                 request.accessToken(),
+                request.deviceToken(),
                 LocalDateTime.now()
         );
         final LoginInformationResponse response = LoginInformationResponse.from(loginResult);

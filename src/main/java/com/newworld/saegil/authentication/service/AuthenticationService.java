@@ -10,6 +10,7 @@ import com.newworld.saegil.authentication.domain.Token;
 import com.newworld.saegil.authentication.domain.TokenProcessor;
 import com.newworld.saegil.authentication.domain.TokenType;
 import com.newworld.saegil.authentication.repository.BlacklistTokenRepository;
+import com.newworld.saegil.exception.UserNotFoundException;
 import com.newworld.saegil.user.domain.User;
 import com.newworld.saegil.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -73,11 +74,15 @@ public class AuthenticationService {
     public LoginResult loginWithAccessToken(
             final String oauth2TypeName,
             final String oauth2AccessToken,
+            final String deviceToken,
             final LocalDateTime requestTime
     ) {
         final OAuth2Handler oauth2Handler = oauth2HandlerComposite.findHandler(oauth2TypeName);
         final OAuth2UserInfo oauth2UserInfo = oauth2Handler.getUserInfo(oauth2AccessToken);
         final User user = findOrPersistUser(oauth2UserInfo);
+        user.upsertDeviceToken(deviceToken);
+        userRepository.save(user);
+
         final PrivateClaims privateClaims = new PrivateClaims(user.getId());
         final Token token = tokenProcessor.generateToken(requestTime, privateClaims.toMap());
 
@@ -102,6 +107,11 @@ public class AuthenticationService {
 
     public void logout(final String accessToken, final String refreshToken) {
         final PrivateClaims privateClaims = getValidPrivateClaims(TokenType.ACCESS, accessToken);
+
+        final User user = userRepository.findById(privateClaims.userId())
+                                        .orElseThrow(() -> new UserNotFoundException("존재하지 않는 유저입니다."));
+        user.invalidateDeviceToken();
+
         final BlacklistToken blacklistAccessToken = new BlacklistToken(
                 privateClaims.userId(),
                 TokenType.ACCESS,
@@ -113,6 +123,7 @@ public class AuthenticationService {
                 refreshToken
         );
 
+        userRepository.save(user);
         blacklistTokenRepository.save(blacklistAccessToken);
         blacklistTokenRepository.save(blacklistRefreshToken);
     }

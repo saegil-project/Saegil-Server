@@ -42,6 +42,9 @@ public class User {
     @Column(name = "oauth2_type", nullable = false)
     private OAuth2Type oauth2Type;
 
+    @Column(nullable = true)
+    private String deviceToken;
+
     public User(final String name, final String profileImageUrl, final String oauth2Id, final OAuth2Type oauth2Type) {
         validateName(name);
         this.name = name;
@@ -58,5 +61,13 @@ public class User {
         if (name.length() > MAX_NAME_LENGTH) {
             throw new InvalidUserException("이름은 최대 " + MAX_NAME_LENGTH + "자까지 가능합니다.");
         }
+    }
+
+    public void upsertDeviceToken(final String deviceToken) {
+        this.deviceToken = deviceToken;
+    }
+
+    public void invalidateDeviceToken() {
+        this.deviceToken = null;
     }
 }
