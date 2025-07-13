@@ -107,7 +107,13 @@ public class NewsController {
         return ResponseEntity.ok(responses);
     }
 
-    @GetMapping("/{newsId}")
+    @GetMapping("/{newsId}/quiz")
+    @Operation(
+            summary = "뉴스 퀴즈 조회",
+            description = "뉴스 식별자에 해당하는 뉴스 퀴즈를 조회합니다.",
+            security = @SecurityRequirement(name = SwaggerConfiguration.SERVICE_SECURITY_SCHEME_NAME)
+    )
+    @ApiResponse(responseCode = ApiResponseCode.OK, description = "뉴스 퀴즈 조회 성공")
     public ResponseEntity<NewsQuizResponse> readNewsQuiz(
             @Parameter(description = "뉴스 식별자", example = "1")
             @PathVariable final Long newsId

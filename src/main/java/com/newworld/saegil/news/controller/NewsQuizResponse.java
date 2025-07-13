@@ -29,7 +29,7 @@ public record NewsQuizResponse(
         @Schema(description = "퀴즈 질문", example = "기온이 오르면 산불 발생 위험이 낮아진다.")
         String question,
 
-        @Schema(description = "퀴즈 정답 (true 면 O, false 면 X", example = "false")
+        @Schema(description = "퀴즈 정답 (true 면 O, false 면 X", example = "X")
         String answer,
 
         @Schema(description = "퀴즈 설명", example = "국립산림과학원 연구에 따르면  기온이 1도 오르면 산불 발생 위험이 8% 증가하고, 2도 상승시 13% 증가합니다.")
