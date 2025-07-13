@@ -33,8 +33,9 @@ public class NoticeController {
     @ApiResponse(responseCode = ApiResponseCode.OK, description = "공지사항 기관 목록 조회 성공")
     public ResponseEntity<List<ReadNoticeSourceItemResponse>> readAllSources() {
         List<ReadNoticeSourceItemResponse> sources = new ArrayList<>();
-        sources.add(new ReadNoticeSourceItemResponse(1L, "남북하나재단"));
-        sources.add(new ReadNoticeSourceItemResponse(2L, "통일부"));
+//        sources.add(new ReadNoticeSourceItemResponse(1L, "남북하나재단"));
+//        sources.add(new ReadNoticeSourceItemResponse(2L, "통일부"));
+        sources.add(new ReadNoticeSourceItemResponse(3L, "서울외국인포털"));
 
         return ResponseEntity.ok(sources);
     }

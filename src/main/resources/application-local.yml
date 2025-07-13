@@ -26,7 +26,7 @@ spring:
     notice_scheduler:
       enabled: false
     recruitment_scheduler:
-        enabled: false
+      enabled: false
   cors:
     allowed-origins:
       - http://localhost:8080
