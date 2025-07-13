@@ -30,9 +30,7 @@ public class NoticeCrawlingService {
 
         log.info("공지사항 크롤링 완료. 크롤링 소요 시간: {} ms", crawlEndTime - crawlStartTime);
 
-        if (noticeRepository.count() == 0) {
-            sortByDateAsc(newNoticesToSave);
-        }
+        sortByDateAsc(newNoticesToSave);
 
         final long saveStartTime = System.currentTimeMillis();
         noticeRepository.saveAll(newNoticesToSave);
