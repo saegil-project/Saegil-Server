@@ -1,6 +1,8 @@
 package com.newworld.saegil.news.service;
 
 import com.newworld.saegil.news.domain.NewsCategory;
+import com.newworld.saegil.news.domain.NewsQuiz;
+import com.newworld.saegil.news.repository.NewsQuizRepository;
 import com.newworld.saegil.user.domain.User;
 import com.newworld.saegil.user.domain.UserInterest;
 import com.newworld.saegil.user.repository.UserInterestRepository;
@@ -17,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NewsService {
 
+    private final NewsQuizRepository newsQuizRepository;
     private final UserRepository userRepository;
     private final UserInterestRepository userInterestRepository;
 
@@ -42,5 +45,14 @@ public class NewsService {
                                      .stream()
                                      .map(UserInterest::getCategory)
                                      .toList();
+    }
+
+    public NewsQuizDto readQuizByNewsId(final long newsId) {
+        final NewsQuiz newsQuiz = newsQuizRepository.findByNewsId(newsId)
+                                                    .orElseThrow(() -> new NewsQuizNotFoundException(
+                                                            "해당 뉴스에 대한 퀴즈가 존재하지 않습니다."
+                                                    ));
+
+        return NewsQuizDto.from(newsQuiz);
     }
 }

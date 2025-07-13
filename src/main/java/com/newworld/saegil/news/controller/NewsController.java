@@ -5,14 +5,17 @@ import com.newworld.saegil.authentication.dto.AuthUserInfo;
 import com.newworld.saegil.configuration.SwaggerConfiguration;
 import com.newworld.saegil.global.swagger.ApiResponseCode;
 import com.newworld.saegil.news.domain.NewsCategory;
+import com.newworld.saegil.news.service.NewsQuizDto;
 import com.newworld.saegil.news.service.NewsService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,5 +80,16 @@ public class NewsController {
                                                                       .toList();
 
         return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/{newsId}")
+    public ResponseEntity<NewsQuizResponse> readNewsQuiz(
+            @Parameter(description = "뉴스 식별자", example = "1")
+            @PathVariable final Long newsId
+    ) {
+        final NewsQuizDto newsQuizDto = newsService.readQuizByNewsId(newsId);
+        final NewsQuizResponse response = NewsQuizResponse.from(newsQuizDto);
+
+        return ResponseEntity.ok(response);
     }
 } 
