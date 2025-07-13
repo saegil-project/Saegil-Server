@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 @Slf4j
 @Service
@@ -27,6 +28,7 @@ public class FcmNotificationService implements NotificationService {
 
     private final FirebaseMessaging firebaseMessaging;
     private final AndroidConfig highPriorityAndroidConfig;
+    private final Executor fcmExecutor;
     private final UserRepository userRepository;
 
     @Override
@@ -56,11 +58,14 @@ public class FcmNotificationService implements NotificationService {
             log.warn("알림을 보낼 디바이스 토큰이 없습니다.");
             return;
         }
-
-        final List<CompletableFuture<Void>> futures = deviceTokens.stream()
-                                                                  .map(token -> CompletableFuture.runAsync(() ->
-                                                                          sendNotificationWithRetry(token, title, body, data, null)
-                                                                  )).toList();
+        final List<CompletableFuture<Void>> futures =
+                deviceTokens.stream()
+                            .map(token ->
+                                    CompletableFuture.runAsync(
+                                            () -> sendNotificationWithRetry(token, title, body, data, null),
+                                            fcmExecutor
+                                    )
+                            ).toList();
 
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
     }

@@ -9,9 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.Executor;
 
 @Configuration
 @RequiredArgsConstructor
@@ -43,5 +45,16 @@ public class FcmConfiguration {
         return AndroidConfig.builder()
                             .setPriority(AndroidConfig.Priority.HIGH)
                             .build();
+    }
+
+    @Bean
+    public Executor fcmExecutor() {
+        final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(10);
+        executor.setMaxPoolSize(20);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("fcm-sender-");
+        executor.initialize();
+        return executor;
     }
 } 
