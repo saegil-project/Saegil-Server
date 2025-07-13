@@ -54,7 +54,11 @@ public class Notice {
             final String webLink
     ) {
         this.title = title;
-        this.content = content;
+        if (content.length() > 250) {
+            this.content = content.substring(0, 250) + "...";
+        } else {
+            this.content = content;
+        }
         this.sourceId = noticeType.getSourceId();
         this.noticeType = noticeType;
         this.date = date;

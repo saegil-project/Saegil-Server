@@ -98,7 +98,7 @@ public class SeoulJobPortalRecruitmentCrawler implements RecruitmentCrawler {
             @JsonProperty("list_total_count")
             int listTotalCount,
 
-            @JsonProperty("row")
+            @JsonProperty("items")
             List<RecruitmentItem> rows
     ) {
     }

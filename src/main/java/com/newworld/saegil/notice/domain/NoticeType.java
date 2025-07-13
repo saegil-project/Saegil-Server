@@ -94,6 +94,14 @@ public enum NoticeType {
             "https://www.unikorea.go.kr/unikorea/notify/recruit/?mode=list&pageIdx=",
             "https://www.unikorea.go.kr/unikorea/notify/recruit/?mode=view&cntId="
     ),
+    SEOUL_FOREIGNER_PORTAL_NOTICE(
+            3,
+            "서울외국인포털",
+            "자료실",
+            "",
+            "",
+            ""
+    ),
     ;
 
     private final int sourceId;

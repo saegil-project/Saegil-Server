@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 @Slf4j
-@Component
+//@Component
 @RequiredArgsConstructor
 public class HanaGeneralCrawler implements NoticeCrawler {
 
