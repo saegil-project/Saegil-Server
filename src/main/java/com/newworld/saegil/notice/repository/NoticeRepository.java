@@ -25,6 +25,7 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
     @Query("""
             SELECT n FROM Notice n
             WHERE (:query IS NULL OR LOWER(n.title) LIKE LOWER(CONCAT('%', :query, '%')))
+              AND n.sourceId != 3
               AND (:sourceId IS NULL OR n.sourceId = :sourceId)
               AND (:lastId IS NULL OR n.id < :lastId
               )

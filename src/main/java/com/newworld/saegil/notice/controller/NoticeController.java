@@ -33,9 +33,9 @@ public class NoticeController {
     @ApiResponse(responseCode = ApiResponseCode.OK, description = "공지사항 기관 목록 조회 성공")
     public ResponseEntity<List<ReadNoticeSourceItemResponse>> readAllSources() {
         List<ReadNoticeSourceItemResponse> sources = new ArrayList<>();
-//        sources.add(new ReadNoticeSourceItemResponse(1L, "남북하나재단"));
-//        sources.add(new ReadNoticeSourceItemResponse(2L, "통일부"));
-        sources.add(new ReadNoticeSourceItemResponse(3L, "서울외국인포털"));
+        sources.add(new ReadNoticeSourceItemResponse(1L, "남북하나재단"));
+        sources.add(new ReadNoticeSourceItemResponse(2L, "통일부"));
+//        sources.add(new ReadNoticeSourceItemResponse(3L, "서울외국인포털"));
 
         return ResponseEntity.ok(sources);
     }
@@ -50,8 +50,8 @@ public class NoticeController {
             @Parameter(description = "검색어 (필수 x)", example = "채용")
             @RequestParam(required = false) final String query,
 
-            @Parameter(description = "기관명 필터 (ex. 남북하나재단, 통일부) (필수 x)", example = "남북하나재단")
-            @RequestParam(required = false, defaultValue = "3") final Long sourceId,
+            @Parameter(description = "기관명 필터 (ex. 1) (필수 x)", example = "1")
+            @RequestParam(required = false) final Long sourceId,
 
             @Parameter(description = "마지막으로 조회된 공지사항 ID (무한스크롤 방식) (첫 요청 = null)", example = "101")
             @RequestParam(required = false) final Long lastId,
